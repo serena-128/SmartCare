@@ -19,3 +19,30 @@ Route::get('/', function () {
 
 
 Route::resource('residents', App\Http\Controllers\residentController::class);
+
+
+Route::resource('diagnoses', App\Http\Controllers\diagnosisController::class);
+
+
+Route::resource('emergencyalerts', App\Http\Controllers\emergencyalertController::class);
+
+
+Route::resource('standardtasks', App\Http\Controllers\standardtaskController::class);
+
+
+Route::resource('careplans', App\Http\Controllers\careplanController::class);
+
+
+Route::resource('doses', App\Http\Controllers\doseController::class);
+
+
+Route::resource('appointments', App\Http\Controllers\appointmentController::class);
+
+
+Route::resource('nextofkins', App\Http\Controllers\nextofkinController::class);
+
+
+Route::resource('staffmembers', App\Http\Controllers\staffmemberController::class);
+
+
+Route::resource('roles', App\Http\Controllers\roleController::class);
