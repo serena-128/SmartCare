@@ -19,3 +19,6 @@ Route::get('/', function () {
 
 
 Route::resource('residents', App\Http\Controllers\residentController::class);
+
+
+Route::resource('roles', App\Http\Controllers\roleController::class);
