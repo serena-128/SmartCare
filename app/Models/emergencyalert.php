@@ -1,28 +1,104 @@
 <?php
+
 namespace App\Models;
 
+use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class EmergencyAlert extends Model {
+/**
+ * Class emergencyalert
+ * @package App\Models
+ * @version February 13, 2025, 10:29 pm UTC
+ *
+ * @property \App\Models\Resident $residentid
+ * @property \App\Models\Staffmember $triggeredbyid
+ * @property \App\Models\Staffmember $resolvedbyid
+ * @property integer $residentid
+ * @property integer $triggeredbyid
+ * @property string $alerttype
+ * @property string|\Carbon\Carbon $alerttimestamp
+ * @property string $status
+ * @property integer $resolvedbyid
+ */
+class emergencyalert extends Model
+{
+    use SoftDeletes;
+
     use HasFactory;
 
-    protected $fillable = [
-        'residentid', 'triggeredbyid', 'alerttype', 'alerttimestamp', 'status', 'resolvedbyid'
+    public $table = 'emergencyalert';
+    
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+
+    protected $dates = ['deleted_at'];
+
+
+
+    public $fillable = [
+        'residentid',
+        'triggeredbyid',
+        'alerttype',
+        'alerttimestamp',
+        'status',
+        'resolvedbyid'
     ];
 
-    // Relationship with Resident
-    public function resident() {
-        return $this->belongsTo(Resident::class, 'residentid');
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'residentid' => 'integer',
+        'triggeredbyid' => 'integer',
+        'alerttype' => 'string',
+        'alerttimestamp' => 'datetime',
+        'status' => 'string',
+        'resolvedbyid' => 'integer'
+    ];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        'residentid' => 'required|integer',
+        'triggeredbyid' => 'required|integer',
+        'alerttype' => 'required|string|max:50',
+        'alerttimestamp' => 'nullable',
+        'status' => 'nullable|string|max:20',
+        'resolvedbyid' => 'nullable|integer',
+        'created_at' => 'nullable',
+        'updated_at' => 'nullable',
+        'deleted_at' => 'nullable'
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function residentid()
+    {
+        return $this->belongsTo(\App\Models\Resident::class, 'residentid');
     }
 
-    // Relationship with StaffMember (who triggered the alert)
-    public function triggeredBy() {
-        return $this->belongsTo(StaffMember::class, 'triggeredbyid');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function triggeredbyid()
+    {
+        return $this->belongsTo(\App\Models\Staffmember::class, 'triggeredbyid');
     }
 
-    // Relationship with StaffMember (who resolved the alert)
-    public function resolvedBy() {
-        return $this->belongsTo(StaffMember::class, 'resolvedbyid');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function resolvedbyid()
+    {
+        return $this->belongsTo(\App\Models\Staffmember::class, 'resolvedbyid');
     }
 }
