@@ -78,3 +78,27 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('staffMembers.index') }}"
+       class="nav-link {{ Request::is('staffMembers*') ? 'active' : '' }}">
+        <p>Staff Members</p>
+    </a>
+</li>
+
+
+<li class="nav-item">
+    <a href="{{ route('dietaryrestrictions.index') }}"
+       class="nav-link {{ Request::is('dietaryrestrictions*') ? 'active' : '' }}">
+        <p>Dietaryrestrictions</p>
+    </a>
+</li>
+
+
+<li class="nav-item">
+    <a href="{{ route('stafftasks.index') }}"
+       class="nav-link {{ Request::is('stafftasks*') ? 'active' : '' }}">
+        <p>Stafftasks</p>
+    </a>
+</li>
+
+
