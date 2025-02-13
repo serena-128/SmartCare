@@ -55,4 +55,3 @@ Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 
 Route::get('/main', function () {
     return view('main');
 })->name('main');
->>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
