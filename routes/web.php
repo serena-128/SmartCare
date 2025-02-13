@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ResidentDietaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,8 +51,6 @@ Route::resource('dietaryrestrictions', App\Http\Controllers\dietaryrestrictionCo
 
 Route::resource('stafftasks', App\Http\Controllers\stafftaskController::class);
 
-Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
+Route::get('/dietary-form', [ResidentDietaryController::class, 'create']);
+Route::post('/dietary-form', [ResidentDietaryController::class, 'store']);
 
-Route::get('/main', function () {
-    return view('main');
-})->name('main');
