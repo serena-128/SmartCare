@@ -21,4 +21,53 @@ Route::get('/', function () {
 Route::resource('residents', App\Http\Controllers\residentController::class);
 
 
+<<<<<<< HEAD
 Route::resource('roles', App\Http\Controllers\roleController::class);
+=======
+Route::resource('diagnoses', App\Http\Controllers\diagnosisController::class);
+
+
+Route::resource('emergencyalerts', App\Http\Controllers\emergencyalertController::class);
+
+
+Route::resource('standardtasks', App\Http\Controllers\standardtaskController::class);
+
+
+Route::resource('careplans', App\Http\Controllers\careplanController::class);
+
+
+Route::resource('doses', App\Http\Controllers\doseController::class);
+
+
+Route::resource('appointments', App\Http\Controllers\appointmentController::class);
+
+
+Route::resource('nextofkins', App\Http\Controllers\nextofkinController::class);
+
+
+Route::resource('staffmembers', App\Http\Controllers\staffmemberController::class);
+
+
+Route::resource('roles', App\Http\Controllers\roleController::class);
+
+
+Route::resource('staffMembers', App\Http\Controllers\StaffMemberController::class);
+
+
+Route::resource('staffMembers', App\Http\Controllers\StaffMemberController::class);
+
+
+Route::resource('staffMembers', App\Http\Controllers\StaffMemberController::class);
+
+
+Route::resource('dietaryrestrictions', App\Http\Controllers\dietaryrestrictionController::class);
+
+
+Route::resource('stafftasks', App\Http\Controllers\stafftaskController::class);
+
+Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
+
+Route::get('/main', function () {
+    return view('main');
+})->name('main');
+>>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
