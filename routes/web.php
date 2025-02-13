@@ -21,12 +21,6 @@ Route::get('/', function () {
 Route::resource('residents', App\Http\Controllers\residentController::class);
 
 
-<<<<<<< HEAD
-Route::resource('roles', App\Http\Controllers\roleController::class);
-=======
-Route::resource('diagnoses', App\Http\Controllers\diagnosisController::class);
-
-
 Route::resource('emergencyalerts', App\Http\Controllers\emergencyalertController::class);
 
 
@@ -49,15 +43,6 @@ Route::resource('staffmembers', App\Http\Controllers\staffmemberController::clas
 
 
 Route::resource('roles', App\Http\Controllers\roleController::class);
-
-
-Route::resource('staffMembers', App\Http\Controllers\StaffMemberController::class);
-
-
-Route::resource('staffMembers', App\Http\Controllers\StaffMemberController::class);
-
-
-Route::resource('staffMembers', App\Http\Controllers\StaffMemberController::class);
 
 
 Route::resource('dietaryrestrictions', App\Http\Controllers\dietaryrestrictionController::class);
