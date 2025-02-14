@@ -1,16 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ResidentDietaryController;
+use App\Http\Controllers\ResidentController;
+use App\Http\Controllers\DiagnosisController;
+use App\Http\Controllers\EmergencyAlertController;
+use App\Http\Controllers\StandardTaskController;
+use App\Http\Controllers\CarePlanController;
+use App\Http\Controllers\DoseController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\NextOfKinController;
+use App\Http\Controllers\StaffMemberController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\DietaryRestrictionController;
+use App\Http\Controllers\StaffTaskController;
+use App\Http\Controllers\StaffAuthController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| Here is where you can register web routes for your application.
 |
 */
 
@@ -18,39 +28,33 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Authentication Routes
+Route::get('/login', [StaffAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login');
+Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 
-Route::resource('residents', App\Http\Controllers\residentController::class);
+// Protected Routes (Only Logged-in Staff)
+Route::middleware(['auth.staff'])->group(function () {
+    Route::resource('emergencyalerts', EmergencyAlertController::class);
+});
 
+// Resource Routes for Other Entities
+Route::resource('residents', ResidentController::class);
+Route::resource('diagnoses', DiagnosisController::class);
+Route::resource('standardtasks', StandardTaskController::class);
+Route::resource('careplans', CarePlanController::class);
+Route::resource('doses', DoseController::class);
+Route::resource('appointments', AppointmentController::class);
+Route::resource('nextofkins', NextOfKinController::class);
+Route::resource('staffmembers', StaffMemberController::class);
+Route::resource('roles', RoleController::class);
+Route::resource('dietaryrestrictions', DietaryRestrictionController::class);
+Route::resource('stafftasks', StaffTaskController::class);
 
-Route::resource('emergencyalerts', App\Http\Controllers\emergencyalertController::class);
+// Emergency Alert Actions
+Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
 
-
-Route::resource('standardtasks', App\Http\Controllers\standardtaskController::class);
-
-
-Route::resource('careplans', App\Http\Controllers\careplanController::class);
-
-
-Route::resource('doses', App\Http\Controllers\doseController::class);
-
-
-Route::resource('appointments', App\Http\Controllers\appointmentController::class);
-
-
-Route::resource('nextofkins', App\Http\Controllers\nextofkinController::class);
-
-
-Route::resource('staffmembers', App\Http\Controllers\staffmemberController::class);
-
-
-Route::resource('roles', App\Http\Controllers\roleController::class);
-
-
-Route::resource('dietaryrestrictions', App\Http\Controllers\dietaryrestrictionController::class);
-
-
-Route::resource('stafftasks', App\Http\Controllers\stafftaskController::class);
-
-Route::get('/dietary-form', [ResidentDietaryController::class, 'create']);
-Route::post('/dietary-form', [ResidentDietaryController::class, 'store']);
-
+// Main Page
+Route::get('/main', function () {
+    return view('main');
+})->name('main');
