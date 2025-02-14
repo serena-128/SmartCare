@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class emergencyalertRepository
  * @package App\Repositories
- * @version February 12, 2025, 9:35 pm UTC
+ * @version February 13, 2025, 10:29 pm UTC
 */
 
 class emergencyalertRepository extends BaseRepository
