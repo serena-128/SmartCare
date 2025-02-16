@@ -14,6 +14,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DietaryRestrictionController;
 use App\Http\Controllers\StaffTaskController;
 use App\Http\Controllers\StaffAuthController;
+use App\Http\Controllers\Auth\NextOfKinLoginController;
+use App\Http\Controllers\Auth\NextOfKinForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +30,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Authentication Routes
+// Staff Authentication Routes
 Route::get('/login', [StaffAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login');
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
@@ -36,6 +38,25 @@ Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 // Protected Routes (Only Logged-in Staff)
 Route::middleware(['auth.staff'])->group(function () {
     Route::resource('emergencyalerts', EmergencyAlertController::class);
+});
+
+Route::prefix('nextofkin')->group(function () {
+    
+     // Forgot Password Route
+    Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])->name('nextofkin.forgot');
+});
+
+// Next of Kin Authentication Routes
+Route::prefix('nextofkin')->group(function () {
+    Route::get('login', [NextOfKinLoginController::class, 'showLoginForm'])->name('nextofkin.login');
+    Route::post('login', [NextOfKinLoginController::class, 'login'])->name('nextofkin.login.submit');
+    Route::post('logout', [NextOfKinLoginController::class, 'logout'])->name('nextofkin.logout');
+
+    Route::middleware('auth:nextofkin')->group(function () {
+        Route::get('dashboard', function () {
+            return view('nextofkin.dashboard');
+        })->name('nextofkin.dashboard');
+    });
 });
 
 // Resource Routes for Other Entities

@@ -17,6 +17,18 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
+        
+    'guards' => [
+        'web' => [
+            'driver'   => 'session',
+            'provider' => 'users',
+        ],
+
+        'nextofkin' => [
+            'driver'   => 'session',
+            'provider' => 'nextofkins',
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -35,12 +47,6 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -65,10 +71,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    'nextofkins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\NextOfKin::class,
+        ],
     ],
 
     /*

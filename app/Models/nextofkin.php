@@ -43,7 +43,8 @@ class nextofkin extends Model
         'relationshiptoresident',
         'contactnumber',
         'email',
-        'address'
+        'address',
+        'password'
     ];
 
     /**
@@ -51,6 +52,11 @@ class nextofkin extends Model
      *
      * @var array
      */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
