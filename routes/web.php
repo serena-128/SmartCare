@@ -66,6 +66,17 @@ Route::prefix('nextofkin')->group(function () {
     });
 });
 
+Route::prefix('nextofkin')->group(function () {
+
+    // Show the Next of Kin forgot password form
+    Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])
+         ->name('nextofkin.forgot');
+
+    // Handle the Next of Kin forgot password form
+    Route::post('forgot', [NextOfKinForgotPasswordController::class, 'sendResetLinkEmail'])
+         ->name('nextofkin.password.email');
+});
+
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
 Route::resource('diagnoses', DiagnosisController::class);
