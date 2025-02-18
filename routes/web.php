@@ -16,6 +16,7 @@ use App\Http\Controllers\StaffTaskController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\Auth\NextOfKinLoginController;
 use App\Http\Controllers\Auth\NextOfKinForgotPasswordController;
+use App\Http\Controllers\Auth\NextOfKinRegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,12 @@ Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 // Protected Routes (Only Logged-in Staff)
 Route::middleware(['auth.staff'])->group(function () {
     Route::resource('emergencyalerts', EmergencyAlertController::class);
+});
+
+// Next of Kin Register Routes
+Route::prefix('nextofkin')->group(function () {
+    Route::get('register', [NextOfKinRegisterController::class, 'showRegistrationForm'])->name('nextofkin.register');
+    Route::post('register', [NextOfKinRegisterController::class, 'register'])->name('nextofkin.register.submit');
 });
 
 Route::prefix('nextofkin')->group(function () {
