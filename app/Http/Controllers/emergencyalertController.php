@@ -29,11 +29,12 @@ class emergencyalertController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $emergencyalerts = $this->emergencyalertRepository->all();
+    $emergencyalerts = $this->emergencyalertRepository->allWithRelations();
 
-        return view('emergencyalerts.index')
-            ->with('emergencyalerts', $emergencyalerts);
+    return view('emergencyalerts.index')
+        ->with('emergencyalerts', $emergencyalerts);
     }
+
 
     /**
      * Show the form for creating a new emergencyalert.

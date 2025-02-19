@@ -1,13 +1,13 @@
-<?php
+<?php 
 
 namespace App\Models;
 
-use Eloquent as Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Class resident
+ * Class Resident
  * @package App\Models
  * @version February 11, 2025, 11:35 am UTC
  *
@@ -18,23 +18,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property integer $roomnumber
  * @property string $admissiondate
  */
-class resident extends Model
+class Resident extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
-    use HasFactory;
+    protected $table = 'resident'; // Ensure it matches the database table name
 
-    public $table = 'resident';
-    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
 
-
-
-    public $fillable = [
+    protected $fillable = [
         'firstname',
         'lastname',
         'dateofbirth',
@@ -43,13 +38,8 @@ class resident extends Model
         'admissiondate'
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
     protected $casts = [
-        'residentid' => 'integer',
+        'id' => 'integer',  // Ensure correct primary key reference
         'firstname' => 'string',
         'lastname' => 'string',
         'dateofbirth' => 'date',
@@ -58,19 +48,25 @@ class resident extends Model
         'admissiondate' => 'date'
     ];
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
     public static $rules = [
-        'firstname' => 'nullable|string|max:50',
-        'lastname' => 'nullable|string|max:50',
-        'dateofbirth' => 'nullable',
+        'firstname' => 'required|string|max:50',
+        'lastname' => 'required|string|max:50',
+        'dateofbirth' => 'required|date',
         'gender' => 'nullable|string|max:20',
         'roomnumber' => 'nullable|integer',
-        'admissiondate' => 'nullable'
+        'admissiondate' => 'nullable|date'
     ];
 
-    
+    public function emergencyAlerts()
+    {
+        return $this->hasMany(\App\Models\EmergencyAlert::class, 'residentid', 'id');
+    }
+
+    /**
+     * Accessor: Get the full name of the resident
+     */
+    public function getFullNameAttribute()
+    {
+        return "{$this->firstname} {$this->lastname}";
+    }
 }

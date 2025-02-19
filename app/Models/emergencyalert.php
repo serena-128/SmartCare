@@ -89,16 +89,26 @@ class emergencyalert extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function triggeredbyid()
+    public function triggeredBy()
     {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'triggeredbyid');
+    return $this->belongsTo(\App\Models\Staffmember::class, 'triggeredbyid', 'id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function resolvedbyid()
+    public function resolvedBy()
     {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'resolvedbyid');
+    return $this->belongsTo(\App\Models\Staffmember::class, 'resolvedbyid', 'id');
+    }
+
+        /**
+     * Relationship: Get the resident associated with this emergency alert.
+     */
+    public function resident()
+    {
+        return $this->belongsTo(\App\Models\Resident::class, 'residentid', 'id'); 
+        // 'residentid' refers to the column in emergencyalerts
+        // 'id' refers to the primary key in residents table
     }
 }

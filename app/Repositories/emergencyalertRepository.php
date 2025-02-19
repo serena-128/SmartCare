@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Models\emergencyalert;
+use App\Models\EmergencyAlert;
 use App\Repositories\BaseRepository;
 
 /**
- * Class emergencyalertRepository
+ * Class EmergencyAlertRepository
  * @package App\Repositories
  * @version February 13, 2025, 10:29 pm UTC
-*/
+ */
 
-class emergencyalertRepository extends BaseRepository
+class EmergencyAlertRepository extends BaseRepository
 {
     /**
      * @var array
@@ -40,6 +40,14 @@ class emergencyalertRepository extends BaseRepository
      **/
     public function model()
     {
-        return emergencyalert::class;
+        return EmergencyAlert::class;
+    }
+
+    /**
+     * Get all emergency alerts with resident and staff details
+     */
+    public function allWithRelations()
+    {
+        return $this->model->with(['resident', 'triggeredBy', 'resolvedBy'])->get();
     }
 }
