@@ -103,12 +103,17 @@
           <!-- Optional link for password reset -->
           <div class="mt-3">
             <a href="{{ route('nextofkin.forgot') }}">Forgot Password?</a>
+              
+           <!-- Optional link for non registered accounts-->   
+        <div class="mt-3 text-center">
+          <p>Not registered? <a href="{{ route('nextofkin.register') }}">Register here</a></p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+    
   <!-- Bootstrap JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

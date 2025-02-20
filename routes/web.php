@@ -77,12 +77,15 @@ Route::prefix('nextofkin')->group(function () {
          ->name('nextofkin.password.email');
 });
 
-// Direct login to dashboard
+// Direct login to next of kin dashboard
 Route::middleware('auth:nextofkin')->group(function () {
     Route::get('dashboard', function () {
         return view('nextofkins.dashboard'); // This view should exist
     })->name('nextofkins.dashboard');
 });
+
+//Optional link for non registered next of kin users on the login 
+Route::get('register', [NextOfKinRegisterController::class, 'showRegistrationForm'])->name('nextofkin.register');
 
 
 // Resource Routes for Other Entities
