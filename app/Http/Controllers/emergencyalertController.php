@@ -9,11 +9,10 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
-use App\Models\emergencyalert; // ✅ Import the model
 
 class emergencyalertController extends AppBaseController
 {
-    /** @var emergencyalertRepository $emergencyalertRepository */
+    /** @var emergencyalertRepository $emergencyalertRepository*/
     private $emergencyalertRepository;
 
     public function __construct(emergencyalertRepository $emergencyalertRepo)
@@ -22,17 +21,19 @@ class emergencyalertController extends AppBaseController
     }
 
     /**
-     * Display a listing of emergency alerts.
+     * Display a listing of the emergencyalert.
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $emergencyalerts = emergencyalert::with(['resident', 'triggeredBy'])->get(); // ✅ Corrected
+        $emergencyalerts = $this->emergencyalertRepository->all();
 
-        return view('emergencyalerts.index', compact('emergencyalerts'));
+        return view('emergencyalerts.index')
+            ->with('emergencyalerts', $emergencyalerts);
     }
-
-
-
 
     /**
      * Show the form for creating a new emergencyalert.
@@ -152,4 +153,5 @@ class emergencyalertController extends AppBaseController
 
         return redirect(route('emergencyalerts.index'));
     }
+    
 }
