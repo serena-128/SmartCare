@@ -77,6 +77,14 @@ Route::prefix('nextofkin')->group(function () {
          ->name('nextofkin.password.email');
 });
 
+// Direct login to dashboard
+Route::middleware('auth:nextofkin')->group(function () {
+    Route::get('dashboard', function () {
+        return view('nextofkins.dashboard'); // This view should exist
+    })->name('nextofkins.dashboard');
+});
+
+
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
 Route::resource('diagnoses', DiagnosisController::class);

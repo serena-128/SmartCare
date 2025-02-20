@@ -100,7 +100,7 @@ return [
         'throttle' => 60,
         ],
     'nextofkins' => [
-        'provider' => 'nextofkins',  // Make sure this matches the provider for your NextOfKin model
+        'provider' => 'nextofkins',  
         'table'    => 'password_resets',
         'expire'   => 60,
         'throttle' => 60,

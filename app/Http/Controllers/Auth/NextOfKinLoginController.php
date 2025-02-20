@@ -33,7 +33,7 @@ class NextOfKinLoginController extends Controller
             $request->session()->regenerate();
 
             // Redirect to the intended page (or dashboard).
-            return redirect()->intended(route('nextofkin.dashboard'));
+            return redirect()->intended(route('nextofkins.dashboard'));
         }
 
         // If the login attempt was unsuccessful, redirect back with an error.
