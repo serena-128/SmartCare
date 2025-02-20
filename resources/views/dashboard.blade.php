@@ -43,8 +43,8 @@
         <div class="col-md-3">
             <div class="card shadow-sm border-left-info">
                 <div class="card-body">
-                    <h5 class="card-title text-info">Completed Tasks</h5>
-                    <h3>{{ $completedTasks }}</h3>
+                    <h5 class="card-title text-info">Care Plans</h5>
+                    <h3>{{ $carePlanCount }}</h3>
                 </div>
             </div>
         </div>
@@ -84,9 +84,9 @@
                         <tbody>
                         @foreach($recentAlerts as $alert)
                             <tr>
-                                <td>{{ $alert->resident->full_name ?? 'Unknown' }}</td>
+                                <td>{{ $alert->resident->firstname }} {{ $alert->resident->lastname }}</td>
                                 <td>{{ $alert->alerttype }}</td>
-                                <td>{{ $alert->triggeredBy->name ?? 'Unknown' }}</td>
+                                <td>{{ $alert->triggeredBy->firstname ?? 'Unknown' }} {{ $alert->triggeredBy->lastname ?? '' }}</td>
                                 <td>{{ $alert->status }}</td>
                                 <td>{{ $alert->alerttimestamp }}</td>
                             </tr>
@@ -108,7 +108,7 @@
                 <div class="card-body">
                     <ul class="list-group">
                         @foreach($onDutyStaff as $staff)
-                            <li class="list-group-item">{{ $staff->name }} - {{ $staff->role }}</li>
+                            <li class="list-group-item">{{ $staff->firstname }} {{ $staff->lastname }} - {{ $staff->staff_role }}</li>
                         @endforeach
                     </ul>
                 </div>
