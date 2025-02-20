@@ -9,10 +9,11 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\emergencyalert; // ✅ Import the model
 
 class emergencyalertController extends AppBaseController
 {
-    /** @var emergencyalertRepository $emergencyalertRepository*/
+    /** @var emergencyalertRepository $emergencyalertRepository */
     private $emergencyalertRepository;
 
     public function __construct(emergencyalertRepository $emergencyalertRepo)
@@ -21,19 +22,16 @@ class emergencyalertController extends AppBaseController
     }
 
     /**
-     * Display a listing of the emergencyalert.
-     *
-     * @param Request $request
-     *
-     * @return Response
+     * Display a listing of emergency alerts.
      */
-    public function index(Request $request)
+    public function index()
     {
-    $emergencyalerts = $this->emergencyalertRepository->allWithRelations();
+        $emergencyalerts = emergencyalert::with(['resident', 'triggeredBy'])->get(); // ✅ Corrected
 
-    return view('emergencyalerts.index')
-        ->with('emergencyalerts', $emergencyalerts);
+        return view('emergencyalerts.index', compact('emergencyalerts'));
     }
+
+
 
 
     /**
