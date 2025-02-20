@@ -59,7 +59,8 @@
             <a href="{{ route('emergencyalerts.create') }}" class="btn btn-danger btn-block">Report an Emergency</a>
         </div>
         <div class="col-md-4">
-            <a href="{{ route('tasks.create') }}" class="btn btn-success btn-block">Assign a Task</a>
+           <a href="{{ route('stafftasks.create') }}" class="btn btn-success btn-block">Assign a Task</a>
+
         </div>
     </div>
 

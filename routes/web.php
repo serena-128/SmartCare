@@ -14,7 +14,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DietaryRestrictionController;
 use App\Http\Controllers\StaffTaskController;
 use App\Http\Controllers\StaffAuthController;
-
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -50,6 +50,9 @@ Route::resource('staffmembers', StaffMemberController::class);
 Route::resource('roles', RoleController::class);
 Route::resource('dietaryrestrictions', DietaryRestrictionController::class);
 Route::resource('stafftasks', StaffTaskController::class);
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index']);
+
 
 // Emergency Alert Actions
 Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
@@ -58,3 +61,5 @@ Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 
 Route::get('/main', function () {
     return view('main');
 })->name('main');
+
+
