@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCare - Nursing Home Management</title>
+    
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
+        /* Updated Font and Styling */
         body {
-            background-color: #6D4EA7; /* Purple aesthetic */
-            color: white;
-            font-family: Arial, sans-serif;
+            background-color: #F8F9FA; /* Soft white */
+            color: #333;
+            font-family: 'Poppins', sans-serif; /* Changed Font */
         }
         .header {
             text-align: center;
@@ -19,11 +25,12 @@
             width: 250px;
         }
         .btn-primary {
-            background-color: #FFC107;
+            background-color: #6D4EA7; /* Purple Accent */
             border: none;
+            font-weight: 600;
         }
         .btn-primary:hover {
-            background-color: #E0A800;
+            background-color: #5A3D8A;
         }
         .features {
             margin-top: 50px;
@@ -34,7 +41,7 @@
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
         .login-section {
             margin-top: 30px;
@@ -45,6 +52,13 @@
             padding: 12px 25px;
             font-size: 18px;
             border-radius: 30px;
+            font-weight: 500;
+        }
+        h1, h3 {
+            font-weight: 600;
+        }
+        p {
+            font-weight: 300;
         }
     </style>
 </head>
@@ -52,7 +66,7 @@
 
     <!-- Header Section -->
     <div class="header">
-        <img src="{{ asset('images/carehome_logo.png') }}" alt="SmartCare Logo"> <!-- Ensure you upload the logo -->
+        <img src="{{ asset('images/carehome_logo.png') }}" alt="SmartCare Logo">
         <h1>Welcome to SmartCare</h1>
         <p>Redefining Care with Innovation</p>
     </div>
