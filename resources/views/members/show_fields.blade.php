@@ -1,48 +1,48 @@
 <!-- Residentid Field -->
 <div class="form-group">
     {!! Form::label('residentid', 'Residentid:') !!}
-    <p>{!! $careplan->residentid !!}</p>
+    <p>{!! $member->residentid !!}</p>
 </div>
 
 <!-- Roleid Field -->
 <div class="form-group">
     {!! Form::label('roleid', 'Roleid:') !!}
-    <p>{!! $careplan->roleid !!}</p>
+    <p>{!! $member->roleid !!}</p>
 </div>
 
 <!-- Medical History Field -->
 <div class="form-group">
     {!! Form::label('medical_history', 'Medical History:') !!}
-    <p>{!! $careplan->medical_history !!}</p>
+    <p>{!! $member->medical_history !!}</p>
 </div>
 
 <!-- Medications Field -->
 <div class="form-group">
     {!! Form::label('medications', 'Medications:') !!}
-    <p>{!! $careplan->medications !!}</p>
+    <p>{!! $member->medications !!}</p>
 </div>
 
 <!-- Dietary Preferences Field -->
 <div class="form-group">
     {!! Form::label('dietary_preferences', 'Dietary Preferences:') !!}
-    <p>{!! $careplan->dietary_preferences !!}</p>
+    <p>{!! $member->dietary_preferences !!}</p>
 </div>
 
 <!-- Caregoals Field -->
 <div class="form-group">
     {!! Form::label('caregoals', 'Caregoals:') !!}
-    <p>{!! $careplan->caregoals !!}</p>
+    <p>{!! $member->caregoals !!}</p>
 </div>
 
 <!-- Caretreatment Field -->
 <div class="form-group">
     {!! Form::label('caretreatment', 'Caretreatment:') !!}
-    <p>{!! $careplan->caretreatment !!}</p>
+    <p>{!! $member->caretreatment !!}</p>
 </div>
 
 <!-- Notes Field -->
 <div class="form-group">
     {!! Form::label('notes', 'Notes:') !!}
-    <p>{!! $careplan->notes !!}</p>
+    <p>{!! $member->notes !!}</p>
 </div>
 

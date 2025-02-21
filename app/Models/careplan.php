@@ -2,75 +2,86 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Class CarePlan
+ * Class careplan
  * @package App\Models
- * @version February 12, 2025, 9:34 pm UTC
+ * @version February 21, 2025, 10:53 pm UTC
  *
- * @property \App\Models\Resident $resident
- * @property \App\Models\Role $role
- * @property integer $resident_id
- * @property integer $role_id
+ * @property integer $residentid
+ * @property integer $roleid
+ * @property string $medical_history
+ * @property string $medications
+ * @property string $dietary_preferences
  * @property string $caregoals
  * @property string $caretreatment
  * @property string $notes
  */
-class CarePlan extends Model
+class careplan extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
-    protected $table = 'careplans';
+    use HasFactory;
+
+    public $table = 'careplan';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+
     protected $dates = ['deleted_at'];
 
-    protected $fillable = [
-        'resident_id',
-        'role_id',
+
+
+    public $fillable = [
+        'residentid',
+        'roleid',
+        'medical_history',
+        'medications',
+        'dietary_preferences',
         'caregoals',
         'caretreatment',
         'notes'
     ];
 
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'id' => 'integer',
-        'resident_id' => 'integer',
-        'role_id' => 'integer',
+        'residentid' => 'integer',
+        'roleid' => 'integer',
+        'medical_history' => 'string',
+        'medications' => 'string',
+        'dietary_preferences' => 'string',
         'caregoals' => 'string',
         'caretreatment' => 'string',
         'notes' => 'string'
     ];
 
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
     public static $rules = [
-        'resident_id' => 'nullable|integer',
-        'role_id' => 'nullable|integer',
-        'caregoals' => 'nullable|string|max:100',
-        'caretreatment' => 'nullable|string|max:100',
-        'notes' => 'nullable|string|max:200',
+        'residentid' => 'nullable|integer',
+        'roleid' => 'nullable|integer',
+        'medical_history' => 'nullable|string',
+        'medications' => 'nullable|string',
+        'dietary_preferences' => 'nullable|string',
+        'caregoals' => 'nullable|string',
+        'caretreatment' => 'nullable|string',
+        'notes' => 'nullable|string',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'
     ];
 
-    /**
-     * Get the resident associated with this care plan.
-     */
-    public function resident()
-    {
-        return $this->belongsTo(\App\Models\Resident::class, 'resident_id');
-    }
-
-    /**
-     * Get the role associated with this care plan.
-     */
-    public function role()
-    {
-        return $this->belongsTo(\App\Models\Role::class, 'role_id');
-    }
+    
 }

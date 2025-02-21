@@ -106,5 +106,14 @@
     </a>
 </li>
 
+<li class="nav-item">
+    <a href="{{ route('careplans.index') }}"
+       class="nav-link {{ Request::is('careplans*') ? 'active' : '' }}">
+        <p>Care Plans</p>
+    </a>
+</li>
+
 
 >>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
+
+

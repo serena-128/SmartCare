@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class careplanRepository
  * @package App\Repositories
- * @version February 12, 2025, 9:34 pm UTC
+ * @version February 21, 2025, 10:53 pm UTC
 */
 
 class careplanRepository extends BaseRepository
@@ -19,6 +19,9 @@ class careplanRepository extends BaseRepository
     protected $fieldSearchable = [
         'residentid',
         'roleid',
+        'medical_history',
+        'medications',
+        'dietary_preferences',
         'caregoals',
         'caretreatment',
         'notes'
