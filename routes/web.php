@@ -34,9 +34,17 @@ Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login'
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 
 // Protected Routes (Only Logged-in Staff)
-Route::middleware(['auth.staff'])->group(function () {
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Emergency Alerts Routes
     Route::resource('emergencyalerts', EmergencyAlertController::class);
+    
+    // ✅ Ensure Create Emergency Alert Route Exists
+    Route::get('/emergencyalerts/create', [EmergencyAlertController::class, 'create'])
+        ->name('emergencyalerts.create');
 });
+
 
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
