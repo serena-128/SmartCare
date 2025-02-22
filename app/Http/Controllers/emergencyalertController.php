@@ -153,5 +153,4 @@ class emergencyalertController extends AppBaseController
 
         return redirect(route('emergencyalerts.index'));
     }
-    
 }
