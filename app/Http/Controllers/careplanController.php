@@ -28,7 +28,7 @@ class CarePlanController extends Controller
         $this->authorize('viewAny', CarePlan::class);
 
         $carePlans = $this->carePlanRepository->all();
-        return view('care-plans.index', compact('carePlans'));
+        return view('careplans.index', compact('carePlans'));
     }
 
     public function create()
@@ -36,7 +36,7 @@ class CarePlanController extends Controller
         // Only managers can create care plans
         $this->authorize('create', CarePlan::class);
 
-        return view('care-plans.create');
+        return view('careplans.create');
     }
 
     public function store(CreateCarePlanRequest $request)
@@ -45,7 +45,7 @@ class CarePlanController extends Controller
 
         $this->carePlanRepository->create($request->all());
 
-        return redirect()->route('care-plans.index')->with('success', 'Care plan created successfully.');
+        return redirect()->route('careplans.index')->with('success', 'Care plan created successfully.');
     }
 
     public function show($id)
@@ -53,12 +53,12 @@ class CarePlanController extends Controller
         $carePlan = $this->carePlanRepository->find($id);
         
         if (!$carePlan) {
-            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
+            return redirect()->route('careplans.index')->with('error', 'Care plan not found.');
         }
 
         $this->authorize('view', $carePlan);
 
-        return view('care-plans.show', compact('carePlan'));
+        return view('careplans.show', compact('carePlan'));
     }
 
     public function edit($id)
@@ -66,12 +66,12 @@ class CarePlanController extends Controller
         $carePlan = $this->carePlanRepository->find($id);
 
         if (!$carePlan) {
-            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
+            return redirect()->route('careplans.index')->with('error', 'Care plan not found.');
         }
 
         $this->authorize('update', $carePlan);
 
-        return view('care-plans.edit', compact('carePlan'));
+        return view('careplans.edit', compact('carePlan'));
     }
 
     public function update(UpdateCarePlanRequest $request, $id)
@@ -79,14 +79,14 @@ class CarePlanController extends Controller
         $carePlan = $this->carePlanRepository->find($id);
 
         if (!$carePlan) {
-            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
+            return redirect()->route('careplans.index')->with('error', 'Care plan not found.');
         }
 
         $this->authorize('update', $carePlan);
 
         $this->carePlanRepository->update($request->all(), $id);
 
-        return redirect()->route('care-plans.index')->with('success', 'Care plan updated successfully.');
+        return redirect()->route('careplans.index')->with('success', 'Care plan updated successfully.');
     }
 
     public function destroy($id)
@@ -94,13 +94,14 @@ class CarePlanController extends Controller
         $carePlan = $this->carePlanRepository->find($id);
 
         if (!$carePlan) {
-            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
+            return redirect()->route('careplans.index')->with('error', 'Care plan not found.');
         }
 
         $this->authorize('delete', $carePlan);
 
         $this->carePlanRepository->delete($id);
 
-        return redirect()->route('care-plans.index')->with('success', 'Care plan deleted successfully.');
+        return redirect()->route('careplans.index')->with('success', 'Care plan deleted successfully.');
     }
 }
+
