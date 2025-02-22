@@ -2,155 +2,105 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreatecareplanRequest;
-use App\Http\Requests\UpdatecareplanRequest;
-use App\Repositories\careplanRepository;
-use App\Http\Controllers\AppBaseController;
+use App\Models\CarePlan;
+use App\Http\Requests\CreateCarePlanRequest;
+use App\Http\Requests\UpdateCarePlanRequest;
+use App\Repositories\CarePlanRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Flash;
 use Response;
 
-class careplanController extends AppBaseController
+class CarePlanController extends Controller
 {
-    /** @var careplanRepository $careplanRepository*/
-    private $careplanRepository;
+    /** @var CarePlanRepository */
+    private $carePlanRepository;
 
-    public function __construct(careplanRepository $careplanRepo)
+    public function __construct(CarePlanRepository $carePlanRepo)
     {
-        $this->careplanRepository = $careplanRepo;
+        $this->carePlanRepository = $carePlanRepo;
     }
 
-    /**
-     * Display a listing of the careplan.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function index(Request $request)
     {
-        $careplans = $this->careplanRepository->all();
+        // Only managers and authorized staff can view care plans
+        $this->authorize('viewAny', CarePlan::class);
 
-        return view('careplans.index')
-            ->with('careplans', $careplans);
+        $carePlans = $this->carePlanRepository->all();
+        return view('care-plans.index', compact('carePlans'));
     }
 
-    /**
-     * Show the form for creating a new careplan.
-     *
-     * @return Response
-     */
     public function create()
     {
-        return view('careplans.create');
+        // Only managers can create care plans
+        $this->authorize('create', CarePlan::class);
+
+        return view('care-plans.create');
     }
 
-    /**
-     * Store a newly created careplan in storage.
-     *
-     * @param CreatecareplanRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreatecareplanRequest $request)
+    public function store(CreateCarePlanRequest $request)
     {
-        $input = $request->all();
+        $this->authorize('create', CarePlan::class);
 
-        $careplan = $this->careplanRepository->create($input);
+        $this->carePlanRepository->create($request->all());
 
-        Flash::success('Careplan saved successfully.');
-
-        return redirect(route('careplans.index'));
+        return redirect()->route('care-plans.index')->with('success', 'Care plan created successfully.');
     }
 
-    /**
-     * Display the specified careplan.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function show($id)
     {
-        $careplan = $this->careplanRepository->find($id);
-
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-
-            return redirect(route('careplans.index'));
+        $carePlan = $this->carePlanRepository->find($id);
+        
+        if (!$carePlan) {
+            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
         }
 
-        return view('careplans.show')->with('careplan', $careplan);
+        $this->authorize('view', $carePlan);
+
+        return view('care-plans.show', compact('carePlan'));
     }
 
-    /**
-     * Show the form for editing the specified careplan.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function edit($id)
     {
-        $careplan = $this->careplanRepository->find($id);
+        $carePlan = $this->carePlanRepository->find($id);
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-
-            return redirect(route('careplans.index'));
+        if (!$carePlan) {
+            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
         }
 
-        return view('careplans.edit')->with('careplan', $careplan);
+        $this->authorize('update', $carePlan);
+
+        return view('care-plans.edit', compact('carePlan'));
     }
 
-    /**
-     * Update the specified careplan in storage.
-     *
-     * @param int $id
-     * @param UpdatecareplanRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdatecareplanRequest $request)
+    public function update(UpdateCarePlanRequest $request, $id)
     {
-        $careplan = $this->careplanRepository->find($id);
+        $carePlan = $this->carePlanRepository->find($id);
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-
-            return redirect(route('careplans.index'));
+        if (!$carePlan) {
+            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
         }
 
-        $careplan = $this->careplanRepository->update($request->all(), $id);
+        $this->authorize('update', $carePlan);
 
-        Flash::success('Careplan updated successfully.');
+        $this->carePlanRepository->update($request->all(), $id);
 
-        return redirect(route('careplans.index'));
+        return redirect()->route('care-plans.index')->with('success', 'Care plan updated successfully.');
     }
 
-    /**
-     * Remove the specified careplan from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
     public function destroy($id)
     {
-        $careplan = $this->careplanRepository->find($id);
+        $carePlan = $this->carePlanRepository->find($id);
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-
-            return redirect(route('careplans.index'));
+        if (!$carePlan) {
+            return redirect()->route('care-plans.index')->with('error', 'Care plan not found.');
         }
 
-        $this->careplanRepository->delete($id);
+        $this->authorize('delete', $carePlan);
 
-        Flash::success('Careplan deleted successfully.');
+        $this->carePlanRepository->delete($id);
 
-        return redirect(route('careplans.index'));
+        return redirect()->route('care-plans.index')->with('success', 'Care plan deleted successfully.');
     }
 }

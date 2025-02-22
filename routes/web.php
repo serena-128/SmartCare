@@ -17,42 +17,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
-Route::resource('residents', App\Http\Controllers\residentController::class);
+require __DIR__.'/auth.php';
+use App\Http\Controllers\CarePlanController;
 
-
-Route::resource('emergencyalerts', App\Http\Controllers\emergencyalertController::class);
-
-
-Route::resource('standardtasks', App\Http\Controllers\standardtaskController::class);
-
-
-Route::resource('careplans', App\Http\Controllers\careplanController::class);
-
-
-Route::resource('doses', App\Http\Controllers\doseController::class);
-
-
-Route::resource('appointments', App\Http\Controllers\appointmentController::class);
-
-
-Route::resource('nextofkins', App\Http\Controllers\nextofkinController::class);
-
-
-Route::resource('staffmembers', App\Http\Controllers\staffmemberController::class);
-
-
-Route::resource('roles', App\Http\Controllers\roleController::class);
-
-
-Route::resource('dietaryrestrictions', App\Http\Controllers\dietaryrestrictionController::class);
-
-
-Route::resource('stafftasks', App\Http\Controllers\stafftaskController::class);
-
-Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
-
-Route::get('/main', function () {
-    return view('main');
-})->name('main');
-
+// Ensure these routes are only accessible by authenticated users
+Route::middleware(['auth'])->group(function () {
+    Route::resource('care-plans', CarePlanController::class);
+});
