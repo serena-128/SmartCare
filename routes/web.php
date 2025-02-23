@@ -87,6 +87,10 @@ Route::middleware('auth:nextofkin')->group(function () {
 //Optional link for non registered next of kin users on the login 
 Route::get('register', [NextOfKinRegisterController::class, 'showRegistrationForm'])->name('nextofkin.register');
 
+//Route for next of kin users when signing out
+Route::get('/signed-out', function () {
+    return view('signedout');
+})->name('signed.out');
 
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
