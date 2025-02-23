@@ -102,3 +102,11 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('medicationReminders.index') }}"
+       class="nav-link {{ Request::is('medicationReminders*') ? 'active' : '' }}">
+        <p>Medication Reminders</p>
+    </a>
+</li>
+
+

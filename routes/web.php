@@ -66,3 +66,6 @@ Route::get('/main', function () {
 })->name('main');
 
 
+
+
+Route::resource('medicationReminders', App\Http\Controllers\medication_remindersController::class);
