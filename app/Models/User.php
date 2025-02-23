@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',  // Foreign key for the role
     ];
 
     /**
@@ -41,4 +42,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Define the relationship with the Role model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);  // Relationship with Role model
+    }
+
+    /**
+     * Accessor for the role type (optional).
+     * This allows us to directly access the role type without needing to access the role object manually.
+     *
+     * @return string|null
+     */
+    public function getRoleType()
+    {
+        return $this->role ? $this->role->roletype : null;  // Access the role type from the related Role model
+    }
 }

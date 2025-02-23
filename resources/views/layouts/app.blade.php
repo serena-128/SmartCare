@@ -20,7 +20,8 @@
             <!-- Page Heading -->
             <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+                    <!-- Display the header content -->
+                    <h1>{{ $header ?? 'Default Header' }}</h1> <!-- Use a default if $header is not set -->
                 </div>
             </header>
 
@@ -28,15 +29,6 @@
             <main>
                 {{ $slot }}
             </main>
-
-            <!-- Manager-Specific Navigation -->
-            @auth
-                @if(Auth::user()->role == 'manager')
-                    <div class="p-4 bg-gray-200 text-center">
-                        <a href="{{ route('care-plans.index') }}" class="text-blue-600 font-semibold">Manage Care Plans</a>
-                    </div>
-                @endif
-            @endauth
         </div>
     </body>
 </html>

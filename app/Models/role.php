@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Class role
+ * Class Role
  * @package App\Models
  * @version February 12, 2025, 7:57 pm UTC
  *
@@ -21,29 +21,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $email
  * @property string $employmentstartdate
  */
-class role extends Model
+class Role extends Model
 {
     use SoftDeletes;
-
     use HasFactory;
 
-    public $table = 'role';
+    // The name of the table associated with the model
+    public $table = 'roles'; // Ensure your table is named 'roles', or adjust if necessary
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
 
-
-
+    // Fillable fields
     public $fillable = [
         'firstname',
         'lastname',
         'roletype',
         'contactnumber',
         'email',
-        'employmentstartdate'
+        'employmentstartdate',
     ];
 
     /**
@@ -58,47 +56,30 @@ class role extends Model
         'roletype' => 'string',
         'contactnumber' => 'string',
         'email' => 'string',
-        'employmentstartdate' => 'date'
+        'employmentstartdate' => 'date',
     ];
 
     /**
-     * Validation rules
-     *
-     * @var array
+     * Get the care plans for this role.
      */
-    public static $rules = [
-        'firstname' => 'nullable|string|max:50',
-        'lastname' => 'nullable|string|max:50',
-        'roletype' => 'nullable|string|max:50',
-        'contactnumber' => 'nullable|string|max:15',
-        'email' => 'nullable|string|max:100',
-        'employmentstartdate' => 'nullable',
-        'created_at' => 'nullable',
-        'updated_at' => 'nullable',
-        'deleted_at' => 'nullable'
-    ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
     public function careplans()
     {
-        return $this->hasMany(\App\Models\Careplan::class, 'roleid');
+        return $this->hasMany(\App\Models\CarePlan::class, 'role_id'); // Make sure 'role_id' is the correct foreign key
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
+     * Get the schedules for this role.
+     */
     public function schedules()
     {
-        return $this->hasMany(\App\Models\Schedule::class, 'roleid');
+        return $this->hasMany(\App\Models\Schedule::class, 'role_id'); // Make sure 'role_id' is the correct foreign key
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
+     * Get the staff members under this role.
+     */
     public function staffmembers()
     {
-        return $this->hasMany(\App\Models\Staffmember::class, 'reportsto');
+        return $this->hasMany(\App\Models\StaffMember::class, 'role_id'); // Make sure 'role_id' is the correct foreign key
     }
 }

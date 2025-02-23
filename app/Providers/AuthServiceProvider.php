@@ -15,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        CarePlan::class => CarePlanPolicy::class, // Register the policy
+        CarePlan::class => CarePlanPolicy::class, // Register the policy for CarePlan
     ];
 
     /**
@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Register policies
         $this->registerPolicies();
     }
 }

@@ -65,5 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // ✅ ADD THIS LINE FOR EMERGENCY ALERT AUTHORIZATION
         'emergency_auth' => \App\Http\Middleware\EmergencyAlertAuthorization::class,
+        // Add the LoadUserRole middleware here
+        'load.user.role' => \App\Http\Middleware\LoadUserRole::class, // <-- Added this line
     ];
 }

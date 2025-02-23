@@ -1,30 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CarePlanController;  // Only import once
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
+// Welcome page route
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Dashboard route (requires authentication)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+// Authentication routes (if using Breeze or Fortify)
 require __DIR__.'/auth.php';
-use App\Http\Controllers\CarePlanController;
 
-// Ensure these routes are only accessible by authenticated users
+// Protect CarePlans routes (only accessible if logged in)
 Route::middleware(['auth'])->group(function () {
-    Route::resource('care-plans', CarePlanController::class);
+    Route::resource('careplans', CarePlanController::class);
+});
+
+// Optionally, you can use the second middleware with 'auth' and 'load.user.role' as well
+Route::middleware(['auth', 'load.user.role'])->group(function () {
+    Route::resource('careplans', CarePlanController::class);
 });
