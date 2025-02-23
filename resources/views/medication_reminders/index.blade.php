@@ -1,23 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header">
-        <h1 class="pull-left">medication_reminders</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('medicationReminders.create') !!}">Add New</a>
-        </h1>
-    </section>
-    <div class="content">
-        <div class="clearfix"></div>
-
-        @include('flash::message')
-
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-                    @include('medicationReminders.table')
-            </div>
-        </div>
+    <div class="container">
+        <h1>Medication Reminders</h1>
+        <a href="{{ route('medicationReminders.create') }}" class="btn btn-primary">Add Reminder</a>
+        
+        @include('medication_reminders.table')
     </div>
 @endsection
-
