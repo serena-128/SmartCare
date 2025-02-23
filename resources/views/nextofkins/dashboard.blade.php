@@ -55,6 +55,10 @@
         <a href="#">Appointments</a>
         <a href="#">News</a>
         <a href="#">Settings</a>
+        <form action="{{ route('nextofkin.logout') }}" method="POST" class="logout-form">
+          @csrf
+          <button type="submit" class="btn btn-danger w-100">Logout</button>
+        </form>
       </div>
       <!-- Main Content -->
       <div class="col-md-10 content">
