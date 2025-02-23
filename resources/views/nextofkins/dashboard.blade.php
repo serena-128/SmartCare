@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Next of Kin Dashboard - SmartCare</title>
+  <title>Next of Kin Home - SmartCare</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
  
@@ -49,12 +49,13 @@
       <!-- Sidebar -->
         <!-- Dashboard is home so home is currently active -->
       <div class="col-md-2 sidebar">
-        <a href="#" class="active">Home</a>
-        <a href="#">Resident</a>
-        <a href="#">Events</a>
-        <a href="#">Appointments</a>
-        <a href="#">News</a>
-        <a href="#">Settings</a>
+          <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+          <a href="#"><i class="fas fa-user"></i> Resident</a>
+          <a href="#"><i class="fas fa-calendar-check"></i> Appointments</a>
+          <a href="#"><i class="fas fa-calendar-alt"></i> Events</a>
+          <a href="#"><i class="fas fa-newspaper"></i> News</a>
+          <a href="#"><i class="fas fa-cog"></i> Settings</a>
+        <!-- Logout form -->
         <form action="{{ route('nextofkin.logout') }}" method="POST" class="logout-form">
           @csrf
           <button type="submit" class="btn btn-danger w-100">Logout</button>
