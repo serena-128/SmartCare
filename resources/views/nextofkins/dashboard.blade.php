@@ -61,7 +61,7 @@
         </form>
       </div>
       <div class="col-md-10 content">
-        <h1>Dashboard Home</h1>
+        <h1>Home</h1>
         <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
         
         <div class="row">
