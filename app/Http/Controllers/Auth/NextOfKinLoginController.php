@@ -50,7 +50,7 @@ class NextOfKinLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect(route('nextofkin.login'));
+        return redirect(route('signed.out'));
     }
 }
 
