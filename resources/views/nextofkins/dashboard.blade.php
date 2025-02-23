@@ -60,15 +60,70 @@
           <button type="submit" class="btn btn-danger w-100">Logout</button>
         </form>
       </div>
-      <!-- Main Content -->
       <div class="col-md-10 content">
         <h1>Dashboard Home</h1>
-        <p>Welcome to your SmartCare dashboard! Here you can view your resident’s information and access various features.</p>
-        <!-- Additional dashboard content goes here -->
+        <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
+        
+        <div class="row">
+          <!-- Column 1: Resident -->
+          <div class="col-md-4">
+            <h3>Resident</h3>
+            <div class="card">
+              <div class="card-body">
+                <!-- Replace with resident information -->
+                <p>Resident information goes here.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Column 2: Upcoming Appointments and Events -->
+          <div class="col-md-4">
+            <h3>Upcoming Appointments and Events</h3>
+            <div class="card">
+              <div class="card-header">Appointments</div>
+              <div class="card-body">
+                <!-- Appointments details -->
+                <p>Appointment details go here.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Events</div>
+              <div class="card-body">
+                <!-- Events details -->
+                <p>Event details go here.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Column 3: News Section -->
+          <div class="col-md-4">
+            <h3>News Section</h3>
+            <div class="card">
+              <div class="card-header">Photo Gallery</div>
+              <div class="card-body">
+                <!-- Replace with photo gallery content -->
+                <p>Photo gallery content goes here.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">News Updates</div>
+              <div class="card-body">
+                <!-- Replace with news updates -->
+                <p>News updates content goes here.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Bulletin Board</div>
+              <div class="card-body">
+                <!-- Replace with bulletin board content -->
+                <p>Bulletin board content goes here.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
