@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $gender
  * @property integer $roomnumber
  * @property string $admissiondate
+ * @property string $medical_history
+ * @property string $allergies
+ * @property string $medications
+ * @property string $doctor_notes
  */
 class Resident extends Model
 {
@@ -35,7 +39,11 @@ class Resident extends Model
         'dateofbirth',
         'gender',
         'roomnumber',
-        'admissiondate'
+        'admissiondate',
+        'medical_history',  // Newly added fields
+        'allergies',
+        'medications',
+        'doctor_notes'
     ];
 
     protected $casts = [
@@ -45,7 +53,11 @@ class Resident extends Model
         'dateofbirth' => 'date',
         'gender' => 'string',
         'roomnumber' => 'integer',
-        'admissiondate' => 'date'
+        'admissiondate' => 'date',
+        'medical_history' => 'string',
+        'allergies' => 'string',
+        'medications' => 'string',
+        'doctor_notes' => 'string'
     ];
 
     public static $rules = [
@@ -54,12 +66,16 @@ class Resident extends Model
         'dateofbirth' => 'required|date',
         'gender' => 'nullable|string|max:20',
         'roomnumber' => 'nullable|integer',
-        'admissiondate' => 'nullable|date'
+        'admissiondate' => 'nullable|date',
+        'medical_history' => 'nullable|string',
+        'allergies' => 'nullable|string',
+        'medications' => 'nullable|string',
+        'doctor_notes' => 'nullable|string'
     ];
 
     public function emergencyAlerts()
     {
-        return $this->hasMany(\App\Models\EmergencyAlert::class, 'residentid', 'id');
+        return $this->hasMany(\App\Models\EmergencyAlert::class, 'resident_id', 'id'); // Ensure correct foreign key
     }
 
     /**

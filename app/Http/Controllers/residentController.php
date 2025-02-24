@@ -54,9 +54,20 @@ class ResidentController extends AppBaseController
      */
     public function store(CreateResidentRequest $request)
     {
-        $input = $request->all();
+        $validatedData = $request->validate([
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'dateofbirth' => 'required|date',
+            'gender' => 'nullable|string|max:20',
+            'roomnumber' => 'nullable|integer',
+            'admissiondate' => 'nullable|date',
+            'medical_history' => 'nullable|string',
+            'allergies' => 'nullable|string',
+            'medications' => 'nullable|string',
+            'doctor_notes' => 'nullable|string',
+        ]);
 
-        $resident = $this->residentRepository->create($input);
+        $resident = $this->residentRepository->create($validatedData);
 
         Flash::success('Resident saved successfully.');
 
@@ -115,7 +126,20 @@ class ResidentController extends AppBaseController
             return redirect(route('residents.index'));
         }
 
-        $resident = $this->residentRepository->update($request->all(), $id);
+        $validatedData = $request->validate([
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'dateofbirth' => 'required|date',
+            'gender' => 'nullable|string|max:20',
+            'roomnumber' => 'nullable|integer',
+            'admissiondate' => 'nullable|date',
+            'medical_history' => 'nullable|string',
+            'allergies' => 'nullable|string',
+            'medications' => 'nullable|string',
+            'doctor_notes' => 'nullable|string',
+        ]);
+
+        $resident->update($validatedData);
 
         Flash::success('Resident updated successfully.');
 
@@ -159,8 +183,8 @@ class ResidentController extends AppBaseController
             return redirect()->route('dashboard')->with('error', 'Resident not found.');
         }
 
-        // Check if the staff member has permission to view medical records
-        if (!Auth::user()->can('view_medical_records')) {
+        // Ensure user is logged in before checking permissions
+        if (!Auth::check() || !Auth::user()->can('view_medical_records')) {
             return redirect()->route('dashboard')->with('error', 'You do not have permission to view this record.');
         }
 
@@ -187,9 +211,14 @@ class ResidentController extends AppBaseController
 
         $residents = Resident::where('firstname', 'LIKE', "%$query%")
             ->orWhere('lastname', 'LIKE', "%$query%")
-            ->orWhere('room_number', 'LIKE', "%$query%")
-            ->orWhere('medical_record_number', 'LIKE', "%$query%")
+            ->orWhere('roomnumber', 'LIKE', "%$query%") // Fixed column name
+            ->orWhere('id', 'LIKE', "%$query%") // Assuming medical record number is `id`
             ->get();
+
+        // If only one result, redirect to their medical record
+        if ($residents->count() == 1) {
+            return redirect()->route('residents.medical_records', ['id' => $residents->first()->id]);
+        }
 
         return view('dashboard')->with('residents', $residents);
     }
