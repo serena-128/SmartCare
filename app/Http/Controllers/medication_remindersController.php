@@ -29,11 +29,11 @@ class medication_remindersController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $medicationReminders = $this->medicationRemindersRepository->all();
+    $medicationReminders = $this->medicationRemindersRepository->all();
 
-        return view('medication_reminders.index')
-            ->with('medicationReminders', $medicationReminders);
+    return view('medication_reminders.index', compact('medicationReminders'));
     }
+
 
     /**
      * Show the form for creating a new medication_reminders.

@@ -11,8 +11,9 @@
     <tbody>
     @foreach($medicationReminders as $medicationReminders)
         <tr>
-            <td>{!! $medicationReminders->resident_id !!}</td>
-            <td>{!! $medicationReminders->staffmember_id !!}</td>
+            <td>{{ $reminder->resident->firstname }} {{ $reminder->resident->lastname }}</td>
+            <td>{{ $reminder->staffMember->firstname }} {{ $reminder->staffMember->lastname }}</td>
+
             <td>{!! $medicationReminders->medication_name !!}</td>
             <td>{!! $medicationReminders->dosage !!}</td>
             <td>{!! $medicationReminders->frequency !!}</td>
