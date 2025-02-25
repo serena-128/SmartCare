@@ -108,3 +108,11 @@
 
 
 >>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
+<li class="nav-item">
+    <a href="{{ route('schedules.index') }}"
+       class="nav-link {{ Request::is('schedules*') ? 'active' : '' }}">
+        <p>Schedules</p>
+    </a>
+</li>
+
+

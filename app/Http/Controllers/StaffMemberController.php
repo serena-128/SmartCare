@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateStaffMemberRequest;
-use App\Http\Requests\UpdateStaffMemberRequest;
-use App\Repositories\StaffMemberRepository;
+use App\Http\Requests\CreatestaffmemberRequest;
+use App\Http\Requests\UpdatestaffmemberRequest;
+use App\Repositories\staffmemberRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
 
-class StaffMemberController extends AppBaseController
+class staffmemberController extends AppBaseController
 {
-    /** @var StaffMemberRepository $staffMemberRepository*/
-    private $staffMemberRepository;
+    /** @var staffmemberRepository $staffmemberRepository*/
+    private $staffmemberRepository;
 
-    public function __construct(StaffMemberRepository $staffMemberRepo)
+    public function __construct(staffmemberRepository $staffmemberRepo)
     {
-        $this->staffMemberRepository = $staffMemberRepo;
+        $this->staffmemberRepository = $staffmemberRepo;
     }
 
     /**
-     * Display a listing of the StaffMember.
+     * Display a listing of the staffmember.
      *
      * @param Request $request
      *
@@ -29,42 +29,42 @@ class StaffMemberController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $staffMembers = $this->staffMemberRepository->all();
+        $staffmembers = $this->staffmemberRepository->all();
 
-        return view('staff_members.index')
-            ->with('staffMembers', $staffMembers);
+        return view('staffmembers.index')
+            ->with('staffmembers', $staffmembers);
     }
 
     /**
-     * Show the form for creating a new StaffMember.
+     * Show the form for creating a new staffmember.
      *
      * @return Response
      */
     public function create()
     {
-        return view('staff_members.create');
+        return view('staffmembers.create');
     }
 
     /**
-     * Store a newly created StaffMember in storage.
+     * Store a newly created staffmember in storage.
      *
-     * @param CreateStaffMemberRequest $request
+     * @param CreatestaffmemberRequest $request
      *
      * @return Response
      */
-    public function store(CreateStaffMemberRequest $request)
+    public function store(CreatestaffmemberRequest $request)
     {
         $input = $request->all();
 
-        $staffMember = $this->staffMemberRepository->create($input);
+        $staffmember = $this->staffmemberRepository->create($input);
 
-        Flash::success('Staff Member saved successfully.');
+        Flash::success('Staffmember saved successfully.');
 
-        return redirect(route('staffMembers.index'));
+        return redirect(route('staffmembers.index'));
     }
 
     /**
-     * Display the specified StaffMember.
+     * Display the specified staffmember.
      *
      * @param int $id
      *
@@ -72,19 +72,19 @@ class StaffMemberController extends AppBaseController
      */
     public function show($id)
     {
-        $staffMember = $this->staffMemberRepository->find($id);
+        $staffmember = $this->staffmemberRepository->find($id);
 
-        if (empty($staffMember)) {
-            Flash::error('Staff Member not found');
+        if (empty($staffmember)) {
+            Flash::error('Staffmember not found');
 
-            return redirect(route('staffMembers.index'));
+            return redirect(route('staffmembers.index'));
         }
 
-        return view('staff_members.show')->with('staffMember', $staffMember);
+        return view('staffmembers.show')->with('staffmember', $staffmember);
     }
 
     /**
-     * Show the form for editing the specified StaffMember.
+     * Show the form for editing the specified staffmember.
      *
      * @param int $id
      *
@@ -92,44 +92,44 @@ class StaffMemberController extends AppBaseController
      */
     public function edit($id)
     {
-        $staffMember = $this->staffMemberRepository->find($id);
+        $staffmember = $this->staffmemberRepository->find($id);
 
-        if (empty($staffMember)) {
-            Flash::error('Staff Member not found');
+        if (empty($staffmember)) {
+            Flash::error('Staffmember not found');
 
-            return redirect(route('staffMembers.index'));
+            return redirect(route('staffmembers.index'));
         }
 
-        return view('staff_members.edit')->with('staffMember', $staffMember);
+        return view('staffmembers.edit')->with('staffmember', $staffmember);
     }
 
     /**
-     * Update the specified StaffMember in storage.
+     * Update the specified staffmember in storage.
      *
      * @param int $id
-     * @param UpdateStaffMemberRequest $request
+     * @param UpdatestaffmemberRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdateStaffMemberRequest $request)
+    public function update($id, UpdatestaffmemberRequest $request)
     {
-        $staffMember = $this->staffMemberRepository->find($id);
+        $staffmember = $this->staffmemberRepository->find($id);
 
-        if (empty($staffMember)) {
-            Flash::error('Staff Member not found');
+        if (empty($staffmember)) {
+            Flash::error('Staffmember not found');
 
-            return redirect(route('staffMembers.index'));
+            return redirect(route('staffmembers.index'));
         }
 
-        $staffMember = $this->staffMemberRepository->update($request->all(), $id);
+        $staffmember = $this->staffmemberRepository->update($request->all(), $id);
 
-        Flash::success('Staff Member updated successfully.');
+        Flash::success('Staffmember updated successfully.');
 
-        return redirect(route('staffMembers.index'));
+        return redirect(route('staffmembers.index'));
     }
 
     /**
-     * Remove the specified StaffMember from storage.
+     * Remove the specified staffmember from storage.
      *
      * @param int $id
      *
@@ -139,18 +139,18 @@ class StaffMemberController extends AppBaseController
      */
     public function destroy($id)
     {
-        $staffMember = $this->staffMemberRepository->find($id);
+        $staffmember = $this->staffmemberRepository->find($id);
 
-        if (empty($staffMember)) {
-            Flash::error('Staff Member not found');
+        if (empty($staffmember)) {
+            Flash::error('Staffmember not found');
 
-            return redirect(route('staffMembers.index'));
+            return redirect(route('staffmembers.index'));
         }
 
-        $this->staffMemberRepository->delete($id);
+        $this->staffmemberRepository->delete($id);
 
-        Flash::success('Staff Member deleted successfully.');
+        Flash::success('Staffmember deleted successfully.');
 
-        return redirect(route('staffMembers.index'));
+        return redirect(route('staffmembers.index'));
     }
 }

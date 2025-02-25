@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\staffmember;
+use App\Models\schedule;
 
-class CreatestaffmemberRequest extends FormRequest
+class CreatescheduleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,6 @@ class CreatestaffmemberRequest extends FormRequest
      */
     public function rules()
     {
-        return staffmember::$rules;
+        return schedule::$rules;
     }
 }

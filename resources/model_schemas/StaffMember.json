@@ -48,7 +48,7 @@
         "inView": true
     },
     {
-        "name": "staff_role",
+        "name": "role",
         "dbType": "string,50:nullable",
         "htmlType": "text",
         "validations": "nullable|string|max:50|nullable|string|max:50",
@@ -73,9 +73,9 @@
     },
     {
         "name": "email",
-        "dbType": "string,100:nullable",
+        "dbType": "string,50:nullable",
         "htmlType": "text",
-        "validations": "nullable|string|max:100|nullable|string|max:100",
+        "validations": "nullable|string|max:50|nullable|string|max:50",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -130,49 +130,5 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
-    },
-    {
-        "type": "relation",
-        "relation": "mt1,Role,reportsto"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Appointment,staffmemberid"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Diagnosi,lastupdatedby"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Dietaryrestriction,lastupdatedby"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Dose,prescribedby"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Emergencyalert,triggeredbyid"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Emergencyalert,resolvedbyid"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Schedule,staffmemberid"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Stafftask,staffmemberid"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Standardtask,assignedto"
-    },
-    {
-        "type": "relation",
-        "relation": "1tm,Standardtask,completedby"
     }
 ]

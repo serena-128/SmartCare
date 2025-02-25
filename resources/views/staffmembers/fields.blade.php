@@ -16,10 +16,10 @@
     {!! Form::text('lastname', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Staff Role Field -->
+<!-- Role Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('staff_role', 'Staff Role:') !!}
-    {!! Form::text('staff_role', null, ['class' => 'form-control']) !!}
+    {!! Form::label('role', 'Role:') !!}
+    {!! Form::text('role', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Contactnumber Field -->
@@ -43,5 +43,5 @@
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('staffMembers.index') !!}" class="btn btn-default">Cancel</a>
+    <a href="{!! route('staffmembers.index') !!}" class="btn btn-default">Cancel</a>
 </div>

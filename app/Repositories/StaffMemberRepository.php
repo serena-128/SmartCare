@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Models\StaffMember;
+use App\Models\staffmember;
 use App\Repositories\BaseRepository;
 
 /**
- * Class StaffMemberRepository
+ * Class staffmemberRepository
  * @package App\Repositories
- * @version February 12, 2025, 9:27 pm UTC
+ * @version February 25, 2025, 6:30 pm UTC
 */
 
-class StaffMemberRepository extends BaseRepository
+class staffmemberRepository extends BaseRepository
 {
     /**
      * @var array
@@ -20,7 +20,7 @@ class StaffMemberRepository extends BaseRepository
         'reportsto',
         'firstname',
         'lastname',
-        'staff_role',
+        'role',
         'contactnumber',
         'email',
         'startdate'
@@ -41,6 +41,6 @@ class StaffMemberRepository extends BaseRepository
      **/
     public function model()
     {
-        return StaffMember::class;
+        return staffmember::class;
     }
 }

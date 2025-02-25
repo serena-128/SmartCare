@@ -3,20 +3,15 @@
 @section('content')
     <section class="content-header">
         <h1>
-            staffmember
+            schedule
         </h1>
     </section>
     <div class="content">
-        @include('basic-template::common.errors')
         <div class="box box-primary">
-
             <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'staffmembers.store']) !!}
-
-                        @include('staffmembers.fields')
-
-                    {!! Form::close() !!}
+                <div class="row" style="padding-left: 20px">
+                    @include('schedules.show_fields')
+                    <a href="{!! route('schedules.index') !!}" class="btn btn-default">Back</a>
                 </div>
             </div>
         </div>

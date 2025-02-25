@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\staffmember;
+use App\Models\schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class staffmemberFactory extends Factory
+class scheduleFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = staffmember::class;
+    protected $model = schedule::class;
 
     /**
      * Define the model's default state.
@@ -22,13 +22,12 @@ class staffmemberFactory extends Factory
     public function definition()
     {
         return [
-            'reportsto' => $this->faker->randomDigitNotNull,
-        'firstname' => $this->faker->word,
-        'lastname' => $this->faker->word,
-        'role' => $this->faker->word,
-        'contactnumber' => $this->faker->word,
-        'email' => $this->faker->word,
-        'startdate' => $this->faker->word,
+            'roleid' => $this->faker->randomDigitNotNull,
+        'staffmemberid' => $this->faker->randomDigitNotNull,
+        'shiftdate' => $this->faker->word,
+        'starttime' => $this->faker->word,
+        'endtime' => $this->faker->word,
+        'shifttype' => $this->faker->word,
         'created_at' => $this->faker->date('Y-m-d H:i:s'),
         'updated_at' => $this->faker->date('Y-m-d H:i:s'),
         'deleted_at' => $this->faker->date('Y-m-d H:i:s')

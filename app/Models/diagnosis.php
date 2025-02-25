@@ -9,10 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * Class diagnosis
  * @package App\Models
- * @version February 12, 2025, 9:37 pm UTC
+ * @version February 25, 2025, 6:32 pm UTC
  *
- * @property \App\Models\Resident $residentid
- * @property \App\Models\Staffmember $lastupdatedby
  * @property integer $residentid
  * @property string $diagnosis
  * @property string $vitalsigns
@@ -81,19 +79,5 @@ class diagnosis extends Model
         'deleted_at' => 'nullable'
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function residentid()
-    {
-        return $this->belongsTo(\App\Models\Resident::class, 'residentid');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function lastupdatedby()
-    {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'lastupdatedby');
-    }
+    
 }

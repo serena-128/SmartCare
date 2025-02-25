@@ -1,42 +1,42 @@
 <!-- Reportsto Field -->
 <div class="form-group">
     {!! Form::label('reportsto', 'Reportsto:') !!}
-    <p>{!! $staffMember->reportsto !!}</p>
+    <p>{!! $staffmember->reportsto !!}</p>
 </div>
 
 <!-- Firstname Field -->
 <div class="form-group">
     {!! Form::label('firstname', 'Firstname:') !!}
-    <p>{!! $staffMember->firstname !!}</p>
+    <p>{!! $staffmember->firstname !!}</p>
 </div>
 
 <!-- Lastname Field -->
 <div class="form-group">
     {!! Form::label('lastname', 'Lastname:') !!}
-    <p>{!! $staffMember->lastname !!}</p>
+    <p>{!! $staffmember->lastname !!}</p>
 </div>
 
-<!-- Staff Role Field -->
+<!-- Role Field -->
 <div class="form-group">
-    {!! Form::label('staff_role', 'Staff Role:') !!}
-    <p>{!! $staffMember->staff_role !!}</p>
+    {!! Form::label('role', 'Role:') !!}
+    <p>{!! $staffmember->role !!}</p>
 </div>
 
 <!-- Contactnumber Field -->
 <div class="form-group">
     {!! Form::label('contactnumber', 'Contactnumber:') !!}
-    <p>{!! $staffMember->contactnumber !!}</p>
+    <p>{!! $staffmember->contactnumber !!}</p>
 </div>
 
 <!-- Email Field -->
 <div class="form-group">
     {!! Form::label('email', 'Email:') !!}
-    <p>{!! $staffMember->email !!}</p>
+    <p>{!! $staffmember->email !!}</p>
 </div>
 
 <!-- Startdate Field -->
 <div class="form-group">
     {!! Form::label('startdate', 'Startdate:') !!}
-    <p>{!! $staffMember->startdate !!}</p>
+    <p>{!! $staffmember->startdate !!}</p>
 </div>
 

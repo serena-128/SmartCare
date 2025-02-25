@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\StaffMember;
+use App\Models\staffmember;
 
-class UpdateStaffMemberRequest extends FormRequest
+class UpdatestaffmemberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class UpdateStaffMemberRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = StaffMember::$rules;
+        $rules = staffmember::$rules;
         
         return $rules;
     }

@@ -2,155 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateroleRequest;
-use App\Http\Requests\UpdateroleRequest;
-use App\Repositories\roleRepository;
-use App\Http\Controllers\AppBaseController;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
 
-class roleController extends AppBaseController
+class RoleController extends Controller
 {
-    /** @var roleRepository $roleRepository*/
-    private $roleRepository;
-
-    public function __construct(roleRepository $roleRepo)
+    public function __construct()
     {
-        $this->roleRepository = $roleRepo;
+        // Removed authentication middleware since you don't want login
     }
 
-    /**
-     * Display a listing of the role.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function index(Request $request)
+    public function index()
     {
-        $roles = $this->roleRepository->all();
-
-        return view('roles.index')
-            ->with('roles', $roles);
+        $roles = Role::all(); // Fetch all roles, no users involved
+        return view('dashboard.roles.index', compact('roles'));
     }
 
-    /**
-     * Show the form for creating a new role.
-     *
-     * @return Response
-     */
-    public function create()
+    public function store(Request $request)
     {
-        return view('roles.create');
+        $request->validate([
+            'name' => 'required|unique:roles,name|max:255',
+        ]);
+
+        Role::create(['name' => $request->name]);
+
+        return back()->with('success', 'Role created successfully!');
     }
 
-    /**
-     * Store a newly created role in storage.
-     *
-     * @param CreateroleRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateroleRequest $request)
+    public function destroy(Role $role)
     {
-        $input = $request->all();
+        $role->delete();
 
-        $role = $this->roleRepository->create($input);
-
-        Flash::success('Role saved successfully.');
-
-        return redirect(route('roles.index'));
-    }
-
-    /**
-     * Display the specified role.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        $role = $this->roleRepository->find($id);
-
-        if (empty($role)) {
-            Flash::error('Role not found');
-
-            return redirect(route('roles.index'));
-        }
-
-        return view('roles.show')->with('role', $role);
-    }
-
-    /**
-     * Show the form for editing the specified role.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
-    {
-        $role = $this->roleRepository->find($id);
-
-        if (empty($role)) {
-            Flash::error('Role not found');
-
-            return redirect(route('roles.index'));
-        }
-
-        return view('roles.edit')->with('role', $role);
-    }
-
-    /**
-     * Update the specified role in storage.
-     *
-     * @param int $id
-     * @param UpdateroleRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateroleRequest $request)
-    {
-        $role = $this->roleRepository->find($id);
-
-        if (empty($role)) {
-            Flash::error('Role not found');
-
-            return redirect(route('roles.index'));
-        }
-
-        $role = $this->roleRepository->update($request->all(), $id);
-
-        Flash::success('Role updated successfully.');
-
-        return redirect(route('roles.index'));
-    }
-
-    /**
-     * Remove the specified role from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        $role = $this->roleRepository->find($id);
-
-        if (empty($role)) {
-            Flash::error('Role not found');
-
-            return redirect(route('roles.index'));
-        }
-
-        $this->roleRepository->delete($id);
-
-        Flash::success('Role deleted successfully.');
-
-        return redirect(route('roles.index'));
+        return back()->with('success', 'Role deleted successfully!');
     }
 }

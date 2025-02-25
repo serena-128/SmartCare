@@ -2,28 +2,27 @@
 
 namespace App\Repositories;
 
-use App\Models\diagnosis;
+use App\Models\schedule;
 use App\Repositories\BaseRepository;
 
 /**
- * Class diagnosisRepository
+ * Class scheduleRepository
  * @package App\Repositories
  * @version February 25, 2025, 6:32 pm UTC
 */
 
-class diagnosisRepository extends BaseRepository
+class scheduleRepository extends BaseRepository
 {
     /**
      * @var array
      */
     protected $fieldSearchable = [
-        'residentid',
-        'diagnosis',
-        'vitalsigns',
-        'treatment',
-        'testresults',
-        'notes',
-        'lastupdatedby'
+        'roleid',
+        'staffmemberid',
+        'shiftdate',
+        'starttime',
+        'endtime',
+        'shifttype'
     ];
 
     /**
@@ -41,6 +40,6 @@ class diagnosisRepository extends BaseRepository
      **/
     public function model()
     {
-        return diagnosis::class;
+        return schedule::class;
     }
 }
