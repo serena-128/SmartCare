@@ -10,42 +10,35 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 
-class EmergencyAlertController extends AppBaseController
+class emergencyalertController extends AppBaseController
 {
-    /** @var emergencyalertRepository */
+    /** @var emergencyalertRepository $emergencyalertRepository*/
     private $emergencyalertRepository;
 
     public function __construct(emergencyalertRepository $emergencyalertRepo)
     {
-        $this->middleware('auth'); // Ensure user is logged in
-        $this->middleware('role:Nurse,Doctor')->only(['create', 'store']); // Only Nurses & Doctors can create alerts
-        $this->middleware('role:Admin')->only(['edit', 'destroy']); // Only Admins can edit/delete alerts
-        
         $this->emergencyalertRepository = $emergencyalertRepo;
     }
 
     /**
      * Display a listing of the emergencyalert.
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function index(Request $request)
     {
-        $query = $this->emergencyalertRepository->query();
+        $emergencyalerts = $this->emergencyalertRepository->all();
 
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->whereHas('resident', function ($q) use ($search) {
-                $q->where('firstname', 'LIKE', "%$search%")
-                  ->orWhere('lastname', 'LIKE', "%$search%")
-                  ->orWhere('roomnumber', 'LIKE', "%$search%");
-            });
-        }
-
-        $emergencyalerts = $query->paginate(10);
-        return view('emergencyalerts.index')->with('emergencyalerts', $emergencyalerts);
+        return view('emergencyalerts.index')
+            ->with('emergencyalerts', $emergencyalerts);
     }
 
     /**
      * Show the form for creating a new emergencyalert.
+     *
+     * @return Response
      */
     public function create()
     {
@@ -53,29 +46,37 @@ class EmergencyAlertController extends AppBaseController
     }
 
     /**
-     * Store a newly created emergencyalert.
+     * Store a newly created emergencyalert in storage.
+     *
+     * @param CreateemergencyalertRequest $request
+     *
+     * @return Response
      */
     public function store(CreateemergencyalertRequest $request)
     {
         $input = $request->all();
-        $input['triggeredbyid'] = auth()->user()->id; // Store logged-in user ID
-        $input['status'] = 'In Progress';
 
         $emergencyalert = $this->emergencyalertRepository->create($input);
 
-        Flash::success('Emergency Alert successfully sent!');
+        Flash::success('Emergencyalert saved successfully.');
+
         return redirect(route('emergencyalerts.index'));
     }
 
     /**
      * Display the specified emergencyalert.
+     *
+     * @param int $id
+     *
+     * @return Response
      */
     public function show($id)
     {
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergency Alert not found');
+            Flash::error('Emergencyalert not found');
+
             return redirect(route('emergencyalerts.index'));
         }
 
@@ -84,13 +85,18 @@ class EmergencyAlertController extends AppBaseController
 
     /**
      * Show the form for editing the specified emergencyalert.
+     *
+     * @param int $id
+     *
+     * @return Response
      */
     public function edit($id)
     {
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergency Alert not found');
+            Flash::error('Emergencyalert not found');
+
             return redirect(route('emergencyalerts.index'));
         }
 
@@ -99,52 +105,52 @@ class EmergencyAlertController extends AppBaseController
 
     /**
      * Update the specified emergencyalert in storage.
+     *
+     * @param int $id
+     * @param UpdateemergencyalertRequest $request
+     *
+     * @return Response
      */
     public function update($id, UpdateemergencyalertRequest $request)
     {
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergency Alert not found');
+            Flash::error('Emergencyalert not found');
+
             return redirect(route('emergencyalerts.index'));
         }
 
         $emergencyalert = $this->emergencyalertRepository->update($request->all(), $id);
-        Flash::success('Emergency Alert updated successfully.');
+
+        Flash::success('Emergencyalert updated successfully.');
+
         return redirect(route('emergencyalerts.index'));
     }
 
     /**
-     * Mark an emergency alert as resolved.
-     */
-    public function markAsResolved($id)
-    {
-        $emergencyalert = $this->emergencyalertRepository->find($id);
-
-        if (empty($emergencyalert)) {
-            Flash::error('Emergency Alert not found');
-            return redirect(route('emergencyalerts.index'));
-        }
-
-        $emergencyalert->update(['status' => 'Resolved']);
-        Flash::success('Emergency Alert marked as resolved.');
-        return redirect()->back();
-    }
-
-    /**
      * Remove the specified emergencyalert from storage.
+     *
+     * @param int $id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function destroy($id)
     {
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergency Alert not found');
+            Flash::error('Emergencyalert not found');
+
             return redirect(route('emergencyalerts.index'));
         }
 
         $this->emergencyalertRepository->delete($id);
-        Flash::success('Emergency Alert deleted successfully.');
+
+        Flash::success('Emergencyalert deleted successfully.');
+
         return redirect(route('emergencyalerts.index'));
     }
 }

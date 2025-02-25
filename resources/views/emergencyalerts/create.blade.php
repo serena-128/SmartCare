@@ -1,24 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            emergencyalert
-        </h1>
-    </section>
-    <div class="content">
-        @include('basic-template::common.errors')
-        <div class="box box-primary">
+<div class="container">
+    <h2>Log Emergency Alert</h2>
 
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'emergencyalerts.store']) !!}
+    @if($errors->any())
+        <div class="alert alert-danger">{{ $errors->first() }}</div>
+    @endif
 
-                        @include('emergencyalerts.fields')
+    <form action="{{ route('emergencyalerts.store') }}" method="POST">
+        @csrf
 
-                    {!! Form::close() !!}
-                </div>
-            </div>
+        <div class="mb-3">
+            <label class="form-label">Resident</label>
+            <select name="residentid" class="form-select" required>
+                @foreach($residents as $resident)
+                    <option value="{{ $resident->id }}">{{ $resident->firstname }} {{ $resident->lastname }}</option>
+                @endforeach
+            </select>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label class="form-label">Alert Type</label>
+            <select name="alerttype" class="form-select" required>
+                <option value="Medical Emergency">Medical Emergency</option>
+                <option value="Fire">Fire</option>
+                <option value="Security Issue">Security Issue</option>
+                <option value="Fall Detected">Fall Detected</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-danger">Log Alert</button>
+    </form>
+</div>
 @endsection
