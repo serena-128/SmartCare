@@ -66,9 +66,7 @@ Route::get('/residents/medical_records/{id}', [ResidentController::class, 'showM
     ->name('residents.medical_records')
     ->middleware('auth');
 
-Route::get('/residents/search', [ResidentController::class, 'search'])
-    ->name('residents.search')
-    ->middleware('auth');
+Route::get('/residents/search', [ResidentController::class, 'search'])->name('residents.search');
 
 
 

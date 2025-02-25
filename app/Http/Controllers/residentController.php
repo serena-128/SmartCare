@@ -205,21 +205,24 @@ class ResidentController extends AppBaseController
      * @param Request $request
      * @return Response
      */
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
+   public function search(Request $request)
+{
+    $query = $request->input('query');
 
-        $residents = Resident::where('firstname', 'LIKE', "%$query%")
-            ->orWhere('lastname', 'LIKE', "%$query%")
-            ->orWhere('roomnumber', 'LIKE', "%$query%") // Fixed column name
-            ->orWhere('id', 'LIKE', "%$query%") // Assuming medical record number is `id`
-            ->get();
+    // Search for residents based on name, room number, or ID
+    $residents = Resident::where('firstname', 'LIKE', "%$query%")
+        ->orWhere('lastname', 'LIKE', "%$query%")
+        ->orWhere('roomnumber', 'LIKE', "%$query%")
+        ->orWhere('id', 'LIKE', "%$query%") // Assuming ID is used as a medical record number
+        ->get();
 
-        // If only one result, redirect to their medical record
-        if ($residents->count() == 1) {
-            return redirect()->route('residents.medical_records', ['id' => $residents->first()->id]);
-        }
-
-        return view('dashboard')->with('residents', $residents);
+    // If only one result, redirect to the medical record page
+    if ($residents->count() == 1) {
+        return redirect()->route('residents.medical_records', ['id' => $residents->first()->id]);
     }
+
+    // If multiple results, show a filtered list of residents
+    return view('residents.index')->with('residents', $residents);
+}
+
 }

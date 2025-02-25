@@ -78,14 +78,14 @@
                     @endif
 
                     <!-- Search Bar -->
-                    <form action="{{ route('residents.search') }}" method="GET" class="mb-3">
-                        <div class="input-group">
-                            <input type="text" name="query" class="form-control" placeholder="Search by name, room number, or medical record number..." required>
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">Search</button>
-                            </div>
-                        </div>
-                    </form>
+<form action="{{ route('residents.search') }}" method="GET" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="query" class="form-control" placeholder="Search by name, room number, or medical record number..." required>
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </div>
+</form>
 
                     <!-- Resident List -->
                     @if(isset($residents) && count($residents) > 0)
