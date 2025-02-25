@@ -7,6 +7,8 @@ use App\Http\Requests\UpdatediagnosisRequest;
 use App\Repositories\diagnosisRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\diagnosis;
+
 use Flash;
 use Response;
 
@@ -27,13 +29,12 @@ class diagnosisController extends AppBaseController
      *
      * @return Response
      */
-    public function index(Request $request)
-    {
-        $diagnoses = $this->diagnosisRepository->all();
+public function index()
+{
+    $diagnoses = Diagnosis::with('resident')->get();
+    return view('diagnoses.index')->with('diagnoses', $diagnoses);
+}
 
-        return view('diagnoses.index')
-            ->with('diagnoses', $diagnoses);
-    }
 
     /**
      * Show the form for creating a new diagnosis.

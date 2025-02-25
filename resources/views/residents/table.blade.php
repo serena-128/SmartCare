@@ -6,10 +6,7 @@
         <th>Gender</th>
         <th>Room Number</th>
         <th>Admission Date</th>
-        <th>Medical History</th>
-        <th>Allergies</th>
-        <th>Medications</th>
-        <th>Doctor's Notes</th>
+
         <th colspan="3">Action</th>
     </thead>
     <tbody>
@@ -21,10 +18,7 @@
             <td>{!! $resident->gender !!}</td>
             <td>{!! $resident->roomnumber !!}</td>
             <td>{!! $resident->admissiondate !!}</td>
-            <td>{!! $resident->medical_history ?? 'N/A' !!}</td>
-            <td>{!! $resident->allergies ?? 'N/A' !!}</td>
-            <td>{!! $resident->medications ?? 'N/A' !!}</td>
-            <td>{!! $resident->doctor_notes ?? 'N/A' !!}</td>
+
             <td>
                 {!! Form::open(['route' => ['residents.destroy', $resident->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>

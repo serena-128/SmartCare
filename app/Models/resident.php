@@ -40,10 +40,7 @@ class Resident extends Model
         'gender',
         'roomnumber',
         'admissiondate',
-        'medical_history',  // Newly added fields
-        'allergies',
-        'medications',
-        'doctor_notes'
+
     ];
 
     protected $casts = [
@@ -54,10 +51,7 @@ class Resident extends Model
         'gender' => 'string',
         'roomnumber' => 'integer',
         'admissiondate' => 'date',
-        'medical_history' => 'string',
-        'allergies' => 'string',
-        'medications' => 'string',
-        'doctor_notes' => 'string'
+
     ];
 
     public static $rules = [
@@ -67,10 +61,7 @@ class Resident extends Model
         'gender' => 'nullable|string|max:20',
         'roomnumber' => 'nullable|integer',
         'admissiondate' => 'nullable|date',
-        'medical_history' => 'nullable|string',
-        'allergies' => 'nullable|string',
-        'medications' => 'nullable|string',
-        'doctor_notes' => 'nullable|string'
+
     ];
 
     public function emergencyAlerts()

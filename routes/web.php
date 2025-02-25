@@ -62,9 +62,6 @@ Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 
 Route::get('/main', function () {
     return view('main');
 })->name('main');
-Route::get('/residents/medical_records/{id}', [ResidentController::class, 'showMedicalRecord'])
-    ->name('residents.medical_records')
-    ->middleware('auth');
 
 Route::get('/residents/search', [ResidentController::class, 'search'])->name('residents.search');
 
