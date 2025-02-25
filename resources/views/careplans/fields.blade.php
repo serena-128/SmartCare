@@ -28,6 +28,18 @@
     {!! Form::textarea('dietary_preferences', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Treatments Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('treatments', 'Treatments:') !!}
+    {!! Form::textarea('treatments', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Preferences Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('preferences', 'Preferences:') !!}
+    {!! Form::textarea('preferences', null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Caregoals Field -->
 <div class="form-group col-sm-12 col-lg-12">
     {!! Form::label('caregoals', 'Caregoals:') !!}

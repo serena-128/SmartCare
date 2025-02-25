@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class careplanRepository
  * @package App\Repositories
- * @version February 21, 2025, 10:53 pm UTC
+ * @version February 24, 2025, 10:30 pm UTC
 */
 
 class careplanRepository extends BaseRepository
@@ -22,6 +22,8 @@ class careplanRepository extends BaseRepository
         'medical_history',
         'medications',
         'dietary_preferences',
+        'treatments',
+        'preferences',
         'caregoals',
         'caretreatment',
         'notes'

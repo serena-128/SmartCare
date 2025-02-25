@@ -9,13 +9,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * Class careplan
  * @package App\Models
- * @version February 21, 2025, 10:53 pm UTC
+ * @version February 24, 2025, 10:30 pm UTC
  *
  * @property integer $residentid
  * @property integer $roleid
  * @property string $medical_history
  * @property string $medications
  * @property string $dietary_preferences
+ * @property string $treatments
+ * @property string $preferences
  * @property string $caregoals
  * @property string $caretreatment
  * @property string $notes
@@ -42,6 +44,8 @@ class careplan extends Model
         'medical_history',
         'medications',
         'dietary_preferences',
+        'treatments',
+        'preferences',
         'caregoals',
         'caretreatment',
         'notes'
@@ -59,6 +63,8 @@ class careplan extends Model
         'medical_history' => 'string',
         'medications' => 'string',
         'dietary_preferences' => 'string',
+        'treatments' => 'string',
+        'preferences' => 'string',
         'caregoals' => 'string',
         'caretreatment' => 'string',
         'notes' => 'string'
@@ -75,10 +81,12 @@ class careplan extends Model
         'medical_history' => 'nullable|string',
         'medications' => 'nullable|string',
         'dietary_preferences' => 'nullable|string',
+        'treatments' => 'nullable|string',
+        'preferences' => 'nullable|string',
         'caregoals' => 'nullable|string',
         'caretreatment' => 'nullable|string',
         'notes' => 'nullable|string',
-        'created_at' => 'nullable',
+        'created_at' => 'required',
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'
     ];

@@ -28,6 +28,18 @@
     <p>{!! $careplan->dietary_preferences !!}</p>
 </div>
 
+<!-- Treatments Field -->
+<div class="form-group">
+    {!! Form::label('treatments', 'Treatments:') !!}
+    <p>{!! $careplan->treatments !!}</p>
+</div>
+
+<!-- Preferences Field -->
+<div class="form-group">
+    {!! Form::label('preferences', 'Preferences:') !!}
+    <p>{!! $careplan->preferences !!}</p>
+</div>
+
 <!-- Caregoals Field -->
 <div class="form-group">
     {!! Form::label('caregoals', 'Caregoals:') !!}

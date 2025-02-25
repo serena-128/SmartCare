@@ -27,6 +27,8 @@ class careplanFactory extends Factory
         'medical_history' => $this->faker->text,
         'medications' => $this->faker->text,
         'dietary_preferences' => $this->faker->text,
+        'treatments' => $this->faker->text,
+        'preferences' => $this->faker->text,
         'caregoals' => $this->faker->text,
         'caretreatment' => $this->faker->text,
         'notes' => $this->faker->text,

@@ -1,25 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Care Plans</h2>
+    <section class="content-header">
+        <h1 class="pull-left">careplans</h1>
+        <h1 class="pull-right">
+           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('careplans.create') !!}">Add New</a>
+        </h1>
+    </section>
+    <div class="content">
+        <div class="clearfix"></div>
 
-    @can('create', App\Models\CarePlan::class)
-        <a href="{{ route('careplans.create') }}" class="btn btn-primary mb-3">New Care Plan</a>
-    @endcan
+        @include('flash::message')
 
-    @forelse($carePlans as $plan)
-        <div class="card mb-2">
-            <div class="card-body">
-                <p>{{ $plan->plan_details }}</p>
-
-                @can('update', $plan)
-                    <a href="{{ route('careplans.edit', $plan->id) }}" class="btn btn-warning">Edit</a> <!-- Updated route name -->
-                @endcan
+        <div class="clearfix"></div>
+        <div class="box box-primary">
+            <div class="box-body">
+                    @include('careplans.table')
             </div>
         </div>
-    @empty
-        <p>No care plans available.</p>
-    @endforelse
-</div>
+    </div>
 @endsection
+
