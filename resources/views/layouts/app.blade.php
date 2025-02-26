@@ -14,18 +14,7 @@
     </head>
     <body>
         <!-- Bootstrap 5 Navbar -->
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-          <div class="container-fluid">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href=https://laravel.com/docs>Laravel Documentation</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href=https://laracasts.com/>Laravel Video Tutorials</a>
-              </li>
-            </ul>
-          </div>
-        </nav>
+
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
