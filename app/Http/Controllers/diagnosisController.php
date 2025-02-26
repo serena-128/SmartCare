@@ -8,6 +8,7 @@ use App\Repositories\diagnosisRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\diagnosis;
+use App\Models\Resident;
 
 use Flash;
 use Response;
@@ -153,5 +154,21 @@ public function index()
         Flash::success('Diagnosis deleted successfully.');
 
         return redirect(route('diagnoses.index'));
+    }
+    
+        public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $diagnoses = Diagnosis::where('diagnosis', 'LIKE', "%$query%")
+            ->orWhereHas('resident', function ($q) use ($query) {
+                $q->where('firstname', 'LIKE', "%$query%")
+                  ->orWhere('lastname', 'LIKE', "%$query%")
+                  ->orWhere('roomnumber', 'LIKE', "%$query%");
+            })
+            ->with('resident')
+            ->get();
+
+        return view('diagnoses.index', compact('diagnoses'));
     }
 }

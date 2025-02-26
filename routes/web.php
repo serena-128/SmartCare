@@ -63,7 +63,9 @@ Route::get('/main', function () {
     return view('main');
 })->name('main');
 
-Route::get('/residents/search', [ResidentController::class, 'search'])->name('residents.search');
+
+
+Route::get('/diagnoses/search', [DiagnosisController::class, 'search'])->name('diagnoses.search');
 
 
 

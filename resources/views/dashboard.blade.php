@@ -66,25 +66,62 @@
         </div>
     </div>
 
-    <!-- Medical Records Access Section -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card shadow-lg">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">📁 Resident Medical Records</h5>
-                </div>
-                <div class="card-body">
-                    @if(session('error'))
-                        <div class="alert alert-danger">{{ session('error') }}</div>
-                    @endif
+<!-- Resident Diagnoses Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card shadow-lg">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">🩺 Resident Diagnoses</h5>
+            </div>
+            <div class="card-body">
+                @if(session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
 
-                    <!-- Search Bar -->
-                    <form action="{{ route('residents.search') }}" method="GET" class="mb-3">
-                        <div class="input-group">
-                            <input type="text" name="query" class="form-control" placeholder="🔍 Search by name, room number, or medical record number..." required>
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </div>
-                    </form>
+                <!-- Search Bar for Diagnoses -->
+                <form action="{{ route('diagnoses.search') }}" method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control" placeholder="🔍 Search by resident name, room number, or diagnosis..." required>
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </form>
+
+                <!-- Diagnosis List -->
+                @if(isset($diagnoses) && count($diagnoses) > 0)
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Resident Name</th>
+                                <th>Room Number</th>
+                                <th>Diagnosis</th>
+                                <th>Vital Signs</th>
+                                <th>Treatment</th>
+                                <th>Test Results</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($diagnoses as $diagnosis)
+                            <tr>
+                                <td>{{ $diagnosis->resident->firstname }} {{ $diagnosis->resident->lastname }}</td>
+                                <td>{{ $diagnosis->resident->roomnumber }}</td>
+                                <td>{{ $diagnosis->diagnosis }}</td>
+                                <td>{{ $diagnosis->vitalsigns }}</td>
+                                <td>{{ $diagnosis->treatment }}</td>
+                                <td>{{ $diagnosis->testresults }}</td>
+                                <td>{{ $diagnosis->updated_at->format('d M Y, H:i') }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p class="text-muted text-center">No diagnoses found.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
 
                     <!-- Resident List -->
                     @if(isset($residents) && count($residents) > 0)
@@ -118,9 +155,7 @@
                         <p class="text-muted text-center">No residents found.</p>
                     @endif
                 </div>
-            </div>
-        </div>
-    </div>
+ 
 
     <!-- Staff On-Duty Now -->
     <div class="row mt-4">
@@ -143,7 +178,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Auto Logout for Inactivity -->
 <script>
