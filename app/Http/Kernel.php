@@ -51,7 +51,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,             // Ensures the user is authenticated.
+        //'auth' => \App\Http\Middleware\Authenticate::class,             // Ensures the user is authenticated.
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class, // Basic authentication middleware.
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class, // Sets HTTP cache headers.
         'can' => \Illuminate\Auth\Middleware\Authorize::class,         // Verifies if a user has the required permission.
@@ -60,5 +60,11 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class, // Validates signed URLs.
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class, // Throttles requests.
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class, // Ensures the user's email is verified.
+
+        // ✅ Emergency Alert Authorization Middleware
+        'emergency_auth' => \App\Http\Middleware\EmergencyAlertAuthorization::class,
+
+        // ✅ Load User Role Middleware
+        'load.user.role' => \App\Http\Middleware\LoadUserRole::class,
     ];
 }
