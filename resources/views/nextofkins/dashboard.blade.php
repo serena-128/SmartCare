@@ -74,6 +74,25 @@
 .home-section .col-md-4:not(:last-child) {
   border-right: 4px solid #800080; /* Thick purple divider */
 }
+      /* Style for the News Page */
+.list-group-item {
+  border-left: 4px solid #800080; /* Adds a purple left border for news items */
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.img-fluid {
+  transition: transform 0.3s ease-in-out;
+}
+
+.img-fluid:hover {
+  transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+.card-header i {
+  margin-right: 8px;
+}
+
 
   </style>
 </head>
@@ -182,9 +201,78 @@
         </div>
 
         <div id="news" class="dashboard-section" style="display: none;">
-          <h1>News Section</h1>
-          <p>Latest news updates go here.</p>
+  <h1 class="mb-4">Latest News & Updates</h1>
+
+  <div class="row">
+    <!-- Column 1: News Updates -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <i class="fas fa-newspaper"></i> Latest News
         </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Facility Renovation Begins</strong>
+              <p class="text-muted">March 15, 2025</p>
+              <p>We’re upgrading our care home facilities to enhance the experience for residents.</p>
+            </li>
+            <li class="list-group-item">
+              <strong>New Staff Members Joining</strong>
+              <p class="text-muted">April 5, 2025</p>
+              <p>Welcome our new nurses and caregivers to SmartCare!</p>
+            </li>
+            <li class="list-group-item">
+              <strong>Health & Wellness Workshop</strong>
+              <p class="text-muted">April 20, 2025</p>
+              <p>Join us for an informative session on senior health & wellness.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Photo Gallery -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <i class="fas fa-images"></i> Photo Gallery
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-4 mb-3">
+              <img src="https://via.placeholder.com/150" class="img-fluid rounded shadow-sm" alt="Gallery Image">
+            </div>
+            <div class="col-4 mb-3">
+              <img src="https://via.placeholder.com/150" class="img-fluid rounded shadow-sm" alt="Gallery Image">
+            </div>
+            <div class="col-4 mb-3">
+              <img src="https://via.placeholder.com/150" class="img-fluid rounded shadow-sm" alt="Gallery Image">
+            </div>
+          </div>
+          <a href="#" class="btn btn-outline-primary btn-sm">View More</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulletin Board -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-warning text-dark">
+          <i class="fas fa-thumbtack"></i> Bulletin Board
+        </div>
+        <div class="card-body">
+          <p><strong>March 25, 2025:</strong> Family Day Event - Don't forget to RSVP!</p>
+          <p><strong>April 10, 2025:</strong> Volunteer sign-ups are now open for the gardening club.</p>
+          <p><strong>April 30, 2025:</strong> Reminder: Monthly resident check-up schedule available.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
         <div id="settings" class="dashboard-section" style="display: none;">
           <h1>Settings</h1>
