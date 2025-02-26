@@ -14,13 +14,12 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
-        \App\Http\Middleware\TrustProxies::class,
-        \Fruitcake\Cors\HandleCors::class,
-        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\TrustProxies::class,                      // Handles proxy headers and trusted proxies.
+        \Fruitcake\Cors\HandleCors::class,                             // Handles CORS headers.
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class, // Prevents requests during maintenance.
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class, // Validates the size of POST requests.
+        \App\Http\Middleware\TrimStrings::class,                       // Trims whitespace from input.
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class, // Converts empty strings to null.
     ];
 
     /**
@@ -30,19 +29,17 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\EncryptCookies::class,                   // Encrypts cookies for the web session.
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class, // Adds cookies to the response.
+            \Illuminate\Session\Middleware\StartSession::class,           // Starts the session for the user.
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,   // Shares session errors with views.
+            \App\Http\Middleware\VerifyCsrfToken::class,                 // Verifies the CSRF token for requests.
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,    // Substitutes route bindings (parameters).
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            'throttle:api',                                              // Throttles API requests (rate limiting).
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,    // Substitutes route bindings for API routes.
         ],
     ];
 
@@ -54,14 +51,14 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth' => \App\Http\Middleware\Authenticate::class,             // Ensures the user is authenticated.
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class, // Basic authentication middleware.
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class, // Sets HTTP cache headers.
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,         // Verifies if a user has the required permission.
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class, // Redirects authenticated users if they try to access guest pages.
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class, // Ensures the user confirms their password.
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class, // Validates signed URLs.
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class, // Throttles requests.
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class, // Ensures the user's email is verified.
     ];
 }
