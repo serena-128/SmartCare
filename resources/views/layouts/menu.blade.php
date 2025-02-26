@@ -116,12 +116,15 @@
 
 >>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
 <<<<<<< HEAD
+<<<<<<< HEAD
 <li class="nav-item">
     <a href="{{ route('schedules.index') }}"
        class="nav-link {{ Request::is('schedules*') ? 'active' : '' }}">
         <p>Schedules</p>
     </a>
 </li>
+=======
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
 =======
 >>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
 

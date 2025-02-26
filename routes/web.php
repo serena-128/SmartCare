@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\EmergencyAlertController;
 use App\Http\Controllers\StandardTaskController;
@@ -28,10 +29,21 @@ Route::get('/', function () {
 });
 
 // Dashboard (Requires Authentication)
+=======
+use App\Http\Controllers\CarePlanController;  // Only import once
+
+// Welcome page route
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Dashboard route (requires authentication)
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+<<<<<<< HEAD
 // Authentication Routes (Breeze or Fortify)
 require __DIR__.'/auth.php';
 
@@ -72,3 +84,17 @@ Route::prefix('shifts')->group(function () {
 
 // ✅ Make Care Plan Routes Public (No Authentication Required)
 Route::resource('careplans', CarePlanController::class);
+=======
+// Authentication routes (if using Breeze or Fortify)
+require __DIR__.'/auth.php';
+
+// Protect CarePlans routes (only accessible if logged in)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('careplans', CarePlanController::class);
+});
+
+// Optionally, you can use the second middleware with 'auth' and 'load.user.role' as well
+Route::middleware(['auth', 'load.user.role'])->group(function () {
+    Route::resource('careplans', CarePlanController::class);
+});
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092

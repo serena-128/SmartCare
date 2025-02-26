@@ -44,6 +44,7 @@ class User extends Authenticatable
     ];
 
     /**
+<<<<<<< HEAD
      * Many-to-Many Relationship: A user can have multiple roles.
      */
     public function roles()
@@ -61,6 +62,11 @@ class User extends Authenticatable
 
     /**
      * One-to-Many Relationship: A user belongs to one role (default role system).
+=======
+     * Define the relationship with the Role model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
      */
     public function role()
     {
@@ -68,7 +74,11 @@ class User extends Authenticatable
     }
 
     /**
+<<<<<<< HEAD
      * Accessor for the role type.
+=======
+     * Accessor for the role type (optional).
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
      * This allows us to directly access the role type without needing to access the role object manually.
      *
      * @return string|null

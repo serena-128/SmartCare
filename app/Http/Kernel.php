@@ -63,8 +63,13 @@ class Kernel extends HttpKernel
 
         // ✅ Emergency Alert Authorization Middleware
         'emergency_auth' => \App\Http\Middleware\EmergencyAlertAuthorization::class,
+<<<<<<< HEAD
 
         // ✅ Load User Role Middleware
         'load.user.role' => \App\Http\Middleware\LoadUserRole::class,
+=======
+        // Add the LoadUserRole middleware here
+        'load.user.role' => \App\Http\Middleware\LoadUserRole::class, // <-- Added this line
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
     ];
 }

@@ -11,12 +11,20 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "infyomlabs/adminlte-templates": "^3.0",
+<<<<<<< HEAD
         "infyomlabs/laravel-generator": "^3.0", 
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.2",
         "livewire/livewire": "^2.12"
+=======
+        "infyomlabs/laravel-generator": "*",
+        "laravel/framework": "^8.75",
+        "laravel/sanctum": "^2.11",
+        "laravel/tinker": "^2.5",
+        "laravelcollective/html": "^6.2"
+>>>>>>> 0662733a93f9a5b73408ffe645d4c75a8f334092
     },
     "require-dev": {
         "facade/ignition": "^2.5",
