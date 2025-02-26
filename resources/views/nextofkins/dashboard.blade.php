@@ -65,6 +65,16 @@
     .card {
       margin-top: 15px;
     }
+      
+    /* Add vertical dividers between columns */
+.home-section .col-md-4 {
+  padding: 15px;
+}
+
+.home-section .col-md-4:not(:last-child) {
+  border-right: 4px solid #800080; /* Thick purple divider */
+}
+
   </style>
 </head>
 <body>
@@ -90,70 +100,70 @@
       <div class="col-md-10 content">
         
         <!-- Home Section (Three-Column Layout) -->
-        <div id="home" class="dashboard-section">
-          <h1>Home</h1>
-          <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
-          
-          <div class="row">
-            <!-- Column 1: Resident -->
-            <div class="col-md-4">
-              <h3>Resident</h3>
-              <div class="card">
-                <div class="card-body">
-                  <h5>Resident Name: John Doe</h5>
-                  <p>Age: 78</p>
-                  <p>Room Number: 12A</p>
-                  <p>Contact: +123 456 789</p>
-                  <p>Condition: Requires daily checkups</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Column 2: Upcoming Appointments & Events -->
-            <div class="col-md-4">
-              <h3>Upcoming Appointments & Events</h3>
-              <div class="card">
-                <div class="card-header">Appointments</div>
-                <div class="card-body">
-                  <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
-                  <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header">Events</div>
-                <div class="card-body">
-                  <p>Family Day - 25th March 2025</p>
-                  <p>Music Therapy Session - 30th March 2025</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Column 3: News Section -->
-            <div class="col-md-4">
-              <h3>News Section</h3>
-              <div class="card">
-                <div class="card-header">Photo Gallery</div>
-                <div class="card-body">
-                  <p>Photo gallery content goes here.</p>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header">News Updates</div>
-                <div class="card-body">
-                  <p>New staff members joining from April 2025.</p>
-                  <p>Upcoming facility renovations in May.</p>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header">Bulletin Board</div>
-                <div class="card-body">
-                  <p>Bulletin board content goes here.</p>
-                </div>
-              </div>
-            </div>
-
-          </div> <!-- End of Row -->
+        <div id="home" class="dashboard-section home-section">
+  <h1>Home</h1>
+  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
+  
+  <div class="row">
+    <!-- Column 1: Resident -->
+    <div class="col-md-4">
+      <h3>Resident</h3>
+      <div class="card">
+        <div class="card-body">
+          <h5>Resident Name: John Doe</h5>
+          <p>Age: 78</p>
+          <p>Room Number: 12A</p>
+          <p>Contact: +123 456 789</p>
+          <p>Condition: Requires daily checkups</p>
         </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Upcoming Appointments & Events -->
+    <div class="col-md-4">
+      <h3>Upcoming Appointments & Events</h3>
+      <div class="card">
+        <div class="card-header">Appointments</div>
+        <div class="card-body">
+          <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
+          <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Events</div>
+        <div class="card-body">
+          <p>Family Day - 25th March 2025</p>
+          <p>Music Therapy Session - 30th March 2025</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3: News Section -->
+    <div class="col-md-4">
+      <h3>News Section</h3>
+      <div class="card">
+        <div class="card-header">Photo Gallery</div>
+        <div class="card-body">
+          <p>Photo gallery content goes here.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">News Updates</div>
+        <div class="card-body">
+          <p>New staff members joining from April 2025.</p>
+          <p>Upcoming facility renovations in May.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Bulletin Board</div>
+        <div class="card-body">
+          <p>Bulletin board content goes here.</p>
+        </div>
+      </div>
+    </div>
+  </div> <!-- End of Row -->
+</div>
+
 
         <!-- Other Sections -->
         <div id="resident" class="dashboard-section" style="display: none;">
