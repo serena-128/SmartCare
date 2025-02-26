@@ -71,7 +71,7 @@
     <div class="col-md-12">
         <div class="card shadow-lg">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">🩺 Resident Diagnoses</h5>
+                <h5 class="mb-0">🩺 View Resident Diagnoses</h5>
             </div>
             <div class="card-body">
                 @if(session('error'))
