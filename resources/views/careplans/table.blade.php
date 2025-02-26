@@ -2,6 +2,11 @@
     <thead>
         <th>Residentid</th>
         <th>Roleid</th>
+        <th>Medical History</th>
+        <th>Medications</th>
+        <th>Dietary Preferences</th>
+        <th>Treatments</th>
+        <th>Preferences</th>
         <th>Caregoals</th>
         <th>Caretreatment</th>
         <th>Notes</th>
@@ -12,6 +17,11 @@
         <tr>
             <td>{!! $careplan->residentid !!}</td>
             <td>{!! $careplan->roleid !!}</td>
+            <td>{!! $careplan->medical_history !!}</td>
+            <td>{!! $careplan->medications !!}</td>
+            <td>{!! $careplan->dietary_preferences !!}</td>
+            <td>{!! $careplan->treatments !!}</td>
+            <td>{!! $careplan->preferences !!}</td>
             <td>{!! $careplan->caregoals !!}</td>
             <td>{!! $careplan->caretreatment !!}</td>
             <td>{!! $careplan->notes !!}</td>

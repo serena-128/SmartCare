@@ -9,12 +9,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * Class careplan
  * @package App\Models
- * @version February 12, 2025, 9:34 pm UTC
+ * @version February 24, 2025, 10:30 pm UTC
  *
- * @property \App\Models\Resident $residentid
- * @property \App\Models\Role $roleid
  * @property integer $residentid
  * @property integer $roleid
+ * @property string $medical_history
+ * @property string $medications
+ * @property string $dietary_preferences
+ * @property string $treatments
+ * @property string $preferences
  * @property string $caregoals
  * @property string $caretreatment
  * @property string $notes
@@ -38,6 +41,11 @@ class careplan extends Model
     public $fillable = [
         'residentid',
         'roleid',
+        'medical_history',
+        'medications',
+        'dietary_preferences',
+        'treatments',
+        'preferences',
         'caregoals',
         'caretreatment',
         'notes'
@@ -52,6 +60,11 @@ class careplan extends Model
         'id' => 'integer',
         'residentid' => 'integer',
         'roleid' => 'integer',
+        'medical_history' => 'string',
+        'medications' => 'string',
+        'dietary_preferences' => 'string',
+        'treatments' => 'string',
+        'preferences' => 'string',
         'caregoals' => 'string',
         'caretreatment' => 'string',
         'notes' => 'string'
@@ -65,27 +78,18 @@ class careplan extends Model
     public static $rules = [
         'residentid' => 'nullable|integer',
         'roleid' => 'nullable|integer',
-        'caregoals' => 'nullable|string|max:100',
-        'caretreatment' => 'nullable|string|max:100',
-        'notes' => 'nullable|string|max:200',
-        'created_at' => 'nullable',
+        'medical_history' => 'nullable|string',
+        'medications' => 'nullable|string',
+        'dietary_preferences' => 'nullable|string',
+        'treatments' => 'nullable|string',
+        'preferences' => 'nullable|string',
+        'caregoals' => 'nullable|string',
+        'caretreatment' => 'nullable|string',
+        'notes' => 'nullable|string',
+        'created_at' => 'required',
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function residentid()
-    {
-        return $this->belongsTo(\App\Models\Resident::class, 'residentid');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function roleid()
-    {
-        return $this->belongsTo(\App\Models\Role::class, 'roleid');
-    }
+    
 }

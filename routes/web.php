@@ -17,21 +17,29 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ShiftController;
 
 /*
-|---------------------------------------------------------------------- 
-| Web Routes 
-|---------------------------------------------------------------------- 
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
 */
 
+// Welcome Page
 Route::get('/', function () { 
     return view('welcome'); 
 });
 
-// Resource Routes for Admin and Core Entities
-Route::prefix('admin')->group(function () {
+// Dashboard (Requires Authentication)
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// Authentication Routes (Breeze or Fortify)
+require __DIR__.'/auth.php';
+
+// Resource Routes for Admin Entities (Requires Authentication)
+Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::resource('residents', ResidentController::class);
     Route::resource('emergencyalerts', EmergencyAlertController::class);
     Route::resource('standardtasks', StandardTaskController::class);
-    Route::resource('careplans', CarePlanController::class);
     Route::resource('doses', DoseController::class);
     Route::resource('appointments', AppointmentController::class);
     Route::resource('nextofkins', NextOfKinController::class);
@@ -43,11 +51,11 @@ Route::prefix('admin')->group(function () {
     Route::resource('schedules', ScheduleController::class);
 });
 
-// Custom Emergency Alert Route
+// Emergency Alert Custom Route
 Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])
     ->name('emergencyalerts.resolve');
 
-// Main Page Route
+// Main Page
 Route::get('/main', function () {
     return view('main');
 })->name('main');
@@ -62,3 +70,5 @@ Route::prefix('shifts')->group(function () {
     Route::get('/{id}/approve', [ShiftController::class, 'approve'])->name('shifts.approve');
 });
 
+// ✅ Make Care Plan Routes Public (No Authentication Required)
+Route::resource('careplans', CarePlanController::class);

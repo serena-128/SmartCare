@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',  // Foreign key for the role
     ];
 
     /**
@@ -43,7 +44,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Relationship: User has many Roles (Many-to-Many)
+     * Many-to-Many Relationship: A user can have multiple roles.
      */
     public function roles()
     {
@@ -51,10 +52,29 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user has a specific role
+     * Check if the user has a specific role.
      */
     public function hasRole($role)
     {
         return $this->roles()->where('name', $role)->exists();
+    }
+
+    /**
+     * One-to-Many Relationship: A user belongs to one role (default role system).
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);  // Relationship with Role model
+    }
+
+    /**
+     * Accessor for the role type.
+     * This allows us to directly access the role type without needing to access the role object manually.
+     *
+     * @return string|null
+     */
+    public function getRoleType()
+    {
+        return $this->role ? $this->role->roletype : null;  // Access the role type from the related Role model
     }
 }

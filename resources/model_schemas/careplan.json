@@ -36,10 +36,70 @@
         "inView": true
     },
     {
+        "name": "medical_history",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "medications",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "dietary_preferences",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "treatments",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "preferences",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "name": "caregoals",
-        "dbType": "string,100:nullable",
-        "htmlType": "text",
-        "validations": "nullable|string|max:100|nullable|string|max:100",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -49,9 +109,9 @@
     },
     {
         "name": "caretreatment",
-        "dbType": "string,100:nullable",
-        "htmlType": "text",
-        "validations": "nullable|string|max:100|nullable|string|max:100",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -61,9 +121,9 @@
     },
     {
         "name": "notes",
-        "dbType": "string,200:nullable",
-        "htmlType": "text",
-        "validations": "nullable|string|max:200|nullable|string|max:200",
+        "dbType": "text,65535:nullable",
+        "htmlType": "textarea",
+        "validations": "nullable|string|nullable|string",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -73,9 +133,9 @@
     },
     {
         "name": "created_at",
-        "dbType": "datetime:nullable",
+        "dbType": "datetime",
         "htmlType": "date",
-        "validations": "nullable|nullable",
+        "validations": "required",
         "searchable": false,
         "fillable": false,
         "primary": false,
@@ -106,13 +166,5 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
-    },
-    {
-        "type": "relation",
-        "relation": "mt1,Resident,residentid"
-    },
-    {
-        "type": "relation",
-        "relation": "mt1,Role,roleid"
     }
 ]

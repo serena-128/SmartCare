@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\CarePlan;
+use App\Policies\CarePlanPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        CarePlan::class => CarePlanPolicy::class, // Register the policy for CarePlan
     ];
 
     /**
@@ -23,8 +25,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Register policies
         $this->registerPolicies();
-
-        //
     }
 }

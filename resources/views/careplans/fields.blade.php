@@ -10,22 +10,52 @@
     {!! Form::number('roleid', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Medical History Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('medical_history', 'Medical History:') !!}
+    {!! Form::textarea('medical_history', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Medications Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('medications', 'Medications:') !!}
+    {!! Form::textarea('medications', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Dietary Preferences Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('dietary_preferences', 'Dietary Preferences:') !!}
+    {!! Form::textarea('dietary_preferences', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Treatments Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('treatments', 'Treatments:') !!}
+    {!! Form::textarea('treatments', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Preferences Field -->
+<div class="form-group col-sm-12 col-lg-12">
+    {!! Form::label('preferences', 'Preferences:') !!}
+    {!! Form::textarea('preferences', null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Caregoals Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12 col-lg-12">
     {!! Form::label('caregoals', 'Caregoals:') !!}
-    {!! Form::text('caregoals', null, ['class' => 'form-control']) !!}
+    {!! Form::textarea('caregoals', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Caretreatment Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12 col-lg-12">
     {!! Form::label('caretreatment', 'Caretreatment:') !!}
-    {!! Form::text('caretreatment', null, ['class' => 'form-control']) !!}
+    {!! Form::textarea('caretreatment', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Notes Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12 col-lg-12">
     {!! Form::label('notes', 'Notes:') !!}
-    {!! Form::text('notes', null, ['class' => 'form-control']) !!}
+    {!! Form::textarea('notes', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->
