@@ -89,69 +89,96 @@
       <!-- Main Content -->
       <div class="col-md-10 content">
         
-        <!-- Home Section -->
+        <!-- Home Section (Three-Column Layout) -->
         <div id="home" class="dashboard-section">
           <h1>Home</h1>
           <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
+          
+          <div class="row">
+            <!-- Column 1: Resident -->
+            <div class="col-md-4">
+              <h3>Resident</h3>
+              <div class="card">
+                <div class="card-body">
+                  <h5>Resident Name: John Doe</h5>
+                  <p>Age: 78</p>
+                  <p>Room Number: 12A</p>
+                  <p>Contact: +123 456 789</p>
+                  <p>Condition: Requires daily checkups</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Upcoming Appointments & Events -->
+            <div class="col-md-4">
+              <h3>Upcoming Appointments & Events</h3>
+              <div class="card">
+                <div class="card-header">Appointments</div>
+                <div class="card-body">
+                  <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
+                  <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">Events</div>
+                <div class="card-body">
+                  <p>Family Day - 25th March 2025</p>
+                  <p>Music Therapy Session - 30th March 2025</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 3: News Section -->
+            <div class="col-md-4">
+              <h3>News Section</h3>
+              <div class="card">
+                <div class="card-header">Photo Gallery</div>
+                <div class="card-body">
+                  <p>Photo gallery content goes here.</p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">News Updates</div>
+                <div class="card-body">
+                  <p>New staff members joining from April 2025.</p>
+                  <p>Upcoming facility renovations in May.</p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">Bulletin Board</div>
+                <div class="card-body">
+                  <p>Bulletin board content goes here.</p>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- End of Row -->
         </div>
 
-        <!-- Resident Section -->
-        <div id="resident" class="dashboard-section">
+        <!-- Other Sections -->
+        <div id="resident" class="dashboard-section" style="display: none;">
           <h1>Resident</h1>
-          <p>Here you can view details about your assigned resident.</p>
-          <div class="card">
-            <div class="card-body">
-              <h5>Resident Name: John Doe</h5>
-              <p>Age: 78</p>
-              <p>Room Number: 12A</p>
-              <p>Contact: +123 456 789</p>
-              <p>Condition: Requires daily checkups</p>
-            </div>
-          </div>
+          <p>Resident information goes here.</p>
         </div>
 
-        <!-- Appointments Section -->
-        <div id="appointments" class="dashboard-section">
+        <div id="appointments" class="dashboard-section" style="display: none;">
           <h1>Upcoming Appointments</h1>
-          <div class="card">
-            <div class="card-body">
-              <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
-              <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
-            </div>
-          </div>
+          <p>Appointment details go here.</p>
         </div>
 
-        <!-- Events Section -->
-        <div id="events" class="dashboard-section">
+        <div id="events" class="dashboard-section" style="display: none;">
           <h1>Upcoming Events</h1>
-          <div class="card">
-            <div class="card-body">
-              <p>Family Day - 25th March 2025</p>
-              <p>Music Therapy Session - 30th March 2025</p>
-            </div>
-          </div>
+          <p>Event details go here.</p>
         </div>
 
-        <!-- News Section -->
-        <div id="news" class="dashboard-section">
+        <div id="news" class="dashboard-section" style="display: none;">
           <h1>News Section</h1>
-          <div class="card">
-            <div class="card-body">
-              <p>New staff members joining from April 2025.</p>
-              <p>Upcoming facility renovations in May.</p>
-            </div>
-          </div>
+          <p>Latest news updates go here.</p>
         </div>
 
-        <!-- Settings Section -->
-        <div id="settings" class="dashboard-section">
+        <div id="settings" class="dashboard-section" style="display: none;">
           <h1>Settings</h1>
-          <div class="card">
-            <div class="card-body">
-              <p>Update your contact information</p>
-              <p>Change password</p>
-            </div>
-          </div>
+          <p>User settings and preferences go here.</p>
         </div>
 
       </div>
@@ -183,5 +210,4 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
 
