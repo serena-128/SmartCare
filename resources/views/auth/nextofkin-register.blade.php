@@ -3,23 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SmartCare - Next of Kin Registration</title>
-  <!-- Bootstrap CSS CDN -->
+  <title>SmartCare - Forgot Password</title>
+
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Custom Styles -->
   <style>
     body {
       background: linear-gradient(to right, #e6ccff, #f3e6ff); 
       min-height: 100vh;
       display: flex;
       align-items: center;
-    justify-content: center;
+      justify-content: center;
       font-family: 'Poppins', sans-serif;
     }
-    .register-container {
+    .forgot-password-container {
       background-color: #fff;
       padding: 2rem;
       border-radius: 0.75rem;
@@ -27,7 +32,7 @@
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 0.8s forwards;
-      max-width: 500px; /* Smaller container to match login */
+      max-width: 500px; /* Consistent with login/register */
       width: 100%;
     }
     @keyframes fadeInUp {
@@ -69,12 +74,12 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6">
-        <div class="register-container text-center">
+        <div class="forgot-password-container text-center">
           <!-- SmartCare Logo -->
           <img src="{{ asset('pictures/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
-          <h3 class="mb-2">Next of Kin Registration</h3>
-          <p class="tagline">Join SmartCare to stay connected with your loved one.</p>
-          
+          <h3 class="mb-2">Forgot Password</h3>
+          <p class="tagline">Enter your email to reset your password.</p>
+
           <!-- Display validation errors -->
           @if ($errors->any())
             <div class="alert alert-danger">
@@ -86,40 +91,26 @@
             </div>
           @endif
 
-          <!-- Registration Form -->
-          <form method="POST" action="{{ route('nextofkin.register.submit') }}">
+          <!-- Forgot Password Form -->
+          <form method="POST" action="{{ route('nextofkin.password.email') }}">
             @csrf
             <div class="mb-3 text-start">
-              <label for="firstname" class="form-label">First Name <i class="fas fa-user"></i></label>
-              <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter your first name" required>
-            </div>
-            <div class="mb-3 text-start">
-              <label for="lastname" class="form-label">Last Name <i class="fas fa-user"></i></label>
-              <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your last name" required>
-            </div>
-            <div class="mb-3 text-start">
               <label for="email" class="form-label">Email Address <i class="fas fa-envelope"></i></label>
-              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required autofocus>
             </div>
-            <div class="mb-3 text-start">
-              <label for="password" class="form-label">Password <i class="fas fa-lock"></i></label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-            <div class="mb-3 text-start">
-              <label for="password_confirmation" class="form-label">Confirm Password <i class="fas fa-lock"></i></label>
-              <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Register</button>
-            <div class="text-center mt-3">
-              <a href="{{ route('nextofkin.login') }}">Already have an account? Log In</a>
-            </div>
+            <button type="submit" class="btn btn-primary w-100">Send Reset Link</button>
           </form>
+
+          <!-- Back to Login Link -->
+          <div class="mt-3">
+            <a href="{{ route('nextofkin.login') }}">Back to Login</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
