@@ -307,13 +307,71 @@
 
 
         <div id="settings" class="dashboard-section" style="display: none;">
-          <h1>Settings</h1>
-          <p>User settings and preferences go here.</p>
-        </div>
+  <h1>Account Settings</h1>
+  <p>Manage your personal information and notification preferences.</p>
 
+  <div class="row">
+    <!-- Column 1: Profile Settings -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <i class="fas fa-user-cog"></i> Profile Settings
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ route('nextofkin.settings.update') }}">
+            @csrf
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', Auth::guard('nextofkin')->user()->firstname ?? '') }}">
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::guard('nextofkin')->user()->email ?? '') }}">
+            </div>
+
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', Auth::guard('nextofkin')->user()->contactnumber ?? '') }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Notification Preferences -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-warning text-dark">
+          <i class="fas fa-bell"></i> Notification Preferences
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ route('nextofkin.notifications.update') }}">
+            @csrf
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications">
+              <label class="form-check-label" for="email_notifications">Receive email notifications</label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications">
+              <label class="form-check-label" for="sms_notifications">Receive SMS alerts</label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates">
+              <label class="form-check-label" for="carehome_updates">Receive care home updates</label>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100 mt-3">Update Preferences</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
   <!-- JavaScript to handle section switching -->
   <script>

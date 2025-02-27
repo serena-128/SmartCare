@@ -17,6 +17,7 @@ use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\Auth\NextOfKinLoginController;
 use App\Http\Controllers\Auth\NextOfKinForgotPasswordController;
 use App\Http\Controllers\Auth\NextOfKinRegisterController;
+use App\Http\Controllers\NextOfKinSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,3 +113,7 @@ Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 
 Route::get('/main', function () {
     return view('main');
 })->name('main');
+
+//Next of Kin settings
+Route::post('/nextofkin/settings/update', [NextOfKinSettingsController::class, 'updateProfile'])->name('nextofkin.settings.update');
+Route::post('/nextofkin/notifications/update', [NextOfKinSettingsController::class, 'updateNotifications'])->name('nextofkin.notifications.update');
