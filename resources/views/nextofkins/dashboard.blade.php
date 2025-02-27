@@ -449,6 +449,41 @@
     eventsCalendar.render();
   });
 </script>
+ 
+          <script>
+document.addEventListener('DOMContentLoaded', function() {
+  var appointmentsCalendarEl = document.getElementById('calendar'); // Appointments calendar container
+
+  if (appointmentsCalendarEl) {
+    // Initialize Appointments FullCalendar
+    var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
+      initialView: 'dayGridMonth', // Default view: Month
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Different views
+      },
+      events: [
+        {
+          title: 'Doctor Visit',
+          start: '2025-03-15T10:00:00',
+          description: 'Doctor visit for routine checkup.'
+        },
+        {
+          title: 'Physical Therapy',
+          start: '2025-03-20T14:30:00',
+          description: 'Physical therapy session.'
+        }
+      ],
+      eventClick: function(info) {
+        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
+      }
+    });
+
+    appointmentsCalendar.render(); // Render the calendar
+  }
+});
+</script>
 
 </body>
 </html>
