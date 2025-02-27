@@ -186,9 +186,41 @@
 
         <!-- Other Sections -->
         <div id="resident" class="dashboard-section" style="display: none;">
-          <h1>Resident</h1>
-          <p>Resident information goes here.</p>
+  <h1>Resident Overview</h1>
+
+  <div class="row">
+    <!-- Column 1: Resident Information -->
+    <div class="col-md-6">
+      <h3>Resident Information</h3>
+      <div class="card">
+        <div class="card-body">
+          <h5>Full Name: {{ $resident->firstname ?? 'N/A' }} {{ $resident->lastname ?? '' }}</h5>
+          <p><strong>Room Number:</strong> {{ $resident->room_number ?? 'N/A' }}</p>
+          <p><strong>Current Care Level:</strong> {{ $resident->care_level ?? 'N/A' }}</p>
+          <p><strong>Current Status:</strong> {{ $resident->status ?? 'N/A' }}</p>
+          <p><strong>Assigned Caregiver:</strong> {{ $resident->caregiver_name ?? 'N/A' }}</p>
+          <p><strong>Care Plan Status:</strong> {{ $resident->care_plan_status ?? 'N/A' }}</p>
         </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Health Overview & Emergency Contact -->
+    <div class="col-md-6">
+      <h3>General Health Overview & Emergency Contact</h3>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Recent Checkups:</strong> {{ $resident->recent_checkups ?? 'No checkups available' }}</p>
+          <p><strong>Medications:</strong> {{ $resident->medications ?? 'N/A' }}</p>
+          <p><strong>Health Notes:</strong> {{ $resident->health_notes ?? 'N/A' }}</p>
+          <hr>
+          <p><strong>Emergency Contact Name:</strong> {{ $resident->emergency_contact_name ?? 'N/A' }}</p>
+          <p><strong>Emergency Contact Number:</strong> {{ $resident->emergency_contact_phone ?? 'N/A' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
         <div id="appointments" class="dashboard-section" style="display: none;">
           <h1>Upcoming Appointments</h1>
