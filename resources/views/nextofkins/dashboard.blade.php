@@ -246,8 +246,12 @@
 
         <div id="events" class="dashboard-section" style="display: none;">
           <h1>Upcoming Events</h1>
-          <p>Event details go here.</p>
+          <p>View upcoming activities and social events at the care home.</p>
+
+          <!-- Calendar Container -->
+          <div id="events-calendar"></div>
         </div>
+
 
         <div id="news" class="dashboard-section" style="display: none;">
   <h1 class="mb-4">Latest News & Updates</h1>
@@ -442,6 +446,37 @@
     });
 
     calendar.render();
+  });
+</script>
+
+          <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var eventsCalendarEl = document.getElementById('events-calendar');
+    var eventsCalendar = new FullCalendar.Calendar(eventsCalendarEl, {
+      initialView: 'dayGridMonth', // Default view: Month
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Different views
+      },
+      events: [
+        {
+          title: 'Family Day',
+          start: '2025-03-25',
+          description: 'Families are invited to spend time with residents.'
+        },
+        {
+          title: 'Music Therapy',
+          start: '2025-03-30',
+          description: 'Live music session to help improve mental well-being.'
+        }
+      ],
+      eventClick: function(info) {
+        alert('Event: ' + info.event.title + '\n' + info.event.extendedProps.description);
+      }
+    });
+
+    eventsCalendar.render();
   });
 </script>
 
