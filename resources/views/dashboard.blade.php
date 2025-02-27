@@ -67,24 +67,12 @@
     </div>
 
 <!-- Resident Diagnoses Section -->
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card shadow-lg">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">🩺 View Resident Diagnoses</h5>
-            </div>
-            <div class="card-body">
-                @if(session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
-                @endif
+<div class="mt-4">
+    <a href="{{ route('diagnoses.searchPage') }}" class="btn btn-info">
+        🔍 View Resident Diagnoses
+    </a>
+</div>
 
-                <!-- Search Bar for Diagnoses -->
-                <form action="{{ route('diagnoses.search') }}" method="GET" class="mb-3">
-                    <div class="input-group">
-                        <input type="text" name="query" class="form-control" placeholder="🔍 Search by resident name, room number, or diagnosis..." required>
-                        <button class="btn btn-primary" type="submit">Search</button>
-                    </div>
-                </form>
 
                 <!-- Diagnosis List -->
                 @if(isset($diagnoses) && count($diagnoses) > 0)
@@ -118,9 +106,6 @@
                     <p class="text-muted text-center">No diagnoses found.</p>
                 @endif
             </div>
-        </div>
-    </div>
-</div>
 
 
                     <!-- Resident List -->
@@ -175,9 +160,7 @@
                         <p class="text-muted text-center">No staff currently on duty.</p>
                     @endif
                 </div>
-            </div>
-        </div>
-    </div>
+        
 
 <!-- Auto Logout for Inactivity -->
 <script>

@@ -155,20 +155,32 @@ public function index()
 
         return redirect(route('diagnoses.index'));
     }
-    
-        public function search(Request $request)
-    {
-        $query = $request->input('query');
+public function search(Request $request)
+{
+    $query = trim($request->input('query'));
 
-        $diagnoses = Diagnosis::where('diagnosis', 'LIKE', "%$query%")
-            ->orWhereHas('resident', function ($q) use ($query) {
-                $q->where('firstname', 'LIKE', "%$query%")
-                  ->orWhere('lastname', 'LIKE', "%$query%")
-                  ->orWhere('roomnumber', 'LIKE', "%$query%");
-            })
-            ->with('resident')
-            ->get();
-
-        return view('diagnoses.index', compact('diagnoses'));
+    if (empty($query)) {
+        return redirect()->route('diagnoses.searchPage')->with('error', 'Please enter a resident name.');
     }
+
+    // Find the first matching resident
+    $resident = Resident::where('firstname', 'LIKE', "%$query%")
+                ->orWhere('lastname', 'LIKE', "%$query%")
+                ->first(); // Only return one resident
+
+    if (!$resident) {
+        return redirect()->route('diagnoses.searchPage')->with('error', 'No diagnoses found for this resident.');
+    }
+
+    // Retrieve diagnoses only for the found resident
+    $diagnoses = Diagnosis::where('residentid', $resident->id)
+                ->with(['resident', 'lastUpdatedBy']) // Ensure this relationship exists in the model
+                ->get();
+
+    return view('diagnoses.search', compact('diagnoses'));
+}
+
+
+
+
 }

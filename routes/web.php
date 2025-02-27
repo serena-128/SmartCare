@@ -64,8 +64,12 @@ Route::get('/main', function () {
 })->name('main');
 
 
+Route::get('/diagnoses/search', function () {
+    return view('diagnoses.search');
+})->name('diagnoses.searchPage');
 
-Route::get('/diagnoses/search', [DiagnosisController::class, 'search'])->name('diagnoses.search');
+Route::get('/diagnoses/search/results', [DiagnosisController::class, 'search'])->name('diagnoses.search');
+
 
 
 
