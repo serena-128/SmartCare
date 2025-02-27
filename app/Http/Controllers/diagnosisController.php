@@ -163,22 +163,23 @@ public function search(Request $request)
         return redirect()->route('diagnoses.searchPage')->with('error', 'Please enter a resident name.');
     }
 
-    // Find the first matching resident
+    // Find the resident by first or last name
     $resident = Resident::where('firstname', 'LIKE', "%$query%")
                 ->orWhere('lastname', 'LIKE', "%$query%")
-                ->first(); // Only return one resident
+                ->first();
 
     if (!$resident) {
         return redirect()->route('diagnoses.searchPage')->with('error', 'No diagnoses found for this resident.');
     }
 
-    // Retrieve diagnoses only for the found resident
+    // Fetch only the diagnoses for the searched resident
     $diagnoses = Diagnosis::where('residentid', $resident->id)
-                ->with(['resident', 'lastUpdatedBy']) // Ensure this relationship exists in the model
+                ->with(['resident', 'lastUpdatedBy'])
                 ->get();
 
     return view('diagnoses.search', compact('diagnoses'));
 }
+
 
 
 

@@ -59,88 +59,18 @@
             <a href="{{ route('residents.create') }}" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">➕ Add a New Resident</a>
         </div>
         <div class="col-md-4">
-            <a href="/emergencyalerts" class="btn btn-danger btn-lg w-100 rounded-pill shadow-sm">🚨 Report an Emergency</a>
+            <a href="{{ route('emergencyalerts.index') }}" class="btn btn-danger btn-lg w-100 rounded-pill shadow-sm">🚨 Report an Emergency</a>
         </div>
         <div class="col-md-4">
             <a href="{{ route('stafftasks.create') }}" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm">✅ Assign a Task</a>
         </div>
     </div>
 
-<!-- Resident Diagnoses Section -->
-<div class="mt-4">
-    <a href="{{ route('diagnoses.searchPage') }}" class="btn btn-info">
-        🔍 View Resident Diagnoses
+<div class="mt-4 text-center">
+    <a href="{{ route('diagnoses.searchPage') }}" class="btn btn-info btn-lg">
+        🔍 Search Resident Diagnoses
     </a>
 </div>
-
-
-                <!-- Diagnosis List -->
-                @if(isset($diagnoses) && count($diagnoses) > 0)
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Resident Name</th>
-                                <th>Room Number</th>
-                                <th>Diagnosis</th>
-                                <th>Vital Signs</th>
-                                <th>Treatment</th>
-                                <th>Test Results</th>
-                                <th>Last Updated</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($diagnoses as $diagnosis)
-                            <tr>
-                                <td>{{ $diagnosis->resident->firstname }} {{ $diagnosis->resident->lastname }}</td>
-                                <td>{{ $diagnosis->resident->roomnumber }}</td>
-                                <td>{{ $diagnosis->diagnosis }}</td>
-                                <td>{{ $diagnosis->vitalsigns }}</td>
-                                <td>{{ $diagnosis->treatment }}</td>
-                                <td>{{ $diagnosis->testresults }}</td>
-                                <td>{{ $diagnosis->updated_at->format('d M Y, H:i') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @else
-                    <p class="text-muted text-center">No diagnoses found.</p>
-                @endif
-            </div>
-
-
-                    <!-- Resident List -->
-                    @if(isset($residents) && count($residents) > 0)
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Resident Name</th>
-                                    <th>Room Number</th>
-                                    <th>Medical Record Number</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($residents as $resident)
-                                    <tr>
-                                        <td>{{ $resident->firstname }} {{ $resident->lastname }}</td>
-                                        <td>{{ $resident->room_number }}</td>
-                                        <td>{{ $resident->medical_record_number }}</td>
-                                        <td>
-                                            @if(Auth::check() && Auth::user()->can('view_medical_records'))
-                                                <a href="{{ route('residents.medical_records', $resident->id) }}" class="btn btn-info btn-sm">🔎 View</a>
-                                            @else
-                                                <button class="btn btn-secondary btn-sm" disabled>❌ No Permission</button>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-muted text-center">No residents found.</p>
-                    @endif
-                </div>
- 
 
     <!-- Staff On-Duty Now -->
     <div class="row mt-4">
@@ -160,7 +90,15 @@
                         <p class="text-muted text-center">No staff currently on duty.</p>
                     @endif
                 </div>
-        
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-4 text-center">
+    <a href="{{ route('residents.index') }}" class="btn btn-warning btn-lg">
+        ✏️ Update Resident Information
+    </a>
+</div>
 
 <!-- Auto Logout for Inactivity -->
 <script>

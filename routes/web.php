@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
-Route::resource('diagnoses', DiagnosisController::class);
+
 Route::resource('standardtasks', StandardTaskController::class);
 Route::resource('careplans', CarePlanController::class);
 Route::resource('doses', DoseController::class);
@@ -64,13 +64,14 @@ Route::get('/main', function () {
 })->name('main');
 
 
+
+
+// Route to load the search page (only the search bar)
 Route::get('/diagnoses/search', function () {
     return view('diagnoses.search');
 })->name('diagnoses.searchPage');
 
+// Route to handle search request
 Route::get('/diagnoses/search/results', [DiagnosisController::class, 'search'])->name('diagnoses.search');
-
-
-
 
 

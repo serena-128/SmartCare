@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <!-- Page Header -->
     <h2 class="text-dark text-center">🔍 Search Resident Diagnoses</h2>
+
 
     <!-- Flash Messages -->
     @if(session('error'))
@@ -18,7 +18,7 @@
         </div>
     </form>
 
-    <!-- Display Search Results Only If a Search Was Made -->
+    <!-- Show Results ONLY If a Search Was Performed -->
     @if(isset($diagnoses) && $diagnoses->isNotEmpty())
         <div class="card shadow-lg">
             <div class="card-body">
