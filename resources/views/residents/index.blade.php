@@ -79,6 +79,10 @@
                                     </div>
                                 </td>
                             </tr>
+                        <td>
+    <a href="{{ route('residents.profile', $resident->id) }}" class="btn btn-info btn-sm">
+        👤 View Profile
+    </a>
                         @endforeach
                     </tbody>
                 </table>

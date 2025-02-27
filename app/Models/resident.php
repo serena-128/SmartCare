@@ -76,4 +76,10 @@ class Resident extends Model
     {
         return "{$this->firstname} {$this->lastname}";
     }
+    
+        // ✅ Add relationship with Diagnosis
+    public function diagnoses()
+    {
+        return $this->hasMany(Diagnosis::class, 'residentid');
+    }
 }

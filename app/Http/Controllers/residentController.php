@@ -9,6 +9,8 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\Resident;
+
 
 class residentController extends AppBaseController
 {
@@ -153,4 +155,11 @@ class residentController extends AppBaseController
 
         return redirect(route('residents.index'));
     }
+    public function profile($id)
+{
+    $resident = Resident::with(['diagnoses'])->findOrFail($id);
+    return view('residents.profile', compact('resident'));
+}
+    
+
 }

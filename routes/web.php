@@ -73,5 +73,6 @@ Route::get('/diagnoses/search', function () {
 
 // Route to handle search request
 Route::get('/diagnoses/search/results', [DiagnosisController::class, 'search'])->name('diagnoses.search');
+Route::get('/residents/{id}/profile', [ResidentController::class, 'profile'])->name('residents.profile');
 
 
