@@ -418,36 +418,6 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
           
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth', // Default view: Month
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Different views
-      },
-      events: [
-        {
-          title: 'Doctor Visit',
-          start: '2025-03-15T10:00:00',
-          description: 'Annual checkup with Dr. Smith.'
-        },
-        {
-          title: 'Physical Therapy',
-          start: '2025-03-20T14:30:00',
-          description: 'Therapy session for mobility exercises.'
-        }
-      ],
-      eventClick: function(info) {
-        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
-    });
-
-    calendar.render();
-  });
-</script>
 
           <script>
   document.addEventListener('DOMContentLoaded', function() {
