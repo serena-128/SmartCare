@@ -74,5 +74,13 @@ Route::get('/diagnoses/search', function () {
 // Route to handle search request
 Route::get('/diagnoses/search/results', [DiagnosisController::class, 'search'])->name('diagnoses.search');
 Route::get('/residents/{id}/profile', [ResidentController::class, 'profile'])->name('residents.profile');
+// Diagnoses Routes
+Route::get('/diagnoses', [DiagnosisController::class, 'index'])->name('diagnoses.index'); // View all diagnoses
+Route::get('/diagnoses/create', [DiagnosisController::class, 'create'])->name('diagnoses.create'); // Show create form
+Route::post('/diagnoses', [DiagnosisController::class, 'store'])->name('diagnoses.store'); // Save new diagnosis
+Route::get('/diagnoses/{id}', [DiagnosisController::class, 'show'])->name('diagnoses.show'); // View specific diagnosis
+Route::get('/diagnoses/{id}/edit', [DiagnosisController::class, 'edit'])->name('diagnoses.edit'); // Show edit form
+Route::put('/diagnoses/{id}', [DiagnosisController::class, 'update'])->name('diagnoses.update'); // Update diagnosis
+Route::delete('/diagnoses/{id}', [DiagnosisController::class, 'destroy'])->name('diagnoses.destroy'); // Delete diagnosis
 
 

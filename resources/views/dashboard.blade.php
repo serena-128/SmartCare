@@ -1,29 +1,97 @@
 @extends('layouts.app')
 
+
+
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header with Logo -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center">
-            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
-            <h1 class="h3 text-dark ms-3">SmartCare Nursing Home Dashboard</h1>
-        </div>
-        <div>
-            <strong>Logged in as:</strong> {{ session('staff_name') }}
-            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-danger btn-sm">Logout</button>
-            </form>
+<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ route('dashboard') }}">
+            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> SmartCare Staff Dashboard
+        </a>
+
+        <!-- Navbar Toggler for Mobile View -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Residents Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">
+                        🏥 Residents
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
+                        <li><a class="dropdown-item" href="{{ route('residents.create') }}">➕ Add New Resident</a></li>
+                        <li><a class="dropdown-item" href="{{ route('residents.index') }}">✏️ Update Resident Info</a></li>
+                    </ul>
+                </li>
+
+                <!-- Medical Records Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="medicalDropdown" role="button" data-bs-toggle="dropdown">
+                        🩺 Medical Records
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
+                        <li><a class="dropdown-item" href="{{ route('diagnoses.create') }}">➕ Add Diagnosis</a></li>
+                        <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
+                    </ul>
+                </li>
+
+                <!-- Tasks & Appointments -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="tasksDropdown" role="button" data-bs-toggle="dropdown">
+                        📅 Tasks & Appointments
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
+                        <li><a class="dropdown-item" href="{{ route('appointments.create') }}">➕ Schedule Appointment</a></li>
+                        <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
+                    </ul>
+                </li>
+
+                <!-- Emergency Alerts -->
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{{ route('emergencyalerts.index') }}">🚨 Emergency Alerts</a>
+                </li>
+
+                <!-- Profile & Logout -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+                        👤 {{ session('staff_name') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">⚙️ Settings</a></li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button class="dropdown-item text-danger" type="submit">🔓 Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
+</nav>
 
-    <!-- Overview Statistics -->
+<!-- Dashboard Overview -->
+<div class="container mt-4">
+    <h2 class="text-dark text-center">📊 Nursing Home Overview</h2>
+
+    <!-- Overview Cards -->
     <div class="row">
         <div class="col-md-3">
             <div class="card shadow-lg border-primary">
                 <div class="card-body text-center">
                     <h5 class="card-title text-primary">Total Residents</h5>
-                    <h3 class="text-dark fw-bold">{{ $residentCount ?? 0 }}</h3>
+                    <h3 class="fw-bold">{{ $residentCount ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -31,7 +99,7 @@
             <div class="card shadow-lg border-success">
                 <div class="card-body text-center">
                     <h5 class="card-title text-success">Active Staff</h5>
-                    <h3 class="text-dark fw-bold">{{ $staffCount ?? 0 }}</h3>
+                    <h3 class="fw-bold">{{ $staffCount ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -39,7 +107,7 @@
             <div class="card shadow-lg border-danger">
                 <div class="card-body text-center">
                     <h5 class="card-title text-danger">Emergency Alerts</h5>
-                    <h3 class="text-dark fw-bold">{{ $emergencyAlertCount ?? 0 }}</h3>
+                    <h3 class="fw-bold">{{ $emergencyAlertCount ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -47,57 +115,31 @@
             <div class="card shadow-lg border-info">
                 <div class="card-body text-center">
                     <h5 class="card-title text-info">Care Plans</h5>
-                    <h3 class="text-dark fw-bold">{{ $carePlanCount ?? 0 }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <a href="{{ route('residents.create') }}" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">➕ Add a New Resident</a>
-        </div>
-        <div class="col-md-4">
-            <a href="{{ route('emergencyalerts.index') }}" class="btn btn-danger btn-lg w-100 rounded-pill shadow-sm">🚨 Report an Emergency</a>
-        </div>
-        <div class="col-md-4">
-            <a href="{{ route('stafftasks.create') }}" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm">✅ Assign a Task</a>
-        </div>
-    </div>
-
-<div class="mt-4 text-center">
-    <a href="{{ route('diagnoses.searchPage') }}" class="btn btn-info btn-lg">
-        🔍 Search Resident Diagnoses
-    </a>
-</div>
-
-    <!-- Staff On-Duty Now -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">👨‍⚕️ Staff On-Duty Now</h5>
-                </div>
-                <div class="card-body">
-                    @if(isset($onDutyStaff) && count($onDutyStaff) > 0)
-                        <ul class="list-group">
-                            @foreach($onDutyStaff as $staff)
-                                <li class="list-group-item">{{ $staff->firstname }} {{ $staff->lastname }} - <strong>{{ $staff->staff_role }}</strong></li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-muted text-center">No staff currently on duty.</p>
-                    @endif
+                    <h3 class="fw-bold">{{ $carePlanCount ?? 0 }}</h3>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="mt-4 text-center">
-    <a href="{{ route('residents.index') }}" class="btn btn-warning btn-lg">
-        ✏️ Update Resident Information
-    </a>
+
+<!-- Staff On-Duty -->
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">👨‍⚕️ Staff On-Duty Now</h5>
+        </div>
+        <div class="card-body">
+            @if(isset($onDutyStaff) && count($onDutyStaff) > 0)
+                <ul class="list-group">
+                    @foreach($onDutyStaff as $staff)
+                        <li class="list-group-item">{{ $staff->firstname }} {{ $staff->lastname }} - <strong>{{ $staff->staff_role }}</strong></li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted text-center">No staff currently on duty.</p>
+            @endif
+        </div>
+    </div>
 </div>
 
 <!-- Auto Logout for Inactivity -->
@@ -115,23 +157,16 @@
     document.onkeypress = resetTimer;
 </script>
 
+<!-- Styles -->
 <style>
     .logo {
         max-width: 120px;
         margin-right: 15px;
     }
-    .border-primary {
-        border-left: 5px solid #007bff !important;
-    }
-    .border-success {
-        border-left: 5px solid #28a745 !important;
-    }
-    .border-danger {
-        border-left: 5px solid #dc3545 !important;
-    }
-    .border-info {
-        border-left: 5px solid #17a2b8 !important;
-    }
+    .border-primary { border-left: 5px solid #007bff !important; }
+    .border-success { border-left: 5px solid #28a745 !important; }
+    .border-danger { border-left: 5px solid #dc3545 !important; }
+    .border-info { border-left: 5px solid #17a2b8 !important; }
 </style>
 
 @endsection
