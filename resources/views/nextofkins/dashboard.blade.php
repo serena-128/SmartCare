@@ -107,6 +107,64 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+      .dashboard-section h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.card {
+  border-radius: 10px;
+  margin-top: 15px;
+}
+
+.card-header {
+  font-size: 1.2rem;
+  padding: 15px;
+}
+
+.card-body {
+  font-size: 1rem;
+}
+
+.card-body p {
+  margin-bottom: 10px;
+}
+
+.card-body hr {
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.shadow-lg {
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.bg-primary {
+  background-color: #007bff;
+}
+
+.bg-success {
+  background-color: #28a745;
+}
+
+.bg-warning {
+  background-color: #ffc107;
+}
+
+.text-white {
+  color: white;
+}
+
 
   </style>
 </head>
@@ -200,39 +258,64 @@
 
         <!-- Other Sections -->
         <div id="resident" class="dashboard-section" style="display: none;">
-  <h1>Resident Overview</h1>
+  <h1 class="text-center mb-4">Resident Overview</h1>
 
   <div class="row">
     <!-- Column 1: Resident Information -->
     <div class="col-md-6">
-      <h3>Resident Information</h3>
-      <div class="card">
+      <div class="card shadow-lg mb-4">
+        <div class="card-header bg-primary text-white">
+          <h3>Resident Information</h3>
+        </div>
         <div class="card-body">
-          <h5>Full Name: {{ $resident->firstname ?? 'N/A' }} {{ $resident->lastname ?? '' }}</h5>
-          <p><strong>Room Number:</strong> {{ $resident->room_number ?? 'N/A' }}</p>
+          <h5>Full Name: {{ $resident->firstname ?? 'John Doe' }} {{ $resident->lastname ?? '' }}</h5>
+          <p><strong>Room Number:</strong> {{ $resident->room_number ?? '101' }}</p>
           <p><strong>Current Care Level:</strong> {{ $resident->care_level ?? 'N/A' }}</p>
           <p><strong>Current Status:</strong> {{ $resident->status ?? 'N/A' }}</p>
-          <p><strong>Assigned Caregiver:</strong> {{ $resident->caregiver_name ?? 'N/A' }}</p>
-          <p><strong>Care Plan Status:</strong> {{ $resident->care_plan_status ?? 'N/A' }}</p>
+          <p><strong>Assigned Caregiver:</strong> {{ $resident->caregiver_name ?? 'Emma Kavanagh' }}</p>
+          <p><strong>Care Plan Status:</strong> {{ $resident->care_plan_status ?? 'Active' }}</p>
         </div>
       </div>
     </div>
 
     <!-- Column 2: Health Overview & Emergency Contact -->
     <div class="col-md-6">
-      <h3>General Health Overview & Emergency Contact</h3>
-      <div class="card">
+      <div class="card shadow-lg mb-4">
+        <div class="card-header bg-success text-white">
+          <h3>General Health Overview & Emergency Contact</h3>
+        </div>
         <div class="card-body">
-          <p><strong>Recent Checkups:</strong> {{ $resident->recent_checkups ?? 'No checkups available' }}</p>
-          <p><strong>Medications:</strong> {{ $resident->medications ?? 'N/A' }}</p>
+          <p><strong>Recent Checkups:</strong> {{ $resident->recent_checkups ?? 'Routine Checkup' }}</p>
           <p><strong>Health Notes:</strong> {{ $resident->health_notes ?? 'N/A' }}</p>
           <hr>
-          <p><strong>Emergency Contact Name:</strong> {{ $resident->emergency_contact_name ?? 'N/A' }}</p>
-          <p><strong>Emergency Contact Number:</strong> {{ $resident->emergency_contact_phone ?? 'N/A' }}</p>
+          <p><strong>Emergency Contact Name:</strong> {{ $resident->emergency_contact_name ?? 'Care home' }}</p>
+          <p><strong>Emergency Contact Number:</strong> {{ $resident->emergency_contact_phone ?? '01 234 4354' }}</p>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Additional Information Section -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow-lg mb-4">
+        <div class="card-header bg-warning text-white">
+          <h3>Additional Information</h3>
+        </div>
+        <div class="card-body">
+          <h5>Family History</h5>
+          <p>{{ $resident->family_history ?? 'N/A' }}</p>
+
+          <h5>Preferred Activities</h5>
+          <p>{{ $resident->preferred_activities ?? 'N/A' }}</p>
+
+          <h5>Notes from Caregivers</h5>
+          <p>{{ $resident->caregiver_notes ?? 'No notes available' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 
