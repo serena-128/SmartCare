@@ -14,6 +14,12 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -93,6 +99,14 @@
   margin-right: 8px;
 }
 
+#calendar {
+  max-width: 100%;
+  margin: auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
   </style>
 </head>
@@ -224,7 +238,10 @@
 
         <div id="appointments" class="dashboard-section" style="display: none;">
           <h1>Upcoming Appointments</h1>
-          <p>Appointment details go here.</p>
+          <p>View and manage upcoming appointments.</p>
+
+          <!-- Calendar Container -->
+          <div id="calendar"></div>
         </div>
 
         <div id="events" class="dashboard-section" style="display: none;">
@@ -396,6 +413,38 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+          
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth', // Default view: Month
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Different views
+      },
+      events: [
+        {
+          title: 'Doctor Visit',
+          start: '2025-03-15T10:00:00',
+          description: 'Annual checkup with Dr. Smith.'
+        },
+        {
+          title: 'Physical Therapy',
+          start: '2025-03-20T14:30:00',
+          description: 'Therapy session for mobility exercises.'
+        }
+      ],
+      eventClick: function(info) {
+        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
+      }
+    });
+
+    calendar.render();
+  });
+</script>
+
 </body>
 </html>
 
