@@ -84,3 +84,8 @@ Route::put('/diagnoses/{id}', [DiagnosisController::class, 'update'])->name('dia
 Route::delete('/diagnoses/{id}', [DiagnosisController::class, 'destroy'])->name('diagnoses.destroy'); // Delete diagnosis
 
 
+
+Route::get('/staffmember/profile', [StaffMemberController::class, 'profile'])->name('staffmember.profile');
+Route::put('/staffmember/profile/update', [StaffMemberController::class, 'updateProfile'])->name('staffmember.profile.update');
+
+
