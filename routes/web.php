@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\NextOfKinLoginController;
 use App\Http\Controllers\Auth\NextOfKinForgotPasswordController;
 use App\Http\Controllers\Auth\NextOfKinRegisterController;
 use App\Http\Controllers\NextOfKinSettingsController;
+use App\Http\Controllers\RsvpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -117,3 +118,7 @@ Route::get('/main', function () {
 //Next of Kin settings
 Route::post('/nextofkin/settings/update', [NextOfKinSettingsController::class, 'updateProfile'])->name('nextofkin.settings.update');
 Route::post('/nextofkin/notifications/update', [NextOfKinSettingsController::class, 'updateNotifications'])->name('nextofkin.notifications.update');
+
+// RSVP form
+Route::get('/rsvp-form', [RsvpController::class, 'showForm'])->name('rsvp.form');
+Route::post('/rsvp-form', [RsvpController::class, 'submitRsvp'])->name('rsvp.submit');
