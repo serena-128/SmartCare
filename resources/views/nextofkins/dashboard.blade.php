@@ -166,6 +166,7 @@
 }
 
 
+
   </style>
 </head>
 <body>
@@ -290,6 +291,7 @@
           <hr>
           <p><strong>Emergency Contact Name:</strong> {{ $resident->emergency_contact_name ?? 'Care home' }}</p>
           <p><strong>Emergency Contact Number:</strong> {{ $resident->emergency_contact_phone ?? '01 234 4354' }}</p>
+            <a href="#" class="btn btn-success mt-3">Download Report</a>
         </div>
       </div>
     </div>
@@ -307,7 +309,7 @@
           <p>{{ $resident->family_history ?? 'N/A' }}</p>
 
           <h5>Preferred Activities</h5>
-          <p>{{ $resident->preferred_activities ?? 'N/A' }}</p>
+          <p>{{ $resident->preferred_activities ?? 'Daily walk' }}</p>
 
           <h5>Notes from Caregivers</h5>
           <p>{{ $resident->caregiver_notes ?? 'No notes available' }}</p>
@@ -328,12 +330,18 @@
         </div>
 
         <div id="events" class="dashboard-section" style="display: none;">
-          <h1>Upcoming Events</h1>
-          <p>View upcoming activities and social events at the care home.</p>
+  <!-- Title and RSVP Button in the same row using Flexbox -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Upcoming Events</h1>
+    <a href="#" class="btn btn-primary">RSVP to Event</a>
+  </div>
 
-          <!-- Calendar Container -->
-          <div id="events-calendar"></div>
-        </div>
+  <p>View upcoming activities and social events at the care home.</p>
+
+  <!-- Calendar Container -->
+  <div id="events-calendar"></div>
+</div>
+
 
 
         <div id="news" class="dashboard-section" style="display: none;">
