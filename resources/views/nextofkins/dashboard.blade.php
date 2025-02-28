@@ -215,7 +215,14 @@
           <p>Condition: Requires daily checkups</p>
         </div>
       </div>
+    <!-- Resident's Photo Below the Resident Info -->
+    <div class="text-center mt-4">
+      <!-- Dynamically display the resident's photo -->
+      <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="width: 300px; height: auto;">
+
+      
     </div>
+  </div>
 
     <!-- Column 2: Upcoming Appointments & Events -->
     <div class="col-md-4">
