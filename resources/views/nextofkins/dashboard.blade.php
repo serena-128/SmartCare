@@ -165,6 +165,12 @@
   color: white;
 }
 
+/* Custom CSS for uniform image size */
+.custom-img {
+  width: 100%;   /* Makes the image responsive */
+  height: 200px; /* Adjust the height to your desired size */
+  object-fit: cover; /* Ensures the images fit within the dimensions without distortion */
+}
 
 
   </style>
@@ -379,21 +385,21 @@
     </div>
 
     <!-- Column 2: Photo Gallery -->
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header bg-success text-white">
-          <i class="fas fa-images"></i> Photo Gallery
+<div class="col-md-6">
+  <div class="card">
+    <div class="card-header bg-success text-white">
+      <i class="fas fa-images"></i> Photo Gallery
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-4 mb-3">
+          <img src="{{ asset('pictures/event1.jpg') }}" alt="Event" class="img-fluid custom-img">
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-4 mb-3">
-              <img src="https://via.placeholder.com/150" class="img-fluid rounded shadow-sm" alt="Gallery Image">
-            </div>
-            <div class="col-4 mb-3">
-              <img src="https://via.placeholder.com/150" class="img-fluid rounded shadow-sm" alt="Gallery Image">
-            </div>
-            <div class="col-4 mb-3">
-              <img src="https://via.placeholder.com/150" class="img-fluid rounded shadow-sm" alt="Gallery Image">
+        <div class="col-4 mb-3">
+          <img src="{{ asset('pictures/carehome_event_2.jpg') }}" alt="Event" class="img-fluid custom-img">
+        </div>
+        <div class="col-4 mb-3">
+          <img src="{{ asset('pictures/carehome_event_3.jpg') }}" alt="Event" class="img-fluid custom-img">
             </div>
           </div>
           <a href="#" class="btn btn-outline-primary btn-sm">View More</a>
