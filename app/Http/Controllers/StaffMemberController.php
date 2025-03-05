@@ -153,4 +153,9 @@ class StaffMemberController extends AppBaseController
 
         return redirect(route('staffMembers.index'));
     }
+    
+    public function profile()
+    {
+        return view('staffmember.profile');
+    }
 }

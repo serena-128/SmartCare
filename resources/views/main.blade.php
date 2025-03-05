@@ -24,13 +24,27 @@
         .header img {
             width: 250px;
         }
+        .btn-primary, .btn-secondary {
+            font-weight: 600;
+            border: none;
+            font-size: 18px;
+            padding: 12px 25px;
+            border-radius: 30px;
+            margin-top: 10px;
+            width: 200px; /* Ensures equal button width */
+        }
         .btn-primary {
             background-color: #6D4EA7; /* Purple Accent */
-            border: none;
-            font-weight: 600;
         }
         .btn-primary:hover {
             background-color: #5A3D8A;
+        }
+        .btn-secondary {
+            background-color: #FF8C00; /* Orange Accent */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #E07C00;
         }
         .features {
             margin-top: 50px;
@@ -46,13 +60,6 @@
         .login-section {
             margin-top: 30px;
             text-align: center;
-        }
-        .login-section a {
-            margin: 10px;
-            padding: 12px 25px;
-            font-size: 18px;
-            border-radius: 30px;
-            font-weight: 500;
         }
         h1, h3 {
             font-weight: 600;
@@ -75,7 +82,11 @@
     <div class="login-section">
         <h3>Login As</h3>
 
-        <a href="{{ route('staff.login') }}" class="btn btn-primary">Staff</a>
+        <!-- Staff Login Button -->
+        <a href="{{ route('staff.login') }}" class="btn btn-primary d-block mx-auto">Staff</a>
+
+        <!-- Next of Kin Login Button (No Route) -->
+        <a href="#" class="btn btn-secondary d-block mx-auto">Next of Kin</a>
 
     </div>
 

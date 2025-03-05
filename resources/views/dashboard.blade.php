@@ -9,7 +9,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('dashboard') }}">
-            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> SmartCare Staff Dashboard
+            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
         </a>
 
         <!-- Navbar Toggler for Mobile View -->
@@ -35,7 +35,7 @@
                 <!-- Medical Records Dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="medicalDropdown" role="button" data-bs-toggle="dropdown">
-                        🩺 Medical Records
+                        🩺 Residents Medical Information
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
@@ -67,8 +67,7 @@
                         👤 {{ session('staff_name') }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">⚙️ Settings</a></li>
-                        <li>
+                        <li><a class="dropdown-item" href="{{ route('staffmember.profile') }}">⚙️ Staff Profile</a></li>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
                                 <button class="dropdown-item text-danger" type="submit">🔓 Logout</button>

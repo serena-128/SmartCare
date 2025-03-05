@@ -85,7 +85,10 @@ Route::delete('/diagnoses/{id}', [DiagnosisController::class, 'destroy'])->name(
 
 
 
-Route::get('/staffmember/profile', [StaffMemberController::class, 'profile'])->name('staffmember.profile');
-Route::put('/staffmember/profile/update', [StaffMemberController::class, 'updateProfile'])->name('staffmember.profile.update');
+
+Route::get('/staffmember/profile', function () {
+    return view('staffmembers.profile'); // Use 'staffmembers' instead of 'staffmember'
+})->name('staff.profile');
+
 
 
