@@ -64,8 +64,9 @@ class NextOfKin extends Authenticatable
     ];
 
    
-    public function residentid()
+        public function resident()
     {
         return $this->belongsTo(\App\Models\Resident::class, 'residentid');
     }
+
 }
