@@ -127,3 +127,6 @@ Route::post('/rsvp-form', [RsvpController::class, 'submitRsvp'])->name('rsvp.sub
 // Contact form
 Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
+
+//about us
+Route::view('/about', 'about')->name('about');
