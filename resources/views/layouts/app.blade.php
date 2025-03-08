@@ -42,5 +42,9 @@
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
         <script src="{{asset('js/app.js')}}"></script>
         @stack('js_scripts')
+<footer class="text-center mt-5 py-3 bg-light">
+    <p>© {{ date('Y') }} SmartCare. All Rights Reserved.</p>
+</footer>
+
     </body>
 </html>
