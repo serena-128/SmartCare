@@ -21,8 +21,15 @@ class ContactController extends Controller
             'message' => 'required|string|max:500',
         ]);
 
-        // Send email (optional, add Mail configuration in .env)
-        Mail::to('admin@smartcare.com')->send(new ContactMail($request->all()));
+        // Prepare data to send
+        $contactData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'message' => $request->message,
+        ];
+
+        // Send email to admin
+        Mail::to('admin@smartcare.com')->send(new ContactMail($contactData));
 
         return back()->with('success', 'Your message has been sent!');
     }
