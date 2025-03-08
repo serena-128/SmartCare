@@ -57,7 +57,8 @@
       <h3 class="mb-3">Next of Kin Registration</h3>
       <p>Join SmartCare to stay connected with your loved one.</p>
 
-      <form method="POST" action="{{ route('nextofkin.register.submit') }}">
+      <form method="POST" action="{{ route('nextofkin.register.submit') }}" enctype="multipart/form-data">
+
         @csrf
         <div class="mb-3 text-start">
           <label for="firstname" class="form-label">First Name</label>
@@ -78,6 +79,10 @@
     </select>
 </div>
 
+            <div class="mb-3 text-start">
+        <label for="profile_picture" class="form-label">Profile Picture</label>
+        <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+    </div>
 
         <div class="mb-3 text-start">
           <label for="email" class="form-label">Email Address</label>

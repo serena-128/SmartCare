@@ -18,25 +18,34 @@ class NextOfKinRegisterController extends Controller
 }
 
     public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'firstname'              => 'required|string|max:50',
-            'lastname'               => 'required|string|max:50',
-            'email'                  => 'required|email|unique:nextofkin,email',
-            'password'               => 'required|string|min:6|confirmed',
-            // add additional fields as needed
-        ]);
+{
+    $request->validate([
+        'firstname' => 'required|string|max:50',
+        'lastname' => 'required|string|max:50',
+        'resident_id' => 'required|exists:resident,id',
+        'email' => 'required|email|unique:nextofkin,email',
+        'password' => 'required|string|min:6|confirmed',
+        'profile_picture' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Validate image upload
+    ]);
+        $profilePicturePath = null;
+
+    // Handle profile picture upload
+    if ($request->hasFile('profile_picture')) {
+        $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+    }
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-            NextOfKin::create([
-        'residentid' => $request->resident_id,  // Store selected resident
+            // Create Next of Kin entry
+    NextOfKin::create([
         'firstname' => $request->firstname,
         'lastname' => $request->lastname,
+        'residentid' => $request->resident_id,
         'email' => $request->email,
-        'password' => Hash::make($request->password),
+        'password' => bcrypt($request->password),
+        'profile_picture' => $profilePicturePath, // Save image path in the database
     ]);
 
 
