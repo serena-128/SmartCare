@@ -86,9 +86,10 @@ Route::delete('/diagnoses/{id}', [DiagnosisController::class, 'destroy'])->name(
 
 
 
-Route::get('/staffmember/profile', function () {
-    return view('staffmembers.profile'); // Use 'staffmembers' instead of 'staffmember'
-})->name('staff.profile');
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/staffmember/profile', function () {
+        return view('staffmembers.profile');
+    })->name('staff.profile');
+});
 
 
