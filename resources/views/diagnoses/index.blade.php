@@ -85,7 +85,7 @@
     <div class="mt-4 text-center">
         <a href="{{ route('dashboard') }}" class="btn btn-secondary">
             🏠 Back to Dashboard
-        
+        </a>
     </div>
 </div>
 @endsection
