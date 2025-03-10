@@ -209,8 +209,9 @@ if ($hour < 12) {
         
         <!-- Home Section (Three-Column Layout) -->
         <div id="home" class="dashboard-section home-section">
-  <h1>Home</h1>
     <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
+    <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
+
 
   <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
   
