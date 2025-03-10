@@ -93,3 +93,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+
+
+Route::resource('schedules', App\Http\Controllers\scheduleController::class);
