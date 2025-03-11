@@ -117,6 +117,18 @@ if ($hour < 12) {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+  #calendar, #events-calendar {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 600px;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background: white; /* Change from white to transparent */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+    
       .dashboard-section h1 {
   font-size: 2.5rem;
   color: #2c3e50;
