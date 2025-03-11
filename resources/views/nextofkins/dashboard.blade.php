@@ -190,6 +190,14 @@ if ($hour < 12) {
     text-align: center;
     border-top: 1px solid #ddd;
 }
+      #calendar, #events-calendar {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 600px; /* Ensures visibility */
+    max-width: 1200px; /* Prevents excessive stretching */
+    margin: auto;
+}
+
 
 
 
