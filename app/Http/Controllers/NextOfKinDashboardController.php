@@ -14,14 +14,18 @@ class NextOfKinDashboardController extends Controller
      */
     public function index()
     {
-        // Get the currently logged-in next of kin
+        // Get the currently logged-in Next of Kin
         $nextOfKin = Auth::guard('nextofkin')->user();
 
-        // Fetch the resident assigned to this Next-of-Kin
-        $resident = Resident::where('id', $nextOfKin->residentid)->first();
+        if (!$nextOfKin) {
+            return redirect()->route('nextofkin.login')->with('error', 'Please log in first.');
+        }
 
-        // Pass the resident data to the dashboard view
-        return view('nextofkins.dashboard', compact('resident'));
+        // Fetch the resident assigned to this Next-of-Kin
+        $resident = Resident::find($nextOfKin->residentid);
+
+        // Pass the resident and Next of Kin data to the view
+        return view('nextofkins.dashboard', compact('resident', 'nextOfKin'));
     }
 }
 

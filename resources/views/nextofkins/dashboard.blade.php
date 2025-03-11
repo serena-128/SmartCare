@@ -221,11 +221,11 @@ if ($hour < 12) {
       <h3>Resident</h3>
       <div class="card">
         <div class="card-body">
-          <h5>Resident Name: John Doe</h5>
-          <p>Age: 78</p>
-          <p>Room Number: 12A</p>
-          <p>Contact: +123 456 789</p>
-          <p>Condition: Requires daily checkups</p>
+          <h5>Resident Name: {{ $resident->firstname ?? 'No Resident Assigned' }} {{ $resident->lastname ?? '' }}</h5>
+        <p>Age: {{ $resident->dateofbirth ? \Carbon\Carbon::parse($resident->dateofbirth)->age : 'N/A' }}</p>
+        <p>Room Number: {{ $resident->roomnumber ?? 'N/A' }}</p>
+        <p>Admission Date: {{ $resident->admissiondate ?? 'N/A' }}</p>
+
         </div>
       </div>
     <!-- Resident's Photo Below the Resident Info -->
