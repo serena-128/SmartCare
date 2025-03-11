@@ -49,7 +49,7 @@ class resident extends Model
      * @var array
      */
     protected $casts = [
-        'residentid' => 'integer',
+        'id' => 'integer',
         'firstname' => 'string',
         'lastname' => 'string',
         'dateofbirth' => 'date',
