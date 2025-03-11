@@ -21,16 +21,28 @@ class NextOfKinDashboardController extends Controller
         return redirect()->route('nextofkin.login')->with('error', 'Please log in first.');
     }
 
-    // Fetch the resident assigned to this Next-of-Kin
-    $resident = Resident::find($nextOfKin->residentid);
+    // Debugging: Print next of kin info
+    \Log::info('Logged-in NextOfKin:', ['id' => $nextOfKin->id, 'residentid' => $nextOfKin->residentid]);
 
-    // Ensure $resident is not undefined
-    if (!$resident) {
-        $resident = null;
+    // Check if residentid is null or missing
+    if (!$nextOfKin->residentid) {
+        \Log::warning('NextOfKin has no resident assigned:', ['id' => $nextOfKin->id]);
+        return view('nextofkins.dashboard', ['resident' => null]);
     }
 
-    return view('nextofkins.dashboard', compact('nextOfKin', 'resident'));
+    // Fetch the resident assigned to this Next-of-Kin
+    $resident = Resident::where('id', $nextOfKin->residentid)->first();
+
+    // Debugging: Check if Resident is found
+    if (!$resident) {
+        \Log::warning('Resident not found for NextOfKin:', ['nextofkin_id' => $nextOfKin->id, 'residentid' => $nextOfKin->residentid]);
+    } else {
+        \Log::info('Resident found:', ['id' => $resident->id, 'name' => $resident->firstname . ' ' . $resident->lastname]);
+    }
+
+    return view('nextofkins.dashboard', compact('resident'));
 }
+
 
 
 }

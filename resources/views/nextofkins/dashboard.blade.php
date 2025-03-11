@@ -181,10 +181,24 @@ if ($hour < 12) {
   height: 200px; /* Adjust the height to your desired size */
   object-fit: cover; /* Ensures the images fit within the dimensions without distortion */
 }
+      .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+}
+
 
 
   </style>
 </head>
+    <footer class="footer text-center py-3 mt-5 bg-light">
+    <p class="mb-0">© {{ date('Y') }} SmartCare. All Rights Reserved.</p>
+</footer>
+
 <body>
   <div class="container-fluid">
     <div class="row">
