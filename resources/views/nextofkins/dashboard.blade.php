@@ -208,26 +208,31 @@ if ($hour < 12) {
       <div class="col-md-10 content">
         
         <!-- Home Section (Three-Column Layout) -->
-        <div id="home" class="dashboard-section home-section">
-    <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
-    <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
+            <div id="home" class="dashboard-section home-section">
+        <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
+        <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
 
 
-  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
+      <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
   
   <div class="row">
     <!-- Column 1: Resident -->
     <div class="col-md-4">
       <h3>Resident</h3>
-      <div class="card">
+      @if(isset($resident) && $resident))
+    <div class="card">
         <div class="card-body">
-          <h5>Resident Name: {{ $resident->firstname ?? 'No Resident Assigned' }} {{ $resident->lastname ?? '' }}</h5>
-        <p>Age: {{ $resident->dateofbirth ? \Carbon\Carbon::parse($resident->dateofbirth)->age : 'N/A' }}</p>
-        <p>Room Number: {{ $resident->roomnumber ?? 'N/A' }}</p>
-        <p>Admission Date: {{ $resident->admissiondate ?? 'N/A' }}</p>
-
+            <h5>Resident Name: {{ $resident->firstname }} {{ $resident->lastname }}</h5>
+            <p>Age: {{ \Carbon\Carbon::parse($resident->dateofbirth)->age }}</p>
+            <p>Room Number: {{ $resident->roomnumber }}</p>
+            <p>Admission Date: {{ \Carbon\Carbon::parse($resident->admissiondate)->format('d M Y') }}</p>
         </div>
-      </div>
+    </div>
+@else
+    <div class="alert alert-warning">
+        <strong>No resident assigned.</strong> Please contact the admin to link a resident.
+    </div>
+@endif
     <!-- Resident's Photo Below the Resident Info -->
     <div class="text-center mt-4">
       <!-- Dynamically display the resident's photo -->
