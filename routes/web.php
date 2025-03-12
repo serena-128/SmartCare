@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\NextOfKinRegisterController;
 use App\Http\Controllers\NextOfKinSettingsController;
 use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,3 +131,8 @@ Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact
 
 //about us
 Route::view('/about', 'about')->name('about');
+
+//add events and appointments
+Route::get('/add-event', [EventController::class, 'create'])->name('events.create'); // Show form
+Route::post('/add-event', [EventController::class, 'store'])->name('events.store'); // Store event
+
