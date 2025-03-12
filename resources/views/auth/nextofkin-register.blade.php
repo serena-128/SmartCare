@@ -72,11 +72,12 @@
           <div class="mb-3 text-start">
     <label for="resident_id" class="form-label">Select Resident</label>
     <select name="resident_id" id="resident_id" class="form-control" required>
-        <option value="">-- Select a Resident --</option>
-        @foreach($residents as $resident)
-            <option value="{{ $resident->id }}">{{ $resident->firstname }} {{ $resident->lastname }}</option>
-        @endforeach
-    </select>
+    <option value="">-- Select a Resident --</option>
+    @foreach($residents as $resident)
+        <option value="{{ $resident->id }}">{{ $resident->firstname }} {{ $resident->lastname }}</option>
+    @endforeach
+</select>
+
 </div>
 
             <div class="mb-3 text-start">

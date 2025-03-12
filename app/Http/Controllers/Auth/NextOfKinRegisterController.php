@@ -13,7 +13,14 @@ class NextOfKinRegisterController extends Controller
 {
     public function showRegistrationForm()
 {
-    $residents = Resident::select('id', 'firstname', 'lastname')->get();
+    // Get an array of resident IDs that already have a next of kin
+    $residentIDsWithNextOfKin = NextOfKin::pluck('residentid')->toArray();
+
+    // Retrieve only residents that are not in the above array
+    $residents = resident::select('id', 'firstname', 'lastname')
+                  ->whereNotIn('id', $residentIDsWithNextOfKin)
+                  ->get();
+
     return view('auth.nextofkin-register', compact('residents'));
 }
 
@@ -34,9 +41,6 @@ class NextOfKinRegisterController extends Controller
         $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
     }
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
             // Create Next of Kin entry
     NextOfKin::create([
