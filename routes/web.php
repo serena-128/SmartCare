@@ -21,6 +21,7 @@ use App\Http\Controllers\NextOfKinSettingsController;
 use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\NextOfKinProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -135,4 +136,9 @@ Route::view('/about', 'about')->name('about');
 //add events and appointments
 Route::get('/add-event', [EventController::class, 'create'])->name('events.create'); // Show form
 Route::post('/add-event', [EventController::class, 'store'])->name('events.store'); // Store event
+
+//profile confirmation
+Route::get('nextofkin/complete-profile', [NextOfKinProfileController::class, 'showCompleteProfileForm'])->name('nextofkin.complete-profile');
+Route::post('nextofkin/complete-profile', [NextOfKinProfileController::class, 'completeProfile'])->name('nextofkin.complete-profile.submit');
+
 

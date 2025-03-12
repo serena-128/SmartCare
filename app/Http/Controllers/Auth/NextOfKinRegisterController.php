@@ -53,6 +53,6 @@ class NextOfKinRegisterController extends Controller
     ]);
 
 
-        return redirect()->route('nextofkin.login')->with('status', 'Registration successful. Please log in.');
+        return redirect()->route('nextofkin.complete-profile');
     }
 }

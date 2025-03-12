@@ -1,28 +1,28 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <h2 class="text-center mb-4">Complete Your Profile</h2>
-
-    <form action="{{ route('nextofkin.complete-profile.store') }}" method="POST">
-        @csrf
-
-        <div class="mb-3">
-            <label for="relationshiptoresident" class="form-label">Relationship to Resident</label>
-            <input type="text" class="form-control" name="relationshiptoresident" value="{{ old('relationshiptoresident', $nextOfKin->relationshiptoresident) }}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="contactnumber" class="form-label">Contact Number</label>
-            <input type="text" class="form-control" name="contactnumber" value="{{ old('contactnumber', $nextOfKin->contactnumber) }}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
-            <input type="text" class="form-control" name="address" value="{{ old('address', $nextOfKin->address) }}" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Save & Continue</button>
-    </form>
-</div>
-@endsection
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complete Your Profile</title>
+    <!-- Include your CSS and other head elements -->
+</head>
+<body>
+    <div class="container">
+        <h2>Complete Your Profile</h2>
+        <form action="{{ route('nextofkin.complete-profile.submit') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="contactnumber">Contact Number</label>
+                <input type="text" name="contactnumber" id="contactnumber" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" name="address" id="address" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="relationshiptoresident">Relationship to Resident</label>
+                <input type="text" name="relationshiptoresident" id="relationshiptoresident" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

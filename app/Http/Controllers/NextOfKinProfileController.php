@@ -11,35 +11,42 @@ class NextOfKinProfileController extends Controller
     /**
      * Show the form to complete the Next of Kin profile.
      */
-    public function showForm()
+    public function showCompleteProfileForm()
     {
-        $nextOfKin = Auth::guard('nextofkin')->user();
-
-        return view('nextofkins.complete-profile', compact('nextOfKin'));
+        // Retrieve the next of kin record using session data.
+        $nextofkinId = session('nextofkin_id');
+        if (!$nextofkinId) {
+            return redirect()->route('nextofkin.register')->with('error', 'Please register first.');
+        }
+        
+        $nextofkin = NextOfKin::findOrFail($nextofkinId);
+        return view('nextofkins.complete-profile', compact('nextofkin'));
     }
-
-    /**
-     * Store the completed profile details.
-     */
-    public function store(Request $request)
+    
+    public function completeProfile(Request $request)
     {
         $request->validate([
-            'relationshiptoresident' => 'required|string|max:100',
-            'contactnumber' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
+            'contactnumber'           => 'required|string|max:20',
+            'address'                 => 'required|string|max:255',
+            'relationshiptoresident'  => 'required|string|max:50',
         ]);
 
-        $nextOfKin = Auth::guard('nextofkin')->user();
+        $nextofkinId = session('nextofkin_id');
+        if (!$nextofkinId) {
+            return redirect()->route('nextofkin.register')->with('error', 'Please register first.');
+        }
 
-        $nextOfKin->update([
+        $nextofkin = NextOfKin::findOrFail($nextofkinId);
+        $nextofkin->update([
+            'contactnumber'          => $request->contactnumber,
+            'address'                => $request->address,
             'relationshiptoresident' => $request->relationshiptoresident,
-            'contactnumber' => $request->contactnumber,
-            'address' => $request->address,
         ]);
 
-        return redirect()->route('nextofkins.dashboard')->with('status', 'Profile updated successfully.');
+        // Clear the session if no longer needed.
+        session()->forget('nextofkin_id');
 
-
+        // Redirect to the login page after successful profile completion.
+        return redirect()->route('nextofkin.login')->with('success', 'Profile updated successfully. Please log in.');
     }
-}
-
+} 
