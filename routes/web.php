@@ -15,6 +15,7 @@ use App\Http\Controllers\DietaryRestrictionController;
 use App\Http\Controllers\StaffTaskController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ScheduleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -95,10 +96,12 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::resource('schedules', App\Http\Controllers\scheduleController::class);
 
 
-    // Shift Change Request Routes
-    Route::post('/schedules/{schedule}/request-change', [ShiftChangeController::class, 'requestChange'])->name('schedules.requestChange');
-    Route::post('/schedules/{schedule}/approve', [ShiftChangeController::class, 'approveChange'])->name('schedules.approveChange');
-    Route::post('/schedules/{schedule}/deny', [ShiftChangeController::class, 'denyChange'])->name('schedules.denyChange');
+// Grouping all routes under the schedules resource
+Route::resource('schedules', ScheduleController::class);
+
+// Shift Change Request Routes (Handled within the dashboard)
+Route::post('/schedules/{schedule}/request-change', [ScheduleController::class, 'requestChange'])->name('schedules.requestChange');
+Route::post('/schedules/{schedule}/approve', [ScheduleController::class, 'approveChange'])->name('schedules.approveChange');
+Route::post('/schedules/{schedule}/deny', [ScheduleController::class, 'denyChange'])->name('schedules.denyChange');
