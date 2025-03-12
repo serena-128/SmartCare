@@ -36,7 +36,7 @@
                     <td>{{ $schedule->approver ? $schedule->approver->firstname : 'N/A' }}</td>
                     <td>
                         @if($schedule->shift_status === 'Scheduled')
-                            <a href="{{ route('schedules.requestChange', $schedule->id) }}" class="btn btn-warning btn-sm">Request Change</a>
+                            <a href="{{ route('schedules.showRequestChange', $schedule->id) }}" class="btn btn-warning btn-sm">Request Change</a>
                         @elseif($schedule->shift_status === 'Pending Change')
                             <form action="{{ route('schedules.approveChange', $schedule->id) }}" method="POST" class="d-inline">
                                 @csrf

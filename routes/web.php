@@ -101,7 +101,14 @@ Route::middleware(['auth'])->group(function () {
 // Grouping all routes under the schedules resource
 Route::resource('schedules', ScheduleController::class);
 
-// Shift Change Request Routes (Handled within the dashboard)
-Route::post('/schedules/{schedule}/request-change', [ScheduleController::class, 'requestChange'])->name('schedules.requestChange');
-Route::post('/schedules/{schedule}/approve', [ScheduleController::class, 'approveChange'])->name('schedules.approveChange');
-Route::post('/schedules/{schedule}/deny', [ScheduleController::class, 'denyChange'])->name('schedules.denyChange');
+
+
+// Show Request Shift Change Form
+Route::get('/schedules/{schedule}/request-change', [ScheduleController::class, 'showRequestChangeForm'])
+    ->name('schedules.showRequestChange');
+
+// Submit Request Shift Change
+Route::post('/schedules/{schedule}/request-change', [ScheduleController::class, 'requestChange'])
+    ->name('schedules.requestChange');
+
+

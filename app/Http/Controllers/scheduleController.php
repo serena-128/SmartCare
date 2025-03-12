@@ -4,41 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatescheduleRequest;
 use App\Http\Requests\UpdatescheduleRequest;
-use App\Repositories\scheduleRepository;
-use App\Http\Controllers\AppBaseController;
+use App\Repositories\ScheduleRepository;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
 
-class scheduleController extends AppBaseController
+class ScheduleController extends AppBaseController
 {
-    /** @var scheduleRepository $scheduleRepository*/
+    /** @var ScheduleRepository $scheduleRepository */
     private $scheduleRepository;
 
-    public function __construct(scheduleRepository $scheduleRepo)
+    public function __construct(ScheduleRepository $scheduleRepo)
     {
         $this->scheduleRepository = $scheduleRepo;
     }
 
     /**
      * Display a listing of the schedule.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request)
     {
         $schedules = $this->scheduleRepository->all();
 
-        return view('schedules.index')
-            ->with('schedules', $schedules);
+        return view('schedules.index')->with('schedules', $schedules);
     }
 
     /**
      * Show the form for creating a new schedule.
-     *
-     * @return Response
      */
     public function create()
     {
@@ -47,28 +40,18 @@ class scheduleController extends AppBaseController
 
     /**
      * Store a newly created schedule in storage.
-     *
-     * @param CreatescheduleRequest $request
-     *
-     * @return Response
      */
     public function store(CreatescheduleRequest $request)
     {
         $input = $request->all();
-
         $schedule = $this->scheduleRepository->create($input);
 
         Flash::success('Schedule saved successfully.');
-
         return redirect(route('schedules.index'));
     }
 
     /**
      * Display the specified schedule.
-     *
-     * @param int $id
-     *
-     * @return Response
      */
     public function show($id)
     {
@@ -76,7 +59,6 @@ class scheduleController extends AppBaseController
 
         if (empty($schedule)) {
             Flash::error('Schedule not found');
-
             return redirect(route('schedules.index'));
         }
 
@@ -85,10 +67,6 @@ class scheduleController extends AppBaseController
 
     /**
      * Show the form for editing the specified schedule.
-     *
-     * @param int $id
-     *
-     * @return Response
      */
     public function edit($id)
     {
@@ -96,7 +74,6 @@ class scheduleController extends AppBaseController
 
         if (empty($schedule)) {
             Flash::error('Schedule not found');
-
             return redirect(route('schedules.index'));
         }
 
@@ -105,11 +82,6 @@ class scheduleController extends AppBaseController
 
     /**
      * Update the specified schedule in storage.
-     *
-     * @param int $id
-     * @param UpdatescheduleRequest $request
-     *
-     * @return Response
      */
     public function update($id, UpdatescheduleRequest $request)
     {
@@ -117,12 +89,10 @@ class scheduleController extends AppBaseController
 
         if (empty($schedule)) {
             Flash::error('Schedule not found');
-
             return redirect(route('schedules.index'));
         }
 
         $schedule = $this->scheduleRepository->update($request->all(), $id);
-
         Flash::success('Schedule updated successfully.');
 
         return redirect(route('schedules.index'));
@@ -130,12 +100,6 @@ class scheduleController extends AppBaseController
 
     /**
      * Remove the specified schedule from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
      */
     public function destroy($id)
     {
@@ -143,48 +107,50 @@ class scheduleController extends AppBaseController
 
         if (empty($schedule)) {
             Flash::error('Schedule not found');
-
             return redirect(route('schedules.index'));
         }
 
         $this->scheduleRepository->delete($id);
-
         Flash::success('Schedule deleted successfully.');
 
         return redirect(route('schedules.index'));
     }
-    public function requestChange(Request $request, Schedule $schedule)
+
+    /**
+     * Request a shift change.
+     */
+public function showRequestChangeForm($id)
 {
-    $request->validate([
-        'requested_shift_id' => 'required|exists:schedule,id|different:schedule.id',
-        'request_reason' => 'required|string|min:10',
-    ]);
+    $schedule = Schedule::findOrFail($id);
+    $shifts = Schedule::where('id', '!=', $id)->get(); // Get other shifts for selection
 
-    $schedule->update([
-        'requested_shift_id' => $request->requested_shift_id,
-        'shift_status' => 'Pending Change',
-        'request_reason' => $request->request_reason,
-    ]);
-
-    return redirect()->route('schedules.index')->with('success', 'Shift change request submitted.');
+    return view('schedules.request_change', compact('schedule', 'shifts'));
 }
 
-public function approveChange(Schedule $schedule)
-{
-    $schedule->update([
-        'shift_status' => 'Approved',
-        'approved_by' => auth()->id(),
-        'requested_shift_id' => null,
-    ]);
 
-    return redirect()->route('schedules.index')->with('success', 'Shift change approved.');
-}
+    /**
+     * Approve shift change.
+     */
+    public function approveChange($id)
+    {
+        $schedule = Schedule::findOrFail($id);
+        $schedule->update([
+            'shift_status' => 'Approved',
+            'approved_by' => auth()->id(),
+            'requested_shift_id' => null,
+        ]);
 
-public function denyChange(Schedule $schedule)
-{
-    $schedule->update(['shift_status' => 'Denied']);
+        return redirect()->route('schedules.index')->with('success', 'Shift change approved.');
+    }
 
-    return redirect()->route('schedules.index')->with('error', 'Shift change request denied.');
-}
+    /**
+     * Deny shift change.
+     */
+    public function denyChange($id)
+    {
+        $schedule = Schedule::findOrFail($id);
+        $schedule->update(['shift_status' => 'Denied']);
 
+        return redirect()->route('schedules.index')->with('error', 'Shift change request denied.');
+    }
 }
