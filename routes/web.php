@@ -55,6 +55,8 @@ Route::resource('stafftasks', StaffTaskController::class);
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/', [DashboardController::class, 'index']);
 Route::resource('emergencyalerts', EmergencyAlertController::class);
+Route::get('/my-schedule', [ScheduleController::class, 'mySchedule'])->name('staff.schedule');
+
 
 // Emergency Alert Actions
 Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
