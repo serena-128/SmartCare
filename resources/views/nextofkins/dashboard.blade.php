@@ -247,7 +247,7 @@ if ($hour < 12) {
         <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
 
 
-      <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, upcoming appointments and events, and the latest news.</p>
+      <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
   
   <div class="row">
     <!-- Column 1: Resident -->
