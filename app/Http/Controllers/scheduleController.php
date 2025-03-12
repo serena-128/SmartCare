@@ -127,9 +127,28 @@ public function showRequestChangeForm($id)
     return view('schedules.request_change', compact('schedule', 'shifts'));
 }
 
+public function requestChange(Request $request, Schedule $schedule)
+{
+    $request->validate([
+        'requested_shift_id' => 'required|exists:schedule,id|different:schedule.id',
+        'request_reason' => 'required|string|min:10',
+    ]);
+
+    $schedule->update([
+        'requested_shift_id' => $request->requested_shift_id,
+        'shift_status' => 'Pending Change',
+        'request_reason' => $request->request_reason,
+    ]);
+
+    // ✅ Redirect to the confirmation page
+    return redirect()->route('schedules.requestConfirmation');
+}
+
+
 
     /**
      * Approve shift change.
+
      */
     public function approveChange($id)
     {
