@@ -7,7 +7,7 @@ use App\Http\Requests\UpdatescheduleRequest;
 use App\Repositories\ScheduleRepository;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // ✅ Correct placement of Auth
+
 use Flash;
 use Response;
 
