@@ -164,15 +164,22 @@ class ScheduleController extends AppBaseController
     /**
      * Show only the logged-in staff member's schedule.
      */
-    public function mySchedule()
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please log in to view your schedule.');
-        }
+public function mySchedule(Request $request)
+{
+    // ✅ Get logged-in staff email from request
+    $loggedInEmail = $request->user()->email; 
 
-        $staffId = Auth::id(); // Get authenticated staff member's ID
-        $schedules = Schedule::where('staffmemberid', $staffId)->get(); // Fetch schedules for this staff
+    // ✅ Find staff member by email
+    $staffMember = \App\Models\StaffMember::where('email', $loggedInEmail)->first();
 
-        return view('schedules.staff_schedule', compact('schedules'));
+    // ✅ If staff member doesn't exist, redirect to login
+    if (!$staffMember) {
+        return redirect()->route('login')->with('error', 'No schedule found. Please log in.');
     }
+
+    // ✅ Fetch only this staff member's schedules
+    $schedules = Schedule::where('staffmemberid', $staffMember->id)->get();
+
+    return view('schedules.staff_schedule', compact('schedules'));
+}
 }
