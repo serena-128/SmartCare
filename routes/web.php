@@ -96,3 +96,9 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::resource('schedules', App\Http\Controllers\scheduleController::class);
+
+
+    // Shift Change Request Routes
+    Route::post('/schedules/{schedule}/request-change', [ShiftChangeController::class, 'requestChange'])->name('schedules.requestChange');
+    Route::post('/schedules/{schedule}/approve', [ShiftChangeController::class, 'approveChange'])->name('schedules.approveChange');
+    Route::post('/schedules/{schedule}/deny', [ShiftChangeController::class, 'denyChange'])->name('schedules.denyChange');
