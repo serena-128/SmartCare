@@ -55,7 +55,7 @@ Route::resource('stafftasks', StaffTaskController::class);
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/', [DashboardController::class, 'index']);
 Route::resource('emergencyalerts', EmergencyAlertController::class);
-Route::get('/my-schedule', [ScheduleController::class, 'mySchedule'])->name('staff.schedule');
+
 
 
 // Emergency Alert Actions
@@ -111,6 +111,7 @@ Route::get('/schedules/{schedule}/request-change', [ScheduleController::class, '
 
 Route::post('/schedules/{schedule}/request-change', [ScheduleController::class, 'requestChange'])->name('schedules.requestChange');
 
+Route::get('/my-schedule', [ScheduleController::class, 'mySchedule'])->name('staff.schedule');
 
 
 

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatescheduleRequest;
 use App\Repositories\ScheduleRepository;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // ✅ Correct placement of Auth
 use Flash;
 use Response;
 
@@ -26,7 +27,6 @@ class ScheduleController extends AppBaseController
     public function index(Request $request)
     {
         $schedules = $this->scheduleRepository->all();
-
         return view('schedules.index')->with('schedules', $schedules);
     }
 
@@ -45,7 +45,6 @@ class ScheduleController extends AppBaseController
     {
         $input = $request->all();
         $schedule = $this->scheduleRepository->create($input);
-
         Flash::success('Schedule saved successfully.');
         return redirect(route('schedules.index'));
     }
@@ -56,12 +55,10 @@ class ScheduleController extends AppBaseController
     public function show($id)
     {
         $schedule = $this->scheduleRepository->find($id);
-
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
-
         return view('schedules.show')->with('schedule', $schedule);
     }
 
@@ -71,12 +68,10 @@ class ScheduleController extends AppBaseController
     public function edit($id)
     {
         $schedule = $this->scheduleRepository->find($id);
-
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
-
         return view('schedules.edit')->with('schedule', $schedule);
     }
 
@@ -86,15 +81,12 @@ class ScheduleController extends AppBaseController
     public function update($id, UpdatescheduleRequest $request)
     {
         $schedule = $this->scheduleRepository->find($id);
-
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
-
         $schedule = $this->scheduleRepository->update($request->all(), $id);
         Flash::success('Schedule updated successfully.');
-
         return redirect(route('schedules.index'));
     }
 
@@ -104,58 +96,54 @@ class ScheduleController extends AppBaseController
     public function destroy($id)
     {
         $schedule = $this->scheduleRepository->find($id);
-
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
-
         $this->scheduleRepository->delete($id);
         Flash::success('Schedule deleted successfully.');
-
         return redirect(route('schedules.index'));
     }
 
     /**
-     * Request a shift change.
+     * Show the Request Shift Change Form.
      */
-public function showRequestChangeForm($id)
-{
-    $schedule = Schedule::findOrFail($id);
-    $shifts = Schedule::where('id', '!=', $id)->get(); // Get other shifts for selection
-
-    return view('schedules.request_change', compact('schedule', 'shifts'));
-}
-
-public function requestChange(Request $request, Schedule $schedule)
-{
-    $request->validate([
-        'requested_shift_id' => 'required|exists:schedule,id|different:schedule.id',
-        'request_reason' => 'required|string|min:10',
-    ]);
-
-    $schedule->update([
-        'requested_shift_id' => $request->requested_shift_id,
-        'shift_status' => 'Pending Change',
-        'request_reason' => $request->request_reason,
-    ]);
-
-    // ✅ Redirect to the confirmation page
-    return redirect()->route('schedules.requestConfirmation');
-}
-
-
+    public function showRequestChangeForm($id)
+    {
+        $schedule = Schedule::findOrFail($id);
+        $shifts = Schedule::where('id', '!=', $id)->get(); // Get other shifts for selection
+        return view('schedules.request_change', compact('schedule', 'shifts'));
+    }
 
     /**
-     * Approve shift change.
+     * Handle Shift Change Request.
+     */
+    public function requestChange(Request $request, $id)
+    {
+        $request->validate([
+            'requested_shift_id' => 'required|exists:schedule,id|different:id',
+            'request_reason' => 'required|string|min:10',
+        ]);
 
+        $schedule = Schedule::findOrFail($id);
+        $schedule->update([
+            'requested_shift_id' => $request->requested_shift_id,
+            'shift_status' => 'Pending Change',
+            'request_reason' => $request->request_reason,
+        ]);
+
+        return redirect()->route('schedules.index')->with('success', 'Your shift change request has been submitted.');
+    }
+
+    /**
+     * Approve Shift Change.
      */
     public function approveChange($id)
     {
         $schedule = Schedule::findOrFail($id);
         $schedule->update([
             'shift_status' => 'Approved',
-            'approved_by' => auth()->id(),
+            'approved_by' => Auth::id(),
             'requested_shift_id' => null,
         ]);
 
@@ -163,7 +151,7 @@ public function requestChange(Request $request, Schedule $schedule)
     }
 
     /**
-     * Deny shift change.
+     * Deny Shift Change.
      */
     public function denyChange($id)
     {
@@ -171,5 +159,20 @@ public function requestChange(Request $request, Schedule $schedule)
         $schedule->update(['shift_status' => 'Denied']);
 
         return redirect()->route('schedules.index')->with('error', 'Shift change request denied.');
+    }
+
+    /**
+     * Show only the logged-in staff member's schedule.
+     */
+    public function mySchedule()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please log in to view your schedule.');
+        }
+
+        $staffId = Auth::id(); // Get authenticated staff member's ID
+        $schedules = Schedule::where('staffmemberid', $staffId)->get(); // Fetch schedules for this staff
+
+        return view('schedules.staff_schedule', compact('schedules'));
     }
 }
