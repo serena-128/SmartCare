@@ -48,7 +48,7 @@ class EventAppointmentController extends Controller
         } elseif ($type === 'appointment') {
             $data = $request->validate([
                 'resident_id'          => 'required|exists:resident,id',
-                'staffmember_id'       => 'required|exists:staffmembers,id',
+                'staffmember_id'       => 'required|exists:staffmember,id',
                 'appointment_date'     => 'required|date',
                 'appointment_time'     => 'required',
                 'appointment_reason'   => 'nullable|string|max:255',
