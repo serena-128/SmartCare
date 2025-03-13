@@ -29,6 +29,7 @@ class EventAppointmentController extends Controller
     public function store(Request $request)
     {
         $type = $request->input('type');
+        $message = 'Record added successfully.'; // default message
 
         if ($type === 'event') {
             $data = $request->validate([
@@ -45,6 +46,7 @@ class EventAppointmentController extends Controller
                 'end_date'    => $data['event_end_date'] ?? null,
                 'rsvp_count'  => 0,
             ]);
+            $message = 'Event added successfully.';
         } elseif ($type === 'appointment') {
             $data = $request->validate([
                 'resident_id'          => 'required|exists:resident,id',
@@ -63,8 +65,9 @@ class EventAppointmentController extends Controller
                 'reason'        => $data['appointment_reason'] ?? null,
                 'location'      => $data['appointment_location'] ?? null,
             ]);
+            $message = 'Appointment added successfully.';
         }
 
-        return redirect()->back()->with('success', 'Record added successfully.');
+        return redirect()->back()->with('success', $message);
     }
 }

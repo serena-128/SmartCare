@@ -48,6 +48,12 @@
       <h3>Add Event / Appointment</h3>
     </div>
     <div class="card-body">
+        @if(session('success'))
+    <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
       <form action="{{ route('eventAppointment.store') }}" method="POST">
         @csrf
 
