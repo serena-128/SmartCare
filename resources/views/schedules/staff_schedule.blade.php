@@ -14,7 +14,7 @@
                 <th>End Time</th>
                 <th>Shift Type</th>
                 <th>Shift Status</th>
-                <th>Request Change</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -36,10 +36,12 @@
                         </span>
                     </td>
                     <td>
-                        @if($schedule->shift_status === 'Scheduled')
-                             <a href="{{ route('schedules.create') }}" class="btn btn-primary mb-3">Request Change</a>
+                        @if($schedule->leave_requested === 'No')
+                            <a href="{{ route('schedule.requestDayOffForm', $schedule->id) }}" class="btn btn-warning">
+                                Request Day Off
+                            </a>
                         @else
-                            <span class="text-muted">N/A</span>
+                            <button class="btn btn-secondary" disabled>Requested</button>
                         @endif
                     </td>
                 </tr>
