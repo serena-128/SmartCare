@@ -577,71 +577,61 @@ if ($hour < 12) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
           
 
-          <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var eventsCalendarEl = document.getElementById('events-calendar');
+ <!-- Initialize FullCalendar for Appointments -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var appointmentsCalendarEl = document.getElementById('calendar');
+      if (appointmentsCalendarEl) {
+        var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
+          initialView: 'dayGridMonth',
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          },
+          events: [
+            {
+              title: 'Doctor Visit',
+              start: '2025-03-15T10:00:00',
+              description: 'Doctor visit for routine checkup.'
+            },
+            {
+              title: 'Physical Therapy',
+              start: '2025-03-20T14:30:00',
+              description: 'Physical therapy session.'
+            }
+          ],
+          eventClick: function(info) {
+            alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
+          }
+        });
+        appointmentsCalendar.render();
+      }
+    });
+  </script>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  var eventsCalendarEl = document.getElementById('events-calendar');
+  if (eventsCalendarEl) {
     var eventsCalendar = new FullCalendar.Calendar(eventsCalendarEl, {
-      initialView: 'dayGridMonth', // Default view: Month
+      initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Different views
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      events: [
-        {
-          title: 'Family Day',
-          start: '2025-03-25',
-          description: 'Families are invited to spend time with residents.'
-        },
-        {
-          title: 'Music Therapy',
-          start: '2025-03-30',
-          description: 'Live music session to help improve mental well-being.'
-        }
-      ],
+      // Use Laravel route to fetch events
+      events: '/fetch-events',
       eventClick: function(info) {
         alert('Event: ' + info.event.title + '\n' + info.event.extendedProps.description);
       }
     });
-
     eventsCalendar.render();
-  });
-</script>
- 
-          <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var appointmentsCalendarEl = document.getElementById('calendar'); // Appointments calendar container
-
-  if (appointmentsCalendarEl) {
-    // Initialize Appointments FullCalendar
-    var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
-      initialView: 'dayGridMonth', // Default view: Month
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Different views
-      },
-      events: [
-        {
-          title: 'Doctor Visit',
-          start: '2025-03-15T10:00:00',
-          description: 'Doctor visit for routine checkup.'
-        },
-        {
-          title: 'Physical Therapy',
-          start: '2025-03-20T14:30:00',
-          description: 'Physical therapy session.'
-        }
-      ],
-      eventClick: function(info) {
-        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
-    });
-
-    appointmentsCalendar.render(); // Render the calendar
   }
 });
 </script>
+
 
 </body>
 </html>

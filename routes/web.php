@@ -141,4 +141,7 @@ Route::post('/add-event', [EventController::class, 'store'])->name('events.store
 Route::get('nextofkin/complete-profile', [NextOfKinProfileController::class, 'showCompleteProfileForm'])->name('nextofkin.complete-profile');
 Route::post('nextofkin/complete-profile', [NextOfKinProfileController::class, 'completeProfile'])->name('nextofkin.complete-profile.submit');
 
+//events
+Route::get('/fetch-events', [EventController::class, 'fetchEvents']);
+
 

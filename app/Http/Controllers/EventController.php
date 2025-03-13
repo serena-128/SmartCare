@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -29,5 +30,14 @@ class EventController extends Controller
         Event::create($request->all());
 
         return redirect()->back()->with('success', 'Event/Appointment added successfully!');
+    }
+    public function fetchEvents()
+    {
+        // Fetch events from the 'events' table
+        $events = DB::table('events')
+            ->select('title', DB::raw("start_date as start"), 'description')
+            ->get();
+
+        return response()->json($events);
     }
 }
