@@ -108,9 +108,15 @@
           <div class="mb-3">
             <label for="event_id" class="form-label">Select Event</label>
             <select name="event_id" id="event_id" class="form-control">
-              <option value="1">Family Day - March 25, 2025</option>
-              <option value="2">Singing Lessons - March 30, 2025</option>
-            </select>
+    @forelse ($futureEvents as $event)
+        <option value="{{ $event->id }}">
+            {{ $event->title }} - {{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}
+        </option>
+    @empty
+        <option value="">No upcoming events available</option>
+    @endforelse
+</select>
+
           </div>
 
           <button type="submit" class="btn btn-primary w-100">Submit RSVP</button>

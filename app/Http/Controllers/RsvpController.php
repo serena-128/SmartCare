@@ -2,32 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rsvp;
 use Illuminate\Http\Request;
+use App\Models\Event; // Make sure you have an Event model
+use Carbon\Carbon;
 
 class RsvpController extends Controller
 {
-    // Display the RSVP form
+    /**
+     * Show the RSVP form with future events.
+     */
     public function showForm()
     {
-        return view('rsvp-form');  // Make sure this view exists
+        // Fetch events with a date greater than today (assuming the event date is stored in the "date" column)
+        $futureEvents = Event::where('start_date', '>', \Carbon\Carbon::now())->get();
+
+
+        return view('rsvp.form', compact('futureEvents'));
     }
 
-    // Handle form submission
+    /**
+     * Handle RSVP form submission.
+     */
     public function submitRsvp(Request $request)
     {
-        // Validate input
         $request->validate([
-            'event_id' => 'required|exists:events,id',  // Assuming you have an events table
+            'event_id' => 'required|exists:events,id',
         ]);
 
-        // Create the RSVP record
-        $rsvp = new Rsvp();
-        $rsvp->event_id = $request->event_id;
-        $rsvp->user_id = auth()->id();  // Assuming you're using user authentication
-        $rsvp->save();
+        // Retrieve the event
+        $event = Event::findOrFail($request->event_id);
 
-        // Redirect back with a success message
-        return redirect()->route('rsvp.form')->with('success', 'Your RSVP has been submitted!');
+        // Increase the rsvp_count (make sure your events table has a column "rsvp_count")
+        $event->increment('rsvp_count');
+
+        // Optionally, record additional RSVP details in a separate table if needed
+
+        return redirect()->back()->with('success', 'RSVP submitted successfully.');
     }
 }
