@@ -155,4 +155,6 @@ Route::post('/add-event-appointment', [EventAppointmentController::class, 'store
 Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointments'])
      ->name('appointments.fetch');
 
+//profile pic
+Route::get('/profile', [\App\Http\Controllers\NextOfKinDashboardController::class, 'profile'])->name('nextofkin.profile')->middleware('auth:nextofkin');
 

@@ -43,6 +43,18 @@ class NextOfKinDashboardController extends Controller
     return view('nextofkins.dashboard', compact('resident', 'nextOfKin'));
 }
 
+public function profile()
+{
+    // Get the authenticated Next of Kin
+    $nextOfKin = Auth::guard('nextofkin')->user();
+    
+    if (!$nextOfKin) {
+        return redirect()->route('nextofkin.login')->with('error', 'Please log in first.');
+    }
+
+    // Return the profile view with the user's data
+    return view('nextofkins.profile', compact('nextOfKin'));
+}
 
 
 }
