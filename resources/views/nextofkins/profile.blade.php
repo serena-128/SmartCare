@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Back to Dashboard Button -->
+    <a href="{{ url('/dashboard#') }}" class="btn btn-primary back-button">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
   <title>Your Profile - SmartCare</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -34,7 +38,7 @@
       </div>
     </div>
 
-    <a href="{{ route('nextofkin.dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+    
   </div>
 
   <!-- Bootstrap JS -->
