@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property integer $roomnumber
  * @property string $admissiondate
  */
-class resident extends Model
+class Resident extends Model
 {
     use SoftDeletes;
 

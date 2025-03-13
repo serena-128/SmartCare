@@ -153,4 +153,37 @@ class appointmentController extends AppBaseController
 
         return redirect(route('appointments.index'));
     }
+    public function fetchAppointments(Request $request)
+{
+    // Get the logged-in Next-of-Kin (using your custom guard)
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    // If there's no Next-of-Kin or resident assigned, return empty JSON
+    if (!$nextOfKin || !$nextOfKin->residentid) {
+        return response()->json([]);
+    }
+
+    // Get the appointments for the assigned resident
+    $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)->get();
+
+    // Format the appointments for FullCalendar
+    // Adjust field names as necessary (ensure date/time are in ISO format)
+    $formattedAppointments = $appointments->map(function ($appointment) {
+        // Combine date and time if needed:
+        $start = $appointment->date; // assuming 'date' contains date
+        // Optionally, if you store time separately:
+        if($appointment->time) {
+            $start .= 'T' . $appointment->time;
+        }
+        return [
+            'title' => $appointment->reason, // Or any field you want as title
+            'start' => $start,
+            // You can add extra properties:
+            'description' => $appointment->location ?? '',
+        ];
+    });
+
+    return response()->json($formattedAppointments);
+}
+
 }

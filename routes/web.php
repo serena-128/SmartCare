@@ -23,6 +23,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NextOfKinProfileController;
 use App\Http\Controllers\EventAppointmentController;
+use App\Http\Controllers\NextOfKinDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,9 +86,7 @@ Route::prefix('nextofkin')->group(function () {
 
 // Direct login to next of kin dashboard
 Route::middleware('auth:nextofkin')->group(function () {
-    Route::get('dashboard', function () {
-        return view('nextofkins.dashboard'); // This view should exist
-    })->name('nextofkins.dashboard');
+    Route::get('dashboard', [NextOfKinDashboardController::class, 'index'])->name('nextofkins.dashboard');
 });
 
 //Optional link for non registered next of kin users on the login 
@@ -151,5 +150,9 @@ Route::get('/add-event-appointment', [EventAppointmentController::class, 'create
 
 Route::post('/add-event-appointment', [EventAppointmentController::class, 'store'])
     ->name('eventAppointment.store');
+
+//appointments
+Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointments'])
+     ->name('appointments.fetch');
 
 

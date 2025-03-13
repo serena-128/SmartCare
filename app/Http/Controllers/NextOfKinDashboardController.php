@@ -31,7 +31,7 @@ class NextOfKinDashboardController extends Controller
     }
 
     // Fetch the resident assigned to this Next-of-Kin
-    $resident = Resident::where('id', $nextOfKin->residentid)->first();
+       $resident = Resident::find($nextOfKin->residentid);
 
     // Debugging: Check if Resident is found
     if (!$resident) {

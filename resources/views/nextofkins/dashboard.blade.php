@@ -553,36 +553,27 @@ if ($hour < 12) {
 
  <!-- Initialize FullCalendar for Appointments -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var appointmentsCalendarEl = document.getElementById('calendar');
-      if (appointmentsCalendarEl) {
-        var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
-          initialView: 'dayGridMonth',
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          },
-          events: [
-            {
-              title: 'Doctor Visit',
-              start: '2025-03-15T10:00:00',
-              description: 'Doctor visit for routine checkup.'
-            },
-            {
-              title: 'Physical Therapy',
-              start: '2025-03-20T14:30:00',
-              description: 'Physical therapy session.'
-            }
-          ],
-          eventClick: function(info) {
-            alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
-          }
-        });
-        appointmentsCalendar.render();
+document.addEventListener('DOMContentLoaded', function() {
+  var appointmentsCalendarEl = document.getElementById('calendar');
+  if (appointmentsCalendarEl) {
+    var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      // Load appointments dynamically from the route:
+      events: '{{ route("appointments.fetch") }}',
+      eventClick: function(info) {
+        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
       }
     });
-  </script>
+    appointmentsCalendar.render();
+  }
+});
+</script>
+
 
   <script>
 document.addEventListener('DOMContentLoaded', function() {

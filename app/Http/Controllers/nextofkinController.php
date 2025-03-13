@@ -153,4 +153,5 @@ class nextofkinController extends AppBaseController
 
         return redirect(route('nextofkins.index'));
     }
+    
 }
