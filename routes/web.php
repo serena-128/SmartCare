@@ -163,4 +163,6 @@ Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointme
 //profile pic
 Route::get('/profile', [\App\Http\Controllers\NextOfKinDashboardController::class, 'profile'])->name('nextofkin.profile')->middleware('auth:nextofkin');
 
+//updating profile
+Route::post('/profile/update', [NextOfKinDashboardController::class, 'updateProfile'])->name('nextofkin.profile.update');
 

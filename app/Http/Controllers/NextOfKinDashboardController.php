@@ -55,6 +55,40 @@ public function profile()
     // Return the profile view with the user's data
     return view('nextofkins.profile', compact('nextOfKin'));
 }
+    public function updateProfile(Request $request)
+{
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    // Validate Input
+    $request->validate([
+        'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'firstname' => 'required|string|max:50',
+        'lastname' => 'required|string|max:50',
+    ]);
+
+    // Handle Profile Picture Upload
+    if ($request->hasFile('profile_picture')) {
+        $image = $request->file('profile_picture');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $imagePath = $image->storeAs('profile_pictures', $imageName, 'public');
+
+        // Delete old profile picture if exists
+        if ($nextOfKin->profile_picture) {
+            \Storage::disk('public')->delete($nextOfKin->profile_picture);
+        }
+
+        // Update profile picture path
+        $nextOfKin->profile_picture = $imagePath;
+    }
+
+    // Update Other Fields
+    $nextOfKin->firstname = $request->firstname;
+    $nextOfKin->lastname = $request->lastname;
+    $nextOfKin->save();
+
+    return redirect()->route('nextofkin.profile')->with('success', 'Profile updated successfully.');
+}
+
 
 
 }
