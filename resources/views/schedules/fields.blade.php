@@ -1,31 +1,48 @@
-{!! Form::hidden('schedule_id', $schedule->id ?? '') !!}
+<div class="container">
+    <div class="card shadow-lg p-4">
+        <h3 class="text-center mb-4">Request Shift Change</h3>
+        
+        {!! Form::open(['route' => 'shiftChange.store', 'method' => 'POST']) !!}
+        
+        {!! Form::hidden('schedule_id', $schedule->id ?? '') !!}
 
-<div class="form-group col-sm-6">
-    {!! Form::label('shiftdate', 'Current Shift Date:') !!}
-    {!! Form::date('shiftdate', $schedule->shiftdate ?? '', ['class' => 'form-control', 'readonly']) !!}
-</div>
+        <div class="row">
+            <!-- Shift Date -->
+            <div class="form-group col-md-6">
+                {!! Form::label('shiftdate', 'Shift Date:', ['class' => 'font-weight-bold']) !!}
+                {!! Form::date('shiftdate', $schedule->shiftdate ?? '', ['class' => 'form-control']) !!}
+            </div>
 
-<div class="form-group col-sm-6">
-    {!! Form::label('starttime', 'Current Start Time:') !!}
-    {!! Form::time('starttime', $schedule->starttime ?? '', ['class' => 'form-control', 'readonly']) !!}
-</div>
+            <!-- Start Time -->
+            <div class="form-group col-md-6">
+                {!! Form::label('starttime', 'Start Time:', ['class' => 'font-weight-bold']) !!}
+                {!! Form::time('starttime', $schedule->starttime ?? '', ['class' => 'form-control']) !!}
+            </div>
 
-<div class="form-group col-sm-6">
-    {!! Form::label('endtime', 'Current End Time:') !!}
-    {!! Form::time('endtime', $schedule->endtime ?? '', ['class' => 'form-control', 'readonly']) !!}
-</div>
+            <!-- End Time -->
+            <div class="form-group col-md-6">
+                {!! Form::label('endtime', 'End Time:', ['class' => 'font-weight-bold']) !!}
+                {!! Form::time('endtime', $schedule->endtime ?? '', ['class' => 'form-control']) !!}
+            </div>
 
-<div class="form-group col-sm-6">
-    {!! Form::label('shifttype', 'Current Shift Type:') !!}
-    {!! Form::text('shifttype', $schedule->shifttype ?? '', ['class' => 'form-control', 'readonly']) !!}
-</div>
+            <!-- Shift Type -->
+            <div class="form-group col-md-6">
+                {!! Form::label('shifttype', 'Shift Type:', ['class' => 'font-weight-bold']) !!}
+                {!! Form::text('shifttype', $schedule->shifttype ?? '', ['class' => 'form-control']) !!}
+            </div>
+        </div>
 
-<div class="form-group col-sm-12">
-    {!! Form::label('request_reason', 'Reason for Shift Change:') !!}
-    {!! Form::textarea('request_reason', null, ['class' => 'form-control', 'required']) !!}
-</div>
+        <!-- Reason for Shift Change -->
+        <div class="form-group">
+            {!! Form::label('request_reason', 'Reason for Shift Change:', ['class' => 'font-weight-bold']) !!}
+            {!! Form::textarea('request_reason', null, ['class' => 'form-control', 'rows' => 4, 'required']) !!}
+        </div>
 
-<!-- Submit Button -->
-<div class="form-group col-sm-12">
-    {!! Form::submit('Request Shift Change', ['class' => 'btn btn-primary']) !!}
+        <!-- Submit Button -->
+        <div class="text-center mt-3">
+            {!! Form::submit('Request Shift Change', ['class' => 'btn btn-primary btn-lg']) !!}
+        </div>
+
+        {!! Form::close() !!}
+    </div>
 </div>

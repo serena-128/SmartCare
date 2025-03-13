@@ -16,6 +16,7 @@ use App\Http\Controllers\StaffTaskController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -105,10 +106,5 @@ Route::middleware(['auth'])->group(function () {
 // Grouping all routes under the schedules resource
 Route::resource('schedules', ScheduleController::class);
 
-
-
-Route::post('/shift-change', [ShiftChangeController::class, 'store'])->name('shiftChange.store');
-
-
-
+Route::post('/shift-change', [ScheduleController::class, 'store'])->name('shiftChange.store');
 

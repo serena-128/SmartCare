@@ -8,6 +8,7 @@ use App\Repositories\ScheduleRepository;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use App\Models\StaffMember;
 
 use Flash;
@@ -15,7 +16,7 @@ use Response;
 
 class ScheduleController extends AppBaseController
 {
-    /** @var ScheduleRepository $scheduleRepository */
+    /** @var ScheduleRepository */
     private $scheduleRepository;
 
     public function __construct(ScheduleRepository $scheduleRepo)
@@ -113,30 +114,37 @@ class ScheduleController extends AppBaseController
     public function showRequestChangeForm($id)
     {
         $schedule = Schedule::findOrFail($id);
-        $shifts = Schedule::where('id', '!=', $id)->get(); // Get other shifts for selection
-        return view('schedules.request_change', compact('schedule', 'shifts'));
+        return view('schedules.request_change', compact('schedule'));
     }
 
     /**
      * Handle Shift Change Request.
      */
-public function requestChange(Request $request, $id)
-{
-    $request->validate([
-        'requested_shift_id' => 'required|exists:schedule,id|different:id',
-        'request_reason' => 'required|string|min:10',
-    ]);
+    public function requestChange(Request $request, $id)
+    {
+        $request->validate([
+            'shiftdate' => 'required|date',
+            'starttime' => 'required',
+            'endtime' => 'required',
+            'shifttype' => 'required|string',
+            'request_reason' => 'required|string|min:10',
+        ]);
 
-    $schedule = Schedule::findOrFail($id);
-    $schedule->update([
-        'requested_shift_id' => $request->requested_shift_id,
-        'shift_status' => 'Pending Change',
-        'request_reason' => $request->request_reason,
-    ]);
+        $schedule = Schedule::findOrFail($id);
 
-    // ✅ Redirect to Dashboard with Success Message
-    return redirect()->route('dashboard')->with('success', 'Your shift change request has been submitted. A manager will review it.');
-}
+        // Update schedule entry to mark shift change request
+        $schedule->update([
+            'requested_shift_id' => $id, // Mark it as a requested shift change
+            'shiftdate' => $request->shiftdate,
+            'starttime' => $request->starttime,
+            'endtime' => $request->endtime,
+            'shifttype' => $request->shifttype,
+            'request_reason' => $request->request_reason,
+            'shift_status' => 'Pending Change',
+        ]);
+
+        return redirect()->route('schedules.index')->with('success', 'Your shift change request has been submitted. A manager will review it.');
+    }
 
     /**
      * Approve Shift Change.
@@ -167,26 +175,26 @@ public function requestChange(Request $request, $id)
     /**
      * Show only the logged-in staff member's schedule.
      */
-public function mySchedule(Request $request)
-{
-    // ✅ Check if the session contains the staff ID
-    if (!Session::has('staff_id')) {
-        return redirect()->route('login')->with('error', 'Please log in to view your schedule.');
+    public function mySchedule(Request $request)
+    {
+        // Ensure the session contains the staff ID
+        if (!Session::has('staff_id')) {
+            return redirect()->route('login')->with('error', 'Please log in to view your schedule.');
+        }
+
+        // Get staff ID from session
+        $staffId = Session::get('staff_id');
+
+        // Fetch staff details
+        $staffMember = StaffMember::find($staffId);
+
+        if (!$staffMember) {
+            return redirect()->route('login')->with('error', 'No schedule found.');
+        }
+
+        // Fetch only the logged-in staff member's schedule
+        $schedules = Schedule::where('staffmemberid', $staffId)->get();
+
+        return view('schedules.staff_schedule', compact('schedules'));
     }
-
-    // ✅ Get staff ID from session
-    $staffId = Session::get('staff_id');
-
-    // ✅ Fetch staff details
-    $staffMember = StaffMember::find($staffId);
-
-    if (!$staffMember) {
-        return redirect()->route('login')->with('error', 'No schedule found.');
-    }
-
-    // ✅ Fetch only the logged-in staff member's schedule
-    $schedules = Schedule::where('staffmemberid', $staffId)->get();
-
-    return view('schedules.staff_schedule', compact('schedules'));
-}
 }
