@@ -27,6 +27,7 @@ public function index()
         'recentAlerts' => EmergencyAlert::latest()->take(5)->get(),
         'onDutyStaff' => Staffmember::where('staff_role', 'LIKE', '%Nurse%')->get(),
         'assignedResidents' => $assignedResidents, // Pass assigned residents to the view
+        'carePlans' => CarePlan::with('resident')->get() // Fetch care plans with resident details
     ]);
 }
 
