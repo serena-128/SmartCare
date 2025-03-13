@@ -76,16 +76,14 @@ class careplan extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function residentid()
-    {
-        return $this->belongsTo(\App\Models\Resident::class, 'residentid');
-    }
+public function resident()
+{
+    return $this->belongsTo(Resident::class, 'residentid');
+}
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function staffmemberid()
-    {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'staffmemberid');
-    }
+public function staffMember()
+{
+    return $this->belongsTo(StaffMember::class, 'staffmemberid');
+}
+
 }
