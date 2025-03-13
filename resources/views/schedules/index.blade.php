@@ -3,8 +3,6 @@
 @section('content')
 <div class="container mt-5">
     <h2 class="text-center">Schedules</h2>
-    
-  
 
     <!-- ✅ Add a Bootstrap-styled table -->
     <div class="table-responsive">
@@ -21,7 +19,7 @@
                     <th>Shift Status</th>
                     <th>Request Reason</th>
                     <th>Approved By</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,20 +36,14 @@
                         <td>{{ $schedule->request_reason ?? 'N/A' }}</td>
                         <td>{{ $schedule->approver ? $schedule->approver->firstname : 'N/A' }}</td>
                         <td>
-                            <a href="{{ route('schedules.create') }}" class="btn btn-primary mb-3">
-                                Request Change
-                            </a>
-                            <td>
-    @if($schedule->leave_requested === 'No')
-        <form action="{{ route('schedule.requestDayOff', $schedule->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-warning">Request Day Off</button>
-        </form>
-    @else
-        <button class="btn btn-secondary" disabled>Requested</button>
-    @endif
-</td>
-
+                            <!-- ✅ Fixed Request Day Off Button -->
+                            @if($schedule->leave_requested === 'No')
+                                <a href="{{ route('schedule.requestDayOffForm', $schedule->id) }}" class="btn btn-warning">
+                                    Request Day Off
+                                </a>
+                            @else
+                                <button class="btn btn-secondary" disabled>Requested</button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

@@ -99,7 +99,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::post('/schedule/request-day-off/{id}', [ScheduleController::class, 'requestDayOff'])->name('schedule.requestDayOff');
+Route::get('/schedule/request-day-off/{id}', [scheduleController::class, 'showRequestDayOffForm'])->name('schedule.requestDayOffForm');
+Route::post('/schedule/request-day-off/{id}/submit', [ScheduleController::class, 'submitDayOffRequest'])->name('schedule.submitDayOffRequest');
+
 
 
 

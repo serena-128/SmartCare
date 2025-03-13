@@ -188,17 +188,17 @@ public function requestChange(Request $request, $id)
 
         return view('schedules.staff_schedule', compact('schedules'));
     }
-    public function requestDayOff($id)
+public function showRequestDayOffForm($id)
 {
     $schedule = Schedule::findOrFail($id);
-    
-    // Update leave request
-    $schedule->update([
-        'leave_requested' => 'Yes'
-    ]);
-
-    return redirect()->route('schedules.index')->with('success', 'Your day-off request has been submitted.');
+    return view('schedules.request_day_off', compact('schedule'));
 }
+public function submitDayOffRequest(Request $request, $id)
+{
+    // Redirect to a new page that displays "Done"
+    return view('schedules.done');
+}
+
 
 
 }
