@@ -164,27 +164,26 @@ class appointmentController extends AppBaseController
         return response()->json([]);
     }
 
-    // Get the appointments for the assigned resident
+    // Fetch appointments for the resident linked to this next-of-kin
     $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)->get();
 
-    // Format the appointments for FullCalendar
-    // Adjust field names as necessary (ensure date/time are in ISO format)
+    // Format the appointments for FullCalendar using Carbon
     $formattedAppointments = $appointments->map(function ($appointment) {
-        // Combine date and time if needed:
-        $start = $appointment->date; // assuming 'date' contains date
-        // Optionally, if you store time separately:
-        if($appointment->time) {
-            $start .= 'T' . $appointment->time;
+        // Create a Carbon instance from the date field
+        $start = \Carbon\Carbon::parse($appointment->date);
+        // If a time is provided, merge it with the date
+        if ($appointment->time) {
+            $start->setTimeFromTimeString($appointment->time);
         }
         return [
-            'title' => $appointment->reason, // Or any field you want as title
-            'start' => $start,
-            // You can add extra properties:
+            'title'       => $appointment->reason, // Use the reason as the event title
+            'start'       => $start->toIso8601String(), // Format as ISO8601
             'description' => $appointment->location ?? '',
         ];
     });
 
     return response()->json($formattedAppointments);
 }
+
 
 }
