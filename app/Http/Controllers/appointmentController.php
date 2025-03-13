@@ -184,6 +184,52 @@ class appointmentController extends AppBaseController
 
     return response()->json($formattedAppointments);
 }
+public function rsvpForm()
+{
+    // Get the logged-in Next-of-Kin using your custom guard
+    $nextOfKin = Auth::guard('nextofkin')->user();
 
+    // Check if the next-of-kin is assigned to a resident
+    if (!$nextOfKin || !$nextOfKin->residentid) {
+        return redirect()->back()->with('error', 'No resident assigned.');
+    }
+
+    // Fetch only future appointments for the resident
+    $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)
+        ->whereDate('date', '>=', now()) // Get only future appointments
+        ->orderBy('date', 'asc')
+        ->get();
+
+    return view('appointments.rsvp', compact('appointments'));
+}
+
+
+public function rsvpSubmit(Request $request)
+{
+    $request->validate([
+        'appointment_id' => 'required|exists:appointment,id',
+        'rsvp_status'    => 'required|in:yes,no,maybe',
+        'comments'       => 'nullable|string',
+    ]);
+
+    // Get the logged-in next-of-kin
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    // Optionally, check if the appointment belongs to the next-of-kin's resident
+    $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+    if ($appointment->residentid !== $nextOfKin->residentid) {
+        return redirect()->back()->with('error', 'You are not authorized to RSVP for this appointment.');
+    }
+
+    // Create the RSVP record in appointment_rsvps table
+    \App\Models\AppointmentRsvp::create([
+        'appointment_id' => $appointment->id,
+        'nextofkin_id'   => $nextOfKin->id,
+        'rsvp_status'    => $request->rsvp_status,
+        'comments'       => $request->comments,
+    ]);
+
+    return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
+}
 
 }

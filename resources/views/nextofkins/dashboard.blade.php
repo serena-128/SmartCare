@@ -383,8 +383,14 @@ if ($hour < 12) {
 
 
         <div id="appointments" class="dashboard-section" style="display: none;">
-          <h1>Upcoming Appointments</h1>
-          <p>View and manage upcoming appointments.</p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Upcoming Appointments</h1>
+        <a href="{{ route('appointments.rsvp.form') }}" class="btn btn-primary">
+            <i class="fas fa-check-circle"></i> RSVP to Appointment
+        </a>
+    </div>
+    
+    <p>View and manage upcoming appointments.</p>
 
           <!-- Calendar Container -->
           <div id="calendar"></div>

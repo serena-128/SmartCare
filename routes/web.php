@@ -97,6 +97,11 @@ Route::get('/signed-out', function () {
     return view('signedout');
 })->name('signed.out');
 
+//rsvp to appointment
+Route::get('/appointments/rsvp', [AppointmentController::class, 'rsvpForm'])->name('appointments.rsvp.form');
+Route::post('/appointments/rsvp', [AppointmentController::class, 'submitRsvp'])->name('appointments.rsvp.submit');
+
+
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
 Route::resource('diagnoses', DiagnosisController::class);
@@ -157,4 +162,5 @@ Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointme
 
 //profile pic
 Route::get('/profile', [\App\Http\Controllers\NextOfKinDashboardController::class, 'profile'])->name('nextofkin.profile')->middleware('auth:nextofkin');
+
 

@@ -91,4 +91,9 @@ class appointment extends Model
     {
         return $this->belongsTo(\App\Models\Staffmember::class, 'staffmemberid');
     }
+    public function rsvps()
+{
+    return $this->hasMany(\App\Models\AppointmentRsvp::class, 'appointment_id');
+}
+
 }
