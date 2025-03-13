@@ -84,6 +84,12 @@
     </style>
 </head>
 <body>
+    
+    <!-- Back to Dashboard Button -->
+    <a href="{{ url('/dashboard#') }}" class="btn btn-primary back-button">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    
   <div class="container">
     <div class="card">
       <div class="card-header">
