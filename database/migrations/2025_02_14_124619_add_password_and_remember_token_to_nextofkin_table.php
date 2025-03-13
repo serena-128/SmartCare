@@ -26,9 +26,9 @@ class AddPasswordAndRememberTokenToNextofkinTable extends Migration
      */
     public function down()
     {
-    Schema::table('nextofkin', function (Blueprint $table) {
-        $table->dropColumn('password');
-        $table->dropColumn('remember_token');
-    });
+        Schema::table('nextofkin', function (Blueprint $table) {
+            $table->dropColumn('password');
+            $table->dropColumn('remember_token');
+        });
     }
 }
