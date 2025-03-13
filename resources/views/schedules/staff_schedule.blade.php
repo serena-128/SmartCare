@@ -37,7 +37,7 @@
                     </td>
                     <td>
                         @if($schedule->shift_status === 'Scheduled')
-                            <a href="{{ route('schedules.showRequestChange', $schedule->id) }}" class="btn btn-warning btn-sm">Request Change</a>
+                             <a href="{{ route('schedules.create') }}" class="btn btn-primary mb-3">Request Change</a>
                         @else
                             <span class="text-muted">N/A</span>
                         @endif

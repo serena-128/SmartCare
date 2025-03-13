@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h2 class="text-center">Schedules</h2>
     
-    <a href="{{ route('schedules.create') }}" class="btn btn-primary mb-3">Add New</a>
+  
 
     <!-- ✅ Add a Bootstrap-styled table -->
     <div class="table-responsive">
@@ -38,7 +38,7 @@
                         <td>{{ $schedule->request_reason ?? 'N/A' }}</td>
                         <td>{{ $schedule->approver ? $schedule->approver->firstname : 'N/A' }}</td>
                         <td>
-                            <a href="{{ route('schedules.requestChange', $schedule->id) }}" class="btn btn-warning btn-sm">
+                            <a href="{{ route('schedules.create') }}" class="btn btn-primary mb-3">
                                 Request Change
                             </a>
                         </td>

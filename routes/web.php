@@ -107,11 +107,7 @@ Route::resource('schedules', ScheduleController::class);
 
 
 
-// Show Request Shift Change Form
-Route::get('/schedules/{schedule}/request-change', [ScheduleController::class, 'showRequestChangeForm'])
-    ->name('schedules.showRequestChange');
-
-Route::post('/schedules/{schedule}/request-change', [ScheduleController::class, 'requestChange'])->name('schedules.requestChange');
+Route::post('/shift-change', [ShiftChangeController::class, 'store'])->name('shiftChange.store');
 
 
 

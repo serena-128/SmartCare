@@ -2,6 +2,14 @@
 
 
 
+
+    <!-- ✅ Show Success Messages -->
+    @if(session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
+        </div>
+    @endif
+
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 

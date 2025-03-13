@@ -120,22 +120,23 @@ class ScheduleController extends AppBaseController
     /**
      * Handle Shift Change Request.
      */
-    public function requestChange(Request $request, $id)
-    {
-        $request->validate([
-            'requested_shift_id' => 'required|exists:schedule,id|different:id',
-            'request_reason' => 'required|string|min:10',
-        ]);
+public function requestChange(Request $request, $id)
+{
+    $request->validate([
+        'requested_shift_id' => 'required|exists:schedule,id|different:id',
+        'request_reason' => 'required|string|min:10',
+    ]);
 
-        $schedule = Schedule::findOrFail($id);
-        $schedule->update([
-            'requested_shift_id' => $request->requested_shift_id,
-            'shift_status' => 'Pending Change',
-            'request_reason' => $request->request_reason,
-        ]);
+    $schedule = Schedule::findOrFail($id);
+    $schedule->update([
+        'requested_shift_id' => $request->requested_shift_id,
+        'shift_status' => 'Pending Change',
+        'request_reason' => $request->request_reason,
+    ]);
 
-        return redirect()->route('schedules.index')->with('success', 'Your shift change request has been submitted.');
-    }
+    // ✅ Redirect to Dashboard with Success Message
+    return redirect()->route('dashboard')->with('success', 'Your shift change request has been submitted. A manager will review it.');
+}
 
     /**
      * Approve Shift Change.

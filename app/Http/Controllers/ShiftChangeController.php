@@ -8,21 +8,27 @@ use Illuminate\Support\Facades\Auth;
 
 class ShiftChangeController extends Controller
 {
-public function requestChange(Request $request, Schedule $schedule)
+public function store(Request $request)
 {
     $request->validate([
-        'requested_shift_id' => 'required|exists:schedule,id|different:schedule.id',
-        'request_reason' => 'required|string|min:10',
+        'schedule_id' => 'required|exists:schedules,id',
+        'new_shift_id' => 'required|exists:schedules,id',
+        'request_reason' => 'required|string',
     ]);
 
-    $schedule->update([
-        'requested_shift_id' => $request->requested_shift_id,
-        'shift_status' => 'Pending Change',
+    ShiftChange::create([
+        'schedule_id' => $request->schedule_id,
+        'requested_shift_id' => $request->new_shift_id,
         'request_reason' => $request->request_reason,
+        'status' => 'Pending',
     ]);
 
-    // ✅ Redirect to the confirmation page
-    return redirect()->route('schedules.requestConfirmation');
+    return redirect()->route('schedules.index')->with('success', 'Shift change request submitted.');
+}
+public function create()
+{
+    $schedule = new \App\Models\Schedule();
+    return view('schedules.create', compact('schedule'));
 }
 
     public function approveChange(Schedule $schedule)
