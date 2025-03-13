@@ -5,7 +5,7 @@ use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\DiagnosisController;
 use App\Http\Controllers\EmergencyAlertController;
 use App\Http\Controllers\StandardTaskController;
-use App\Http\Controllers\CarePlanController;
+
 use App\Http\Controllers\DoseController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\NextOfKinController;
@@ -45,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('residents', ResidentController::class);
 
 Route::resource('standardtasks', StandardTaskController::class);
-Route::resource('careplans', CarePlanController::class);
+
 Route::resource('doses', DoseController::class);
 Route::resource('appointments', AppointmentController::class);
 Route::resource('nextofkins', NextOfKinController::class);
@@ -111,3 +111,6 @@ Route::resource('schedules', ScheduleController::class);
 
 Route::post('/shift-change', [ScheduleController::class, 'store'])->name('shiftChange.store');
 
+
+
+Route::resource('careplans', App\Http\Controllers\careplanController::class);

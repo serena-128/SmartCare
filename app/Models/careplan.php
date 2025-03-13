@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * Class careplan
  * @package App\Models
- * @version February 12, 2025, 9:34 pm UTC
+ * @version March 13, 2025, 11:17 pm UTC
  *
  * @property \App\Models\Resident $residentid
- * @property \App\Models\Role $roleid
+ * @property \App\Models\Staffmember $staffmemberid
  * @property integer $residentid
- * @property integer $roleid
+ * @property integer $staffmemberid
  * @property string $caregoals
  * @property string $caretreatment
  * @property string $notes
@@ -37,7 +37,7 @@ class careplan extends Model
 
     public $fillable = [
         'residentid',
-        'roleid',
+        'staffmemberid',
         'caregoals',
         'caretreatment',
         'notes'
@@ -51,7 +51,7 @@ class careplan extends Model
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
-        'roleid' => 'integer',
+        'staffmemberid' => 'integer',
         'caregoals' => 'string',
         'caretreatment' => 'string',
         'notes' => 'string'
@@ -63,8 +63,8 @@ class careplan extends Model
      * @var array
      */
     public static $rules = [
-        'residentid' => 'nullable|integer',
-        'roleid' => 'nullable|integer',
+        'residentid' => 'required|integer',
+        'staffmemberid' => 'nullable|integer',
         'caregoals' => 'nullable|string|max:100',
         'caretreatment' => 'nullable|string|max:100',
         'notes' => 'nullable|string|max:200',
@@ -76,17 +76,16 @@ class careplan extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-public function resident()
-{
-    return $this->belongsTo(Resident::class, 'residentid');
-}
-
+    public function residentid()
+    {
+        return $this->belongsTo(\App\Models\Resident::class, 'residentid');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function roleid()
+    public function staffmemberid()
     {
-        return $this->belongsTo(\App\Models\Role::class, 'roleid');
+        return $this->belongsTo(\App\Models\Staffmember::class, 'staffmemberid');
     }
 }
