@@ -204,32 +204,32 @@ public function rsvpForm()
 }
 
 
-public function rsvpSubmit(Request $request)
+public function submitRsvp(Request $request)
 {
-    $request->validate([
-        'appointment_id' => 'required|exists:appointment,id',
-        'rsvp_status'    => 'required|in:yes,no,maybe',
-        'comments'       => 'nullable|string',
-    ]);
-
     // Get the logged-in next-of-kin
     $nextOfKin = Auth::guard('nextofkin')->user();
 
-    // Optionally, check if the appointment belongs to the next-of-kin's resident
-    $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
-    if ($appointment->residentid !== $nextOfKin->residentid) {
-        return redirect()->back()->with('error', 'You are not authorized to RSVP for this appointment.');
+    if (!$nextOfKin) {
+        return redirect()->route('appointments.rsvp.form')->with('error', 'You must be logged in to RSVP.');
     }
 
-    // Create the RSVP record in appointment_rsvps table
-    \App\Models\AppointmentRsvp::create([
-        'appointment_id' => $appointment->id,
-        'nextofkin_id'   => $nextOfKin->id,
-        'rsvp_status'    => $request->rsvp_status,
-        'comments'       => $request->comments,
+    // Validate the form input
+    $request->validate([
+        'appointment_id' => 'required|exists:appointment,id',
+        'rsvp_status' => 'required|in:yes,no,maybe',
+        'comments' => 'nullable|string|max:255',
     ]);
+
+    // Find the appointment
+    $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+
+    // Update RSVP status
+    $appointment->rsvp_status = $request->rsvp_status;
+    $appointment->rsvp_comments = $request->comments;
+    $appointment->save();
 
     return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
 }
+
 
 }
