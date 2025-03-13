@@ -1,21 +1,16 @@
 <?php
+
 namespace App\Models;
 
-use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Carbon\Carbon; // Import Carbon for time formatting
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Schedule extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory, SoftDeletes;
 
-    public $table = 'schedule';
-
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
-
-    protected $dates = ['deleted_at', 'shiftdate'];
+    protected $table = 'schedule'; // Ensure the correct table name
 
     protected $fillable = [
         'staffmemberid',
@@ -27,49 +22,27 @@ class Schedule extends Model
         'requested_shift_id',
         'shift_status',
         'request_reason',
-        'approved_by'
+        'approved_by',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'staffmemberid' => 'integer',
-        'staff_role' => 'string',
-        'shiftdate' => 'date',
-        'starttime' => 'string', // Fixed the issue
-        'endtime' => 'string',   // Fixed the issue
-        'shifttype' => 'string',
-        'requested_shift_id' => 'integer',
-        'shift_status' => 'string',
-        'request_reason' => 'string',
-        'approved_by' => 'integer'
+    // ✅ Add the missing static property for validation rules
+    public static $rules = [
+        'staffmemberid' => 'required|exists:staffmember,id',
+        'shiftdate' => 'required|date',
+        'starttime' => 'required',
+        'endtime' => 'required',
+        'shifttype' => 'required|string',
+        'request_reason' => 'nullable|string',
     ];
 
-    /**
-     * Accessor to format time fields properly
-     */
-    public function getStartTimeAttribute($value)
-    {
-        return Carbon::createFromFormat('H:i:s', $value)->format('h:i A'); // Formats to 12-hour time
-    }
-
-    public function getEndTimeAttribute($value)
-    {
-        return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-    }
-
-    /**
-     * Get the staff member assigned to this shift.
-     */
+    // Define relationships
     public function staffMember()
     {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'staffmemberid');
+        return $this->belongsTo(StaffMember::class, 'staffmemberid');
     }
 
-    /**
-     * Get the staff member who approved the shift change request.
-     */
-    public function approvedBy()
+    public function requestedShift()
     {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'approved_by');
+        return $this->belongsTo(Schedule::class, 'requested_shift_id');
     }
 }

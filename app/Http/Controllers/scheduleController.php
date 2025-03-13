@@ -36,10 +36,14 @@ class ScheduleController extends AppBaseController
     /**
      * Show the form for creating a new schedule.
      */
-    public function create()
-    {
-        return view('schedules.create');
-    }
+public function create()
+{
+    $staffMembers = StaffMember::all(); // Get all staff members
+    $schedule = new Schedule(); // Ensure schedule exists
+
+    return view('schedules.create', compact('schedule', 'staffMembers'));
+}
+
 
     /**
      * Store a newly created schedule in storage.
@@ -197,4 +201,5 @@ class ScheduleController extends AppBaseController
 
         return view('schedules.staff_schedule', compact('schedules'));
     }
+
 }

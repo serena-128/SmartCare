@@ -12,8 +12,7 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'shiftChange.store']) !!}
-
+                    {!! Form::open(['route' => 'schedules.store']) !!}
 
                         @include('schedules.fields')
 
