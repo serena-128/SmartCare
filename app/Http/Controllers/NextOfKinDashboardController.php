@@ -55,15 +55,20 @@ public function profile()
     // Return the profile view with the user's data
     return view('nextofkins.profile', compact('nextOfKin'));
 }
-    public function updateProfile(Request $request)
+public function updateProfile(Request $request)
 {
     $nextOfKin = Auth::guard('nextofkin')->user();
 
-    // Validate Input
+    if (!$nextOfKin) {
+        return redirect()->route('nextofkin.login')->with('error', 'Please log in first.');
+    }
+
+    // Validate the form input
     $request->validate([
         'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'firstname' => 'required|string|max:50',
         'lastname' => 'required|string|max:50',
+        'email' => 'required|email|unique:nextofkin,email,' . $nextOfKin->id,
     ]);
 
     // Handle Profile Picture Upload
@@ -81,14 +86,14 @@ public function profile()
         $nextOfKin->profile_picture = $imagePath;
     }
 
-    // Update Other Fields
+    // Update Other Fields in the Database
     $nextOfKin->firstname = $request->firstname;
     $nextOfKin->lastname = $request->lastname;
+    $nextOfKin->email = $request->email;
     $nextOfKin->save();
 
     return redirect()->route('nextofkin.profile')->with('success', 'Profile updated successfully.');
 }
-
 
 
 }
