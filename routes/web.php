@@ -22,6 +22,7 @@ use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NextOfKinProfileController;
+use App\Http\Controllers\EventAppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -143,5 +144,12 @@ Route::post('nextofkin/complete-profile', [NextOfKinProfileController::class, 'c
 
 //events
 Route::get('/fetch-events', [EventController::class, 'fetchEvents']);
+
+//event and appointment form
+Route::get('/add-event-appointment', [EventAppointmentController::class, 'create'])
+    ->name('eventAppointment.create');
+
+Route::post('/add-event-appointment', [EventAppointmentController::class, 'store'])
+    ->name('eventAppointment.store');
 
 
