@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatescheduleRequest;
 use App\Repositories\ScheduleRepository;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 use Flash;
 use Response;
@@ -166,19 +167,23 @@ class ScheduleController extends AppBaseController
      */
 public function mySchedule(Request $request)
 {
-    // ✅ Get logged-in staff email from request
-    $loggedInEmail = $request->user()->email; 
-
-    // ✅ Find staff member by email
-    $staffMember = \App\Models\StaffMember::where('email', $loggedInEmail)->first();
-
-    // ✅ If staff member doesn't exist, redirect to login
-    if (!$staffMember) {
-        return redirect()->route('login')->with('error', 'No schedule found. Please log in.');
+    // ✅ Check if the session contains the staff ID
+    if (!Session::has('staff_id')) {
+        return redirect()->route('login')->with('error', 'Please log in to view your schedule.');
     }
 
-    // ✅ Fetch only this staff member's schedules
-    $schedules = Schedule::where('staffmemberid', $staffMember->id)->get();
+    // ✅ Get staff ID from session
+    $staffId = Session::get('staff_id');
+
+    // ✅ Fetch staff details
+    $staffMember = StaffMember::find($staffId);
+
+    if (!$staffMember) {
+        return redirect()->route('login')->with('error', 'No schedule found.');
+    }
+
+    // ✅ Fetch only the logged-in staff member's schedule
+    $schedules = Schedule::where('staffmemberid', $staffId)->get();
 
     return view('schedules.staff_schedule', compact('schedules'));
 }
