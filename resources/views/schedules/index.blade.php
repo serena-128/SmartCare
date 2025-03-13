@@ -41,6 +41,17 @@
                             <a href="{{ route('schedules.create') }}" class="btn btn-primary mb-3">
                                 Request Change
                             </a>
+                            <td>
+    @if($schedule->leave_requested === 'No')
+        <form action="{{ route('schedule.requestDayOff', $schedule->id) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-warning">Request Day Off</button>
+        </form>
+    @else
+        <button class="btn btn-secondary" disabled>Requested</button>
+    @endif
+</td>
+
                         </td>
                     </tr>
                 @endforeach

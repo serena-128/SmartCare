@@ -38,11 +38,14 @@ class ScheduleController extends AppBaseController
      */
 public function create()
 {
-    $staffMembers = StaffMember::all(); // Get all staff members
+    $staffMembers = StaffMember::all(); // Fetch all staff members
     $schedule = new Schedule(); // Ensure schedule exists
+    $staffMember = StaffMember::find($schedule->staffmemberid); // Fetch assigned staff member
 
-    return view('schedules.create', compact('schedule', 'staffMembers'));
+    return view('schedules.create', compact('schedule', 'staffMembers', 'staffMember'));
 }
+
+
 
 
     /**
@@ -124,31 +127,15 @@ public function create()
     /**
      * Handle Shift Change Request.
      */
-    public function requestChange(Request $request, $id)
-    {
-        $request->validate([
-            'shiftdate' => 'required|date',
-            'starttime' => 'required',
-            'endtime' => 'required',
-            'shifttype' => 'required|string',
-            'request_reason' => 'required|string|min:10',
-        ]);
+public function requestChange(Request $request, $id)
+{
+    $schedule = Schedule::findOrFail($id);
+    $staffMember = StaffMember::find($schedule->staffmemberid); // Fetch assigned staff member
 
-        $schedule = Schedule::findOrFail($id);
+    return view('schedules.request_change', compact('schedule', 'staffMember'));
+}
 
-        // Update schedule entry to mark shift change request
-        $schedule->update([
-            'requested_shift_id' => $id, // Mark it as a requested shift change
-            'shiftdate' => $request->shiftdate,
-            'starttime' => $request->starttime,
-            'endtime' => $request->endtime,
-            'shifttype' => $request->shifttype,
-            'request_reason' => $request->request_reason,
-            'shift_status' => 'Pending Change',
-        ]);
 
-        return redirect()->route('schedules.index')->with('success', 'Your shift change request has been submitted. A manager will review it.');
-    }
 
     /**
      * Approve Shift Change.
@@ -201,5 +188,17 @@ public function create()
 
         return view('schedules.staff_schedule', compact('schedules'));
     }
+    public function requestDayOff($id)
+{
+    $schedule = Schedule::findOrFail($id);
+    
+    // Update leave request
+    $schedule->update([
+        'leave_requested' => 'Yes'
+    ]);
+
+    return redirect()->route('schedules.index')->with('success', 'Your day-off request has been submitted.');
+}
+
 
 }
