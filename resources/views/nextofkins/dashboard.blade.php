@@ -236,6 +236,20 @@ if ($hour < 12) {
           @csrf
           <button type="submit" class="btn btn-danger w-100 mt-3">Logout</button>
         </form>
+          <!-- Profile Picture below the Logout Button -->
+      <div class="text-center mt-3">
+        @if(Auth::guard('nextofkin')->user()->profile_picture)
+          <img src="{{ asset('storage/' . Auth::guard('nextofkin')->user()->profile_picture) }}" 
+               alt="Profile Picture" 
+               class="img-thumbnail" 
+               width="100">
+        @else
+          <img src="{{ asset('images/default-profile.png') }}" 
+               alt="Default Profile Picture" 
+               class="img-thumbnail" 
+               width="100">
+        @endif
+      </div>
       </div>
 
       <!-- Main Content -->

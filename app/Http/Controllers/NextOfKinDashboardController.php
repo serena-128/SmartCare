@@ -40,7 +40,7 @@ class NextOfKinDashboardController extends Controller
         \Log::info('Resident found:', ['id' => $resident->id, 'name' => $resident->firstname . ' ' . $resident->lastname]);
     }
 
-    return view('nextofkins.dashboard', compact('resident'));
+    return view('nextofkins.dashboard', compact('resident', 'nextOfKin'));
 }
 
 

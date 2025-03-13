@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateappointmentRequest;
 use App\Http\Requests\UpdateappointmentRequest;
 use App\Repositories\appointmentRepository;

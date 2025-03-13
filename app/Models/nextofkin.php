@@ -30,7 +30,8 @@ class NextOfKin extends Authenticatable
         'contactnumber',
         'email',
         'address',
-        'password'
+        'password',
+        'profile_picture'       
     ];
 
     protected $hidden = [

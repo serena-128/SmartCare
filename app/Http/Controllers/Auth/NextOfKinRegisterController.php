@@ -51,7 +51,7 @@ class NextOfKinRegisterController extends Controller
             'email'       => $request->email,
             'password'    => Hash::make($request->password),
             // Optionally store profile picture path if needed:
-            // 'profile_picture' => $profilePicturePath,
+            'profile_picture' => $profilePicturePath,
         ]);
 
         // Instead of auto-logging in the user, store their ID in the session.
