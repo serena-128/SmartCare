@@ -241,43 +241,40 @@ if ($hour < 12) {
       <!-- Main Content -->
       <div class="col-md-10 content">
         
-        <!-- Home Section (Three-Column Layout) -->
-            <div id="home" class="dashboard-section home-section">
-        <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
-        <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
+        <!-- Home Section (Two-Column Layout) -->
+<div id="home" class="dashboard-section home-section">
+  <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
+  <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
 
+  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
 
-      <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
-  
   <div class="row">
-    <!-- Column 1: Resident -->
-    <div class="col-md-4">
+    <!-- Column 1: Resident Information -->
+    <div class="col-md-6">
       <h3>Resident</h3>
-      @if(isset($resident) && $resident))
-    <div class="card">
-        <div class="card-body">
+      @if(isset($resident) && $resident)
+        <div class="card">
+          <div class="card-body">
             <h5>Resident Name: {{ $resident->firstname }} {{ $resident->lastname }}</h5>
-            <p>Age: {{ \Carbon\Carbon::parse($resident->dateofbirth)->age }}</p>
-            <p>Room Number: {{ $resident->roomnumber }}</p>
-            <p>Admission Date: {{ \Carbon\Carbon::parse($resident->admissiondate)->format('d M Y') }}</p>
+            <p><strong>Room Number:</strong> {{ $resident->roomnumber }}</p>
+            <p><strong>Age:</strong> {{ \Carbon\Carbon::parse($resident->dateofbirth)->age }}</p>
+            <p><strong>Admission Date:</strong> {{ \Carbon\Carbon::parse($resident->admissiondate)->format('d M Y') }}</p>
+          </div>
         </div>
-    </div>
-@else
-    <div class="alert alert-warning">
-        <strong>No resident assigned.</strong> Please contact the admin to link a resident.
-    </div>
-@endif
-    <!-- Resident's Photo Below the Resident Info -->
-    <div class="text-center mt-4">
-      <!-- Dynamically display the resident's photo -->
-      <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="width: 300px; height: auto;">
+      @else
+        <div class="alert alert-warning">
+          <strong>No resident assigned.</strong> Please contact the admin to link a resident.
+        </div>
+      @endif
 
-      
+      <!-- Resident's Photo Below the Resident Info -->
+      <div class="text-center mt-4">
+        <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="width: 300px; height: auto;">
+      </div>
     </div>
-  </div>
 
     <!-- Column 2: Upcoming Appointments & Events -->
-    <div class="col-md-4">
+    <div class="col-md-6">
       <h3>Upcoming Appointments & Events</h3>
       <div class="card">
         <div class="card-header">Appointments</div>
@@ -286,7 +283,7 @@ if ($hour < 12) {
           <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
         </div>
       </div>
-      <div class="card">
+      <div class="card mt-3">
         <div class="card-header">Events</div>
         <div class="card-body">
           <p>Family Day - 25th March 2025</p>
@@ -294,32 +291,9 @@ if ($hour < 12) {
         </div>
       </div>
     </div>
-
-    <!-- Column 3: News Section -->
-    <div class="col-md-4">
-      <h3>News Section</h3>
-      <div class="card">
-        <div class="card-header">Photo Gallery</div>
-        <div class="card-body">
-          <p>Photo gallery content goes here.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">News Updates</div>
-        <div class="card-body">
-          <p>New staff members joining from April 2025.</p>
-          <p>Upcoming facility renovations in May.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">Bulletin Board</div>
-        <div class="card-body">
-          <p>Bulletin board content goes here.</p>
-        </div>
-      </div>
-    </div>
   </div> <!-- End of Row -->
 </div>
+
 
 
         <!-- Other Sections -->
