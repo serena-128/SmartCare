@@ -153,6 +153,37 @@
         </div>
     </div>
 </div>
+<!-- Assigned Residents Section -->
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">🏥 Assigned Residents</h5>
+        </div>
+        <div class="card-body">
+            @if(isset($assignedResidents) && count($assignedResidents) > 0)
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Resident Name</th>
+                            <th>Room Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($assignedResidents as $resident)
+                            <tr>
+                                <td>{{ $resident->firstname }} {{ $resident->lastname }}</td>
+                                <td>{{ $resident->roomnumber }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="text-muted text-center">No assigned residents.</p>
+            @endif
+        </div>
+    </div>
+</div>
+
 
 <!-- Auto Logout for Inactivity -->
 <script>
