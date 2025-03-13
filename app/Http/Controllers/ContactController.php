@@ -29,7 +29,7 @@ class ContactController extends Controller
         ];
 
         // Send email to admin
-        Mail::to('admin@smartcare.com')->send(new ContactMail($contactData));
+        Mail::to('smartcares2002@gmail.com')->send(new ContactMail($contactData));
 
         return back()->with('success', 'Your message has been sent!');
     }
