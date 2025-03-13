@@ -230,6 +230,10 @@ if ($hour < 12) {
         <a href="#" class="sidebar-link" onclick="showSection('events', this)"><i class="fas fa-calendar-alt"></i> Events</a>
         <a href="#" class="sidebar-link" onclick="showSection('news', this)"><i class="fas fa-newspaper"></i> News</a>
         <a href="#" class="sidebar-link" onclick="showSection('settings', this)"><i class="fas fa-cog"></i> Settings</a>
+        <a href="{{ url('/contact') }}" class="sidebar-link">
+      <i class="fas fa-envelope"></i> Contact SmartCare
+    </a>
+
 
         <!-- Logout form -->
         <form action="{{ route('nextofkin.logout') }}" method="POST" class="logout-form">
