@@ -8,6 +8,7 @@ use App\Repositories\ScheduleRepository;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Models\StaffMember;
 
 use Flash;
 use Response;

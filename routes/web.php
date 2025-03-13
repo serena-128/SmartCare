@@ -85,6 +85,8 @@ Route::get('/diagnoses/{id}', [DiagnosisController::class, 'show'])->name('diagn
 Route::get('/diagnoses/{id}/edit', [DiagnosisController::class, 'edit'])->name('diagnoses.edit'); // Show edit form
 Route::put('/diagnoses/{id}', [DiagnosisController::class, 'update'])->name('diagnoses.update'); // Update diagnosis
 Route::delete('/diagnoses/{id}', [DiagnosisController::class, 'destroy'])->name('diagnoses.destroy'); // Delete diagnosis
+Route::get('/my-schedule', [ScheduleController::class, 'mySchedule'])->name('staff.schedule');
+
 
 
 
@@ -111,7 +113,6 @@ Route::get('/schedules/{schedule}/request-change', [ScheduleController::class, '
 
 Route::post('/schedules/{schedule}/request-change', [ScheduleController::class, 'requestChange'])->name('schedules.requestChange');
 
-Route::get('/my-schedule', [ScheduleController::class, 'mySchedule'])->name('staff.schedule');
 
 
 
