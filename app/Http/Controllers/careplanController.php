@@ -35,13 +35,14 @@ class CarePlanController extends AppBaseController
     /**
      * Show the form for creating a new careplan.
      */
-    public function create()
-    {
-        $residents = Resident::all(); // ✅ Fetch residents
-        $staffMembers = StaffMember::all(); // ✅ Fetch staff members
+public function create()
+{
+    $residents = Resident::all(); // Fetch all residents
+    $staffMembers = StaffMember::all(); // Fetch all staff members
 
-        return view('careplans.create', compact('residents', 'staffMembers'));
-    }
+    return view('careplans.create', compact('residents', 'staffMembers'));
+}
+
 
     /**
      * Store a newly created careplan in storage.
