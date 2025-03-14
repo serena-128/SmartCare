@@ -114,3 +114,6 @@ Route::post('/shift-change', [ScheduleController::class, 'store'])->name('shiftC
 
 
 Route::resource('careplans', App\Http\Controllers\careplanController::class);
+Route::get('/careplans/{id}/edit', [CarePlanController::class, 'edit'])->name('careplans.edit');
+Route::put('/careplans/{id}', [CarePlanController::class, 'update'])->name('careplans.update');
+
