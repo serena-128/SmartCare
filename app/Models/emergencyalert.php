@@ -33,14 +33,14 @@ class EmergencyAlert extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'residentid',
-        'triggeredbyid',
-        'alerttype',
-        'alerttimestamp',
-        'status',
-        'resolvedbyid'
-    ];
-
+    'residentid',
+    'triggeredbyid',
+    'alerttype',
+    'alerttimestamp',
+    'status',
+    'resolvedbyid',
+    'last_updated_at' // New Column
+];
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
@@ -62,6 +62,8 @@ class EmergencyAlert extends Model
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'
     ];
+
+
 
     /**
      * Define relationship with Resident
