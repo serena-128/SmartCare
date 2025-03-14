@@ -2,14 +2,20 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="text-center">Care Plans</h2>
-    
-    <!-- Add New Care Plan Button -->
-    <a href="{{ route('careplans.create') }}" class="btn btn-primary mb-3">Add New</a>
+    <!-- SmartCare Logo -->
+    <div class="text-center">
+        <img src="{{ asset('images/carehome_logo.png') }}" alt="SmartCare Logo" style="max-width: 200px;">
+    </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
+    <h2 class="text-center text-purple mt-3">Care Plans</h2>
+
+    <div class="d-flex justify-content-between">
+        <a href="{{ route('careplans.create') }}" class="btn btn-primary">Add New</a>
+    </div>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered table-striped shadow-lg">
+            <thead class="bg-light-purple">
                 <tr>
                     <th>Resident Name</th>
                     <th>Room Number</th>
@@ -26,8 +32,8 @@
                     <tr>
                         <td>{{ $careplan->resident->firstname }} {{ $careplan->resident->lastname }}</td>
                         <td>{{ $careplan->resident->roomnumber }}</td>
-                        <td>{{ $careplan->staffmember->firstname }} {{ $careplan->staffmember->lastname }}</td>
-                        <td>{{ $careplan->staffmember->staff_role }}</td>
+                        <td>{{ $careplan->staffMember->firstname }} {{ $careplan->staffMember->lastname }}</td>
+                        <td>{{ $careplan->staffMember->staff_role }}</td>
                         <td>{{ $careplan->caregoals }}</td>
                         <td>{{ $careplan->caretreatment }}</td>
                         <td>{{ $careplan->notes }}</td>
@@ -52,4 +58,15 @@
         </table>
     </div>
 </div>
+
+<!-- Light Purple Theme -->
+<style>
+    .bg-light-purple {
+        background-color: #f4e6ff;
+        border-radius: 10px;
+    }
+    .text-purple {
+        color: #6a0dad;
+    }
+</style>
 @endsection
