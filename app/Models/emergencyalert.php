@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Class emergencyalert
+ * Class EmergencyAlert
  * @package App\Models
  * @version March 14, 2025, 1:57 am UTC
  *
- * @property \App\Models\Resident $residentid
- * @property \App\Models\Staffmember $triggeredbyid
- * @property \App\Models\Staffmember $resolvedbyid
+ * @property \App\Models\Resident $resident
+ * @property \App\Models\StaffMember $triggeredBy
+ * @property \App\Models\StaffMember $resolvedBy
  * @property integer $residentid
  * @property integer $triggeredbyid
  * @property string $alerttype
@@ -21,23 +21,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $status
  * @property integer $resolvedbyid
  */
-class emergencyalert extends Model
+class EmergencyAlert extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
-    use HasFactory;
+    protected $table = 'emergencyalerts'; // ✅ Fixed table name
 
-    public $table = 'emergencyalert';
-    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
 
-
-
-    public $fillable = [
+    protected $fillable = [
         'residentid',
         'triggeredbyid',
         'alerttype',
@@ -46,11 +41,6 @@ class emergencyalert extends Model
         'resolvedbyid'
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
@@ -61,11 +51,6 @@ class emergencyalert extends Model
         'resolvedbyid' => 'integer'
     ];
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
     public static $rules = [
         'residentid' => 'required|integer',
         'triggeredbyid' => 'required|integer',
@@ -79,26 +64,26 @@ class emergencyalert extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function residentid()
+     * Define relationship with Resident
+     */
+    public function resident()
     {
-        return $this->belongsTo(\App\Models\Resident::class, 'residentid');
+        return $this->belongsTo(Resident::class, 'residentid');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function triggeredbyid()
+     * Define relationship with StaffMember who triggered the alert
+     */
+    public function triggeredBy()
     {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'triggeredbyid');
+        return $this->belongsTo(StaffMember::class, 'triggeredbyid');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function resolvedbyid()
+     * Define relationship with StaffMember who resolved the alert
+     */
+    public function resolvedBy()
     {
-        return $this->belongsTo(\App\Models\Staffmember::class, 'resolvedbyid');
+        return $this->belongsTo(StaffMember::class, 'resolvedbyid');
     }
 }

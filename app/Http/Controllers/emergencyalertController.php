@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateemergencyalertRequest;
 use App\Repositories\emergencyalertRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\emergencyalert;
+
 use Flash;
 use Response;
 
