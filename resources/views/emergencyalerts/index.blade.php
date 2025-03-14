@@ -1,26 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header d-flex justify-content-between align-items-center">
-        <h1 class="mb-0">Emergency Alerts</h1>
-        <div>
-            <strong>Logged in as:</strong> {{ session('staff_name') }}
-            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-danger btn-sm">Logout</button>
-            </form>
-        </div>
+    <section class="content-header">
+        <h1 class="pull-left">emergencyalerts</h1>
+        <h1 class="pull-right">
+           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('emergencyalerts.create') !!}">Add New</a>
+        </h1>
     </section>
+    <div class="content">
+        <div class="clearfix"></div>
 
-    <div class="content mt-3">
         @include('flash::message')
 
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Emergency Alerts List</h5>
-            </div>
-            <div class="card-body">
-                @include('emergencyalerts.table')
+        <div class="clearfix"></div>
+        <div class="box box-primary">
+            <div class="box-body">
+                    @include('emergencyalerts.table')
             </div>
         </div>
     </div>

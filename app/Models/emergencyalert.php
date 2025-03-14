@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * Class emergencyalert
  * @package App\Models
- * @version February 13, 2025, 10:29 pm UTC
+ * @version March 14, 2025, 1:57 am UTC
  *
  * @property \App\Models\Resident $residentid
  * @property \App\Models\Staffmember $triggeredbyid
@@ -89,26 +89,16 @@ class emergencyalert extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function triggeredBy()
+    public function triggeredbyid()
     {
-    return $this->belongsTo(\App\Models\Staffmember::class, 'triggeredbyid', 'id');
+        return $this->belongsTo(\App\Models\Staffmember::class, 'triggeredbyid');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function resolvedBy()
+    public function resolvedbyid()
     {
-    return $this->belongsTo(\App\Models\Staffmember::class, 'resolvedbyid', 'id');
-    }
-
-        /**
-     * Relationship: Get the resident associated with this emergency alert.
-     */
-    public function resident()
-    {
-        return $this->belongsTo(\App\Models\Resident::class, 'residentid', 'id'); 
-        // 'residentid' refers to the column in emergencyalerts
-        // 'id' refers to the primary key in residents table
+        return $this->belongsTo(\App\Models\Staffmember::class, 'resolvedbyid');
     }
 }
