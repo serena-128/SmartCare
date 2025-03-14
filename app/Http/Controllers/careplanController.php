@@ -60,17 +60,18 @@ public function create()
     /**
      * Show the specified careplan.
      */
-    public function show($id)
-    {
-        $careplan = $this->careplanRepository->find($id);
+public function show($id)
+{
+    $careplan = CarePlan::with(['resident', 'staffMember'])->find($id);
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-            return redirect(route('careplans.index'));
-        }
-
-        return view('careplans.show')->with('careplan', $careplan);
+    if (!$careplan) {
+        Flash::error('Careplan not found');
+        return redirect(route('careplans.index'));
     }
+
+    return view('careplans.show', compact('careplan'));
+}
+
 
     /**
      * Show the form for editing the specified careplan.

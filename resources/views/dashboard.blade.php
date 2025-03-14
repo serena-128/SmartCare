@@ -37,7 +37,7 @@
                         <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
                         <li><a class="dropdown-item" href="{{ route('residents.create') }}">➕ Add New Resident</a></li>
                         <li><a class="dropdown-item" href="{{ route('residents.index') }}">✏️ Update Resident Info</a></li>
-                        <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 View Care Plans</a></li> <!-- ✅ Added this -->
+                        <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li> <!-- ✅ Added this -->
                     </ul>
                 </li>
 
