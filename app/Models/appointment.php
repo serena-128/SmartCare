@@ -42,7 +42,9 @@ class appointment extends Model
         'date',
         'time',
         'reason',
-        'location'
+        'location',
+        'rsvp_status',  // ✅ Add RSVP status
+        'rsvp_comments'
     ];
 
     /**
@@ -56,7 +58,9 @@ class appointment extends Model
         'staffmemberid' => 'integer',
         'date' => 'date',
         'reason' => 'string',
-        'location' => 'string'
+        'location' => 'string',
+        'rsvp_status' => 'string',  // ✅ Ensure RSVP status is a string
+        'rsvp_comments' => 'string'
     ];
 
     /**
