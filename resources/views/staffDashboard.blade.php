@@ -19,7 +19,7 @@
     <div class="container-fluid">
     <a class="navbar-brand" href="{{ route('staff.dashboard') }}">
 
-            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
+            <img src="{{ asset('pictures/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
         </a>
 
         <!-- Navbar Toggler for Mobile View -->
