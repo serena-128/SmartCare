@@ -153,4 +153,9 @@ class diagnosisController extends AppBaseController
 
         return redirect(route('diagnoses.index'));
     }
+        public function search()
+    {
+        return view('diagnoses.search'); // Make sure the view file exists
+    }
+
 }

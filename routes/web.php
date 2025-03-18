@@ -24,6 +24,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\NextOfKinProfileController;
 use App\Http\Controllers\EventAppointmentController;
 use App\Http\Controllers\NextOfKinDashboardController;
+use App\Http\Controllers\StaffScheduleController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,14 +45,12 @@ Route::get('/login', [StaffAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login');
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 
-// Protected Routes (Only Logged-in Staff)
 Route::middleware(['auth.staff'])->group(function () {
     Route::get('/staff/dashboard', function () {
         return view('staffDashboard');
-    })->name('staff.dashboard');
-
-    Route::resource('emergencyalerts', EmergencyAlertController::class);
+    })->name('staff.dashboard'); // ✅ Correct route name
 });
+
 
 // Next of Kin Register Routes
 Route::prefix('nextofkin')->group(function () {
@@ -169,4 +169,16 @@ Route::get('/profile', [\App\Http\Controllers\NextOfKinDashboardController::clas
 
 //updating profile
 Route::post('/profile/update', [NextOfKinDashboardController::class, 'updateProfile'])->name('nextofkin.profile.update');
+
+//diagnosis search
+Route::get('/diagnoses/search', [DiagnosisController::class, 'search'])->name('diagnoses.searchPage');
+
+//staff dashboard emergency alerts
+Route::get('/emergencyalerts', [EmergencyAlertController::class, 'index'])->name('emergencyalerts.index');
+
+//staff schedule
+Route::get('/staff/schedule', [StaffScheduleController::class, 'index'])->name('staff.schedule');
+
+// staff profile
+Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.profile');
 
