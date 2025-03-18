@@ -45,6 +45,10 @@ Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 
 // Protected Routes (Only Logged-in Staff)
 Route::middleware(['auth.staff'])->group(function () {
+    Route::get('/staff/dashboard', function () {
+        return view('staffDashboard');
+    })->name('staff.dashboard');
+
     Route::resource('emergencyalerts', EmergencyAlertController::class);
 });
 
