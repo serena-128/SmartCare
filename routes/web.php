@@ -35,7 +35,7 @@ Route::get('/login', [StaffAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login');
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
 
 });
 
@@ -53,7 +53,7 @@ Route::resource('staffmembers', StaffMemberController::class);
 Route::resource('roles', RoleController::class);
 Route::resource('dietaryrestrictions', DietaryRestrictionController::class);
 Route::resource('stafftasks', StaffTaskController::class);
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
 Route::get('/', [DashboardController::class, 'index']);
 Route::resource('emergencyalerts', EmergencyAlertController::class);
 

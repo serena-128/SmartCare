@@ -88,21 +88,14 @@ public function show($id)
     /**
      * Update the specified careplan in storage.
      */
-    public function update($id, UpdatecareplanRequest $request)
-    {
-        $careplan = $this->careplanRepository->find($id);
+public function update(Request $request, $id)
+{
+    $careplan = CarePlan::findOrFail($id);
+    $careplan->update($request->all());
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-            return redirect(route('careplans.index'));
-        }
+    return redirect()->route('careplans.index')->with('success', 'Care Plan updated successfully.');
+}
 
-        $careplan = $this->careplanRepository->update($request->all(), $id);
-
-        Flash::success('Careplan updated successfully.');
-
-        return redirect(route('careplans.index'));
-    }
 
     /**
      * Remove the specified careplan from storage.
