@@ -23,7 +23,7 @@ class careplanFactory extends Factory
     {
         return [
             'residentid' => $this->faker->randomDigitNotNull,
-        'roleid' => $this->faker->randomDigitNotNull,
+        'staffmemberid' => $this->faker->randomDigitNotNull,
         'caregoals' => $this->faker->word,
         'caretreatment' => $this->faker->word,
         'notes' => $this->faker->word,

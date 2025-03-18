@@ -31,7 +31,7 @@ class StaffMemberController extends AppBaseController
     {
         $staffMembers = $this->staffMemberRepository->all();
 
-        return view('staff_members.index')
+        return view('staffmembers.index')
             ->with('staffMembers', $staffMembers);
     }
 
@@ -42,7 +42,7 @@ class StaffMemberController extends AppBaseController
      */
     public function create()
     {
-        return view('staff_members.create');
+        return view('staffmembers.create');
     }
 
     /**
@@ -152,5 +152,10 @@ class StaffMemberController extends AppBaseController
         Flash::success('Staff Member deleted successfully.');
 
         return redirect(route('staffMembers.index'));
+    }
+    
+    public function profile()
+    {
+        return view('staffmember.profile');
     }
 }

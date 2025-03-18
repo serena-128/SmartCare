@@ -7,6 +7,9 @@ use App\Http\Requests\UpdatediagnosisRequest;
 use App\Repositories\diagnosisRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\diagnosis;
+use App\Models\Resident;
+
 use Flash;
 use Response;
 
@@ -27,13 +30,12 @@ class diagnosisController extends AppBaseController
      *
      * @return Response
      */
-    public function index(Request $request)
-    {
-        $diagnoses = $this->diagnosisRepository->all();
+public function index()
+{
+    $diagnoses = Diagnosis::with('resident')->get();
+    return view('diagnoses.index')->with('diagnoses', $diagnoses);
+}
 
-        return view('diagnoses.index')
-            ->with('diagnoses', $diagnoses);
-    }
 
     /**
      * Show the form for creating a new diagnosis.
@@ -153,4 +155,33 @@ class diagnosisController extends AppBaseController
 
         return redirect(route('diagnoses.index'));
     }
+public function search(Request $request)
+{
+    $query = trim($request->input('query'));
+
+    if (empty($query)) {
+        return redirect()->route('diagnoses.searchPage')->with('error', 'Please enter a resident name.');
+    }
+
+    // Find the resident by first or last name
+    $resident = Resident::where('firstname', 'LIKE', "%$query%")
+                ->orWhere('lastname', 'LIKE', "%$query%")
+                ->first();
+
+    if (!$resident) {
+        return redirect()->route('diagnoses.searchPage')->with('error', 'No diagnoses found for this resident.');
+    }
+
+    // Fetch only the diagnoses for the searched resident
+    $diagnoses = Diagnosis::where('residentid', $resident->id)
+                ->with(['resident', 'lastUpdatedBy'])
+                ->get();
+
+    return view('diagnoses.search', compact('diagnoses'));
+}
+
+
+
+
+
 }

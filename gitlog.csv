@@ -1,0 +1,39 @@
+37ec0f4,Komal,2025-02-27,profile added
+81e4182,Komal,2025-02-27,resident css for style
+15476ca,Komal,2025-02-27,staff dashboard css for style
+7e9bb92,Komal,2025-02-27,residents profile set up
+1176c88,Komal,2025-02-27,residents update done edited
+2f5ab5d,Komal,2025-02-27,residents update done edited
+896cc3e,Komal,2025-02-27,residents update done
+7cb6444,Komal,2025-02-27,Fixed Diagnosis model table name
+b1c759d,Komal,2025-02-26,Added 'Back to Dashboard' button in Diagnoses index
+a6e9055,Komal,2025-02-26,Fixed missing resident error in diagnoses index
+75e3c15,Komal,2025-02-26,Enhanced dashboard UI with colors and Care Home logo
+701f626,Komal,2025-02-26,Updated staff login page with logo and improved design
+7743cbb,Komal,2025-02-26,Removed navbar from staff login page
+0f322b8,Komal,2025-02-25,diagonais id fixed
+634ae2c,Komal,2025-02-25,diagonais id fixed
+783f6ec,Komal,2025-02-24,doctors note added
+b443ee6,Komal,2025-02-24,addmedical records final
+e5f4d47,Komal,2025-02-24,addmedical records
+703d85f,Komal,2025-02-24,staffmembers fixed
+19c9d91,Komal,2025-02-24,web.php fixed
+6948309,Komal,2025-02-23,mediction reminder index file fixed
+76a7f89,Komal,2025-02-23,medication reminder table created
+2558b4a,Komal,2025-02-23,medication reminder table created
+41068d4,Komal,2025-02-22,web.php fixed
+3da7879,Komal,2025-02-22,staff redirects to dashborad now
+b829eb9,Komal,2025-02-21,main page modify
+c90ced7,Komal,2025-02-21,image added
+be4ba72,Komal,2025-02-21,main page updated
+85145c8,Komal,2025-02-20,nursing home dashborad crated
+c6fb108,Komal,2025-02-20,new dashborad created updated
+17294c9,Komal,2025-02-20,new dashborad created
+d58773a,Komal,2025-02-20,resident name showing now
+8c72e7b,Komal,2025-02-19,ID removed but still not complete
+240856c,Komal,2025-02-19,Updated emergency alerts to show resident names instead of IDs
+9692038,Komal,2025-02-14,Added staff login and restricted emergency alerts to logged-in users
+43502e5,Komal,2025-02-13,Log button added to emergencyalert
+efdb38d,Komal,2025-02-13,Main page created - SmartCare Laravel Project
+16cc8ad,b00145951,2025-02-12,tables are scaffolded
+801c975,b00145951,2025-02-11,inital commit

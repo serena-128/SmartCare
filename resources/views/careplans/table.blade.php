@@ -1,7 +1,7 @@
 <table class="table table-responsive" id="careplans-table">
     <thead>
         <th>Residentid</th>
-        <th>Roleid</th>
+        <th>Staffmemberid</th>
         <th>Caregoals</th>
         <th>Caretreatment</th>
         <th>Notes</th>
@@ -11,7 +11,7 @@
     @foreach($careplans as $careplan)
         <tr>
             <td>{!! $careplan->residentid !!}</td>
-            <td>{!! $careplan->roleid !!}</td>
+            <td>{!! $careplan->staffmemberid !!}</td>
             <td>{!! $careplan->caregoals !!}</td>
             <td>{!! $careplan->caretreatment !!}</td>
             <td>{!! $careplan->notes !!}</td>
