@@ -18,7 +18,7 @@
                         <p class="text-muted"><i class="fas fa-user-tag"></i> <strong>Role:</strong> {{ auth()->user()->role ?? 'Staff' }}</p>
                         <p class="text-muted"><i class="fas fa-calendar-alt"></i> <strong>Joined On:</strong> {{ auth()->user()->created_at->format('d M Y') }}</p>
 
-                        <a href="{{ route('dashboard') }}" class="btn btn-outline-primary mt-3"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                        <a href="{{ route('staffDashboard') }}" class="btn btn-outline-primary mt-3"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
                     @else
                         <p class="text-danger">You are not logged in.</p>
                         <a href="{{ route('staff.login') }}" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>
