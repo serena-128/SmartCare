@@ -83,7 +83,8 @@
 
     <!-- Back to Dashboard -->
     <div class="mt-4 text-center">
-        <a href="{{ route('staffDashboard') }}" class="btn btn-secondary">
+        <a href="{{route('staffDashboard') }}" class="btn btn-secondary">
+
             🏠 Back to Dashboard
         </a>
     </div>

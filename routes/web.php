@@ -36,8 +36,6 @@ Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login'
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
-
-
 });
 
 
