@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 class NextOfKinForgotPasswordController extends Controller
 {
-    use SendsPasswordResetEmails;
+    //use SendsPasswordResetEmails;
 
     /**
      * Display the form to request a password reset link.

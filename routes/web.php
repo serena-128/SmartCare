@@ -50,7 +50,7 @@ Route::prefix('nextofkin')->group(function () {
 Route::prefix('nextofkin')->group(function () {
     
      // Forgot Password Route
-    Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])->name('nextofkin.forgot');
+    //Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])->name('nextofkin.forgot');
 });
 
 // Next of Kin Authentication Routes

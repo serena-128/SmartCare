@@ -18,10 +18,13 @@
           <div class="container-fluid">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link" href=https://laravel.com/docs>Laravel Documentation</a>
+                <a class="nav-link" href={{route('residents.index')}}>New Resident</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href=https://laracasts.com/>Laravel Video Tutorials</a>
+                <a class="nav-link" href={{route('residents.index')}}>Residents</a>
+              </li>
+			  <li class="nav-item">
+                <a class="nav-link" href={{route('careplans.index')}}/>Care Plans</a>
               </li>
             </ul>
           </div>
