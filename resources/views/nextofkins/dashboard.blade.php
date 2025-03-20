@@ -248,7 +248,27 @@ if ($hour < 12) {
   opacity: 0;
 }
 
+/* Notification Dropdown Styling */
+.notification-dropdown {
+  position: fixed;
+  top: 60px; /* Adjust this to position it below the notification icon */
+  right: 20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  border: 1px solid #ddd;
+  display: none; /* Hide the dropdown by default */
+}
 
+.notification-dropdown .list-group-item {
+  padding: 10px;
+  border: none;
+}
+
+.notification-dropdown .list-group-item:hover {
+  background-color: #f8f9fa;
+}
   </style>
 </head>
     <footer class="footer text-center py-3 mt-5 bg-light">
@@ -261,6 +281,13 @@ if ($hour < 12) {
     <i class="fas fa-bell"></i>
     <span id="notification-count" class="notification-count">3</span> <!-- Example count -->
   </div>
+    <div id="notification-dropdown" class="notification-dropdown" style="display: none;">
+  <ul class="list-group">
+    <li class="list-group-item">New event RSVP available.</li>
+    <li class="list-group-item">Your profile was updated successfully.</li>
+    <li class="list-group-item">New message from a family member.</li>
+  </ul>
+</div>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -672,7 +699,31 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script>
+document.getElementById('notification-tab').addEventListener('click', function() {
+  var dropdown = document.getElementById('notification-dropdown');
+  // Toggle the display property to show or hide the dropdown
+  if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+    dropdown.style.display = 'block';  // Show the dropdown
+  } else {
+    dropdown.style.display = 'none';   // Hide the dropdown
+  }
+});
 
+// Example to dynamically change the notification count
+function updateNotificationCount(newCount) {
+  var countElement = document.getElementById('notification-count');
+  countElement.textContent = newCount;
+}
+
+// Example to add a new notification dynamically
+function addNewNotification(message) {
+  var dropdown = document.getElementById('notification-dropdown');
+  var listItem = document.createElement('li');
+  listItem.classList.add('list-group-item');
+  listItem.textContent = message;
+  dropdown.querySelector('.list-group').appendChild(listItem);
+}</script>
 </body>
 </html>
 
