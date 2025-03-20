@@ -220,6 +220,11 @@ if ($hour < 12) {
 </footer>
 
 <body>
+     <!-- Notification Icon (Top-right corner) -->
+  <div id="notification-tab" class="notification-tab">
+    <i class="fas fa-bell"></i>
+    <span id="notification-count" class="notification-count">3</span> <!-- Example count -->
+  </div>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
