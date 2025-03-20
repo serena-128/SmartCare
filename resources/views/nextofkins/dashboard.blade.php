@@ -210,6 +210,34 @@ if ($hour < 12) {
     margin: auto;
 }
 
+/* Notification Tab Styling */
+.notification-tab {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.notification-tab:hover {
+  background-color: #0056b3;
+}
+
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff0000;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 5px 8px;
+}
 
 
 
