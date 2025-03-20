@@ -239,6 +239,14 @@ if ($hour < 12) {
   padding: 5px 8px;
 }
 
+/* Fade effect for the notification icon */
+#notification-tab {
+  transition: opacity 0.3s ease;
+}
+
+#notification-tab[style*="display: none"] {
+  opacity: 0;
+}
 
 
   </style>
@@ -594,6 +602,12 @@ if ($hour < 12) {
       document.querySelectorAll('.dashboard-section').forEach(section => {
         section.style.display = 'none';
       });
+        
+        if (sectionId === 'appointments' || sectionId === 'events') {
+        document.getElementById('notification-tab').style.display = 'none';
+      } else {
+        document.getElementById('notification-tab').style.display = 'block';
+      }
 
       // Show the selected section
       document.getElementById(sectionId).style.display = 'block';
