@@ -766,7 +766,8 @@ function addNewNotification(message) {
   listItem.classList.add('list-group-item');
   listItem.textContent = message;
   dropdown.querySelector('.list-group').appendChild(listItem);
-}</script>
+}
+</script>
 </body>
 </html>
 
