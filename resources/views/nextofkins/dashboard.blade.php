@@ -215,60 +215,96 @@ if ($hour < 12) {
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: #007bff;
+  background-color: #ff66b2; /* Soft pink for the bell */
   color: white;
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
   font-size: 24px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
 .notification-tab:hover {
-  background-color: #0056b3;
+  background-color: #ff3385; /* A slightly darker pink on hover */
 }
 
 .notification-count {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -4px;
+  right: -4px;
   background-color: #ff0000;
   color: white;
   font-size: 12px;
   border-radius: 50%;
   padding: 5px 8px;
-}
-
-/* Fade effect for the notification icon */
-#notification-tab {
-  transition: opacity 0.3s ease;
-}
-
-#notification-tab[style*="display: none"] {
-  opacity: 0;
+  font-weight: bold;
 }
 
 /* Notification Dropdown Styling */
 .notification-dropdown {
   position: fixed;
-  top: 60px; /* Adjust this to position it below the notification icon */
+  top: 60px; /* Adjust to place below the bell */
   right: 20px;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  border: 1px solid #ddd;
-  display: none; /* Hide the dropdown by default */
+  background-color: #fff4f9; /* Soft light pink background */
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  width: 270px;
+  border: 1px solid #f5c6cb;
+  display: none; /* Hidden by default */
+  padding: 10px 15px;
+  font-family: 'Arial', sans-serif;
+  animation: slideDown 0.3s ease-out; /* Add smooth animation for dropdown */
 }
 
+/* Add an animation for the dropdown to appear smoothly */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Notification Items Styling */
 .notification-dropdown .list-group-item {
-  padding: 10px;
+  padding: 12px 18px;
   border: none;
+  border-radius: 8px;
+  background-color: #f8d7da; /* Soft pink for items */
+  color: #721c24;
+  font-size: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .notification-dropdown .list-group-item:hover {
-  background-color: #f8f9fa;
+  background-color: #f5c6cb; /* A lighter pink when hovered */
+  color: #333;
+  transform: translateX(3px); /* Slight shift to the right on hover for interactivity */
 }
+
+.notification-dropdown .list-group-item .badge {
+  background-color: #ff66b2;
+  color: white;
+  padding: 5px;
+  border-radius: 12px;
+  font-size: 10px;
+  margin-left: 10px;
+}
+
+.notification-dropdown .list-group-item.new-notification {
+  background-color: #ffb3d9; /* A brighter pink for new notifications */
+}
+
+.notification-dropdown .list-group-item.new-notification:hover {
+  background-color: #ff99cc;
+}
+
   </style>
 </head>
     <footer class="footer text-center py-3 mt-5 bg-light">
