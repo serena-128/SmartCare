@@ -222,23 +222,38 @@ if ($hour < 12) {
   font-size: 24px;
   cursor: pointer;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth background and transform transition */
 }
 
 .notification-tab:hover {
   background-color: #ff3385; /* A slightly darker pink on hover */
+  transform: scale(1.1); /* Slight scale effect on hover */
 }
 
+/* Notification Count Styling */
 .notification-count {
   position: absolute;
   top: -4px;
   right: -4px;
-  background-color: #ff0000;
+  background-color: #ff0000; /* Red for the notification badge */
   color: white;
   font-size: 12px;
   border-radius: 50%;
   padding: 5px 8px;
   font-weight: bold;
+  animation: bounce 1s infinite; /* Add bounce effect when there's a new notification */
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
 }
 
 /* Notification Dropdown Styling */
@@ -288,15 +303,7 @@ if ($hour < 12) {
   transform: translateX(3px); /* Slight shift to the right on hover for interactivity */
 }
 
-.notification-dropdown .list-group-item .badge {
-  background-color: #ff66b2;
-  color: white;
-  padding: 5px;
-  border-radius: 12px;
-  font-size: 10px;
-  margin-left: 10px;
-}
-
+/* For new notifications */
 .notification-dropdown .list-group-item.new-notification {
   background-color: #ffb3d9; /* A brighter pink for new notifications */
 }
