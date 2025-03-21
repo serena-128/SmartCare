@@ -11,7 +11,6 @@ use Flash;
 use Response;
 use App\Models\Resident;
 
-
 class residentController extends AppBaseController
 {
     /** @var residentRepository $residentRepository*/
@@ -155,11 +154,34 @@ class residentController extends AppBaseController
 
         return redirect(route('residents.index'));
     }
-    public function profile($id)
-{
-    $resident = Resident::with(['diagnoses'])->findOrFail($id);
-    return view('residents.profile', compact('resident'));
-}
-    
 
+    /**
+     * Show the profile of a resident.
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function profile($id)
+    {
+        $resident = Resident::with(['diagnoses'])->findOrFail($id);
+        return view('residents.profile', compact('resident'));
+    }
+
+    /**
+     * Show Resident Dashboard.
+     *
+     * @param int $residentId
+     * @return Response
+     */
+    public function showResidentDashboard($residentId)
+    {
+        // Fetch the resident data from the database
+        $resident = Resident::find($residentId);
+        
+        if (!$resident) {
+            return redirect()->route('home')->with('error', 'Resident not found.');
+        }
+
+        return view('resident.dashboard', compact('resident'));
+    }
 }

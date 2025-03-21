@@ -42,4 +42,3 @@ class StaffAuthController extends Controller
         return redirect('/login');
     }
 }
-

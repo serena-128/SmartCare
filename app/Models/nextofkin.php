@@ -2,25 +2,11 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * Class nextofkin
- * @package App\Models
- * @version February 12, 2025, 8:22 pm UTC
- *
- * @property \App\Models\Resident $residentid
- * @property integer $residentid
- * @property string $firstname
- * @property string $lastname
- * @property string $relationshiptoresident
- * @property string $contactnumber
- * @property string $email
- * @property string $address
- */
-class nextofkin extends Model
+class NextOfKin extends Authenticatable
 {
     use SoftDeletes;
 
@@ -43,14 +29,16 @@ class nextofkin extends Model
         'relationshiptoresident',
         'contactnumber',
         'email',
-        'address'
+        'address',
+        'password',
+        'profile_picture'       
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
@@ -62,11 +50,7 @@ class nextofkin extends Model
         'address' => 'string'
     ];
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
+    
     public static $rules = [
         'residentid' => 'nullable|integer',
         'firstname' => 'nullable|string|max:50',
@@ -80,11 +64,10 @@ class nextofkin extends Model
         'deleted_at' => 'nullable'
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function residentid()
+   
+        public function resident()
     {
         return $this->belongsTo(\App\Models\Resident::class, 'residentid');
     }
+
 }

@@ -5,7 +5,6 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('diagnoses.index') }}"
        class="nav-link {{ Request::is('diagnoses*') ? 'active' : '' }}">
@@ -13,30 +12,26 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('emergencyalerts.index') }}"
        class="nav-link {{ Request::is('emergencyalerts*') ? 'active' : '' }}">
-        <p>Emergencyalerts</p>
+        <p>Emergency Alerts</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('standardtasks.index') }}"
        class="nav-link {{ Request::is('standardtasks*') ? 'active' : '' }}">
-        <p>Standardtasks</p>
+        <p>Standard Tasks</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('careplans.index') }}"
        class="nav-link {{ Request::is('careplans*') ? 'active' : '' }}">
-        <p>Careplans</p>
+        <p>Care Plans</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('doses.index') }}"
@@ -45,7 +40,6 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('appointments.index') }}"
        class="nav-link {{ Request::is('appointments*') ? 'active' : '' }}">
@@ -53,22 +47,19 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('nextofkins.index') }}"
        class="nav-link {{ Request::is('nextofkins*') ? 'active' : '' }}">
-        <p>Nextofkins</p>
+        <p>Next of Kins</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('staffmembers.index') }}"
        class="nav-link {{ Request::is('staffmembers*') ? 'active' : '' }}">
-        <p>Staffmembers</p>
+        <p>Staff Members</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('roles.index') }}"
@@ -77,30 +68,19 @@
     </a>
 </li>
 
-
-<li class="nav-item">
-    <a href="{{ route('staffMembers.index') }}"
-       class="nav-link {{ Request::is('staffMembers*') ? 'active' : '' }}">
-        <p>Staff Members</p>
-    </a>
-</li>
-
-
 <li class="nav-item">
     <a href="{{ route('dietaryrestrictions.index') }}"
        class="nav-link {{ Request::is('dietaryrestrictions*') ? 'active' : '' }}">
-        <p>Dietaryrestrictions</p>
+        <p>Dietary Restrictions</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('stafftasks.index') }}"
        class="nav-link {{ Request::is('stafftasks*') ? 'active' : '' }}">
-        <p>Stafftasks</p>
+        <p>Staff Tasks</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('medicationReminders.index') }}"
@@ -109,12 +89,9 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('schedules.index') }}"
        class="nav-link {{ Request::is('schedules*') ? 'active' : '' }}">
         <p>Schedules</p>
     </a>
 </li>
-
-

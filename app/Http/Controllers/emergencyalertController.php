@@ -156,4 +156,9 @@ public function index()
 
         return redirect(route('emergencyalerts.index'));
     }
+        public function index()
+    {
+        return view('emergencyalerts.index'); // Ensure this view exists
+    }
+
 }

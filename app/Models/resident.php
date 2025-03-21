@@ -44,6 +44,7 @@ class Resident extends Model
     ];
 
     protected $casts = [
+        
         'id' => 'integer',  // Ensure correct primary key reference
         'firstname' => 'string',
         'lastname' => 'string',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateappointmentRequest;
 use App\Http\Requests\UpdateappointmentRequest;
 use App\Repositories\appointmentRepository;
@@ -153,4 +154,82 @@ class appointmentController extends AppBaseController
 
         return redirect(route('appointments.index'));
     }
+    public function fetchAppointments(Request $request)
+{
+    // Get the logged-in Next-of-Kin (using your custom guard)
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    // If there's no Next-of-Kin or resident assigned, return empty JSON
+    if (!$nextOfKin || !$nextOfKin->residentid) {
+        return response()->json([]);
+    }
+
+    // Fetch appointments for the resident linked to this next-of-kin
+    $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)->get();
+
+    // Format the appointments for FullCalendar using Carbon
+    $formattedAppointments = $appointments->map(function ($appointment) {
+        // Create a Carbon instance from the date field
+        $start = \Carbon\Carbon::parse($appointment->date);
+        // If a time is provided, merge it with the date
+        if ($appointment->time) {
+            $start->setTimeFromTimeString($appointment->time);
+        }
+        return [
+            'title'       => $appointment->reason, // Use the reason as the event title
+            'start'       => $start->toIso8601String(), // Format as ISO8601
+            'description' => $appointment->location ?? '',
+        ];
+    });
+
+    return response()->json($formattedAppointments);
+}
+public function rsvpForm()
+{
+    // Get the logged-in Next-of-Kin using your custom guard
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    // Check if the next-of-kin is assigned to a resident
+    if (!$nextOfKin || !$nextOfKin->residentid) {
+        return redirect()->back()->with('error', 'No resident assigned.');
+    }
+
+    // Fetch only future appointments for the resident
+    $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)
+        ->whereDate('date', '>=', now()) // Get only future appointments
+        ->orderBy('date', 'asc')
+        ->get();
+
+    return view('appointments.rsvp', compact('appointments'));
+}
+
+
+public function submitRsvp(Request $request)
+{
+    // Get the logged-in next-of-kin
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    if (!$nextOfKin) {
+        return redirect()->route('appointments.rsvp.form')->with('error', 'You must be logged in to RSVP.');
+    }
+
+    // Validate the form input
+    $request->validate([
+        'appointment_id' => 'required|exists:appointment,id',
+        'rsvp_status' => 'required|in:yes,no,maybe',
+        'comments' => 'nullable|string|max:255',
+    ]);
+
+    // Find the appointment
+    $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+
+    // Update RSVP status
+    $appointment->rsvp_status = $request->rsvp_status;
+    $appointment->rsvp_comments = $request->comments;
+    $appointment->save();
+
+    return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
+}
+
+
 }
