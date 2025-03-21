@@ -86,7 +86,7 @@
         <a href="{{ route('staff.login') }}" class="btn btn-primary d-block mx-auto">Staff</a>
 
         <!-- Next of Kin Login Button (No Route) -->
-        <a href="#" class="btn btn-secondary d-block mx-auto">Next of Kin</a>
+        <a href="{{ route('nextofkin.login') }}" class="btn btn-primary d-block mx-auto">Next of Kin</a>
 
     </div>
 
