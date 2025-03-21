@@ -223,6 +223,7 @@ if ($hour < 12) {
   cursor: pointer;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth background and transform transition */
+  z-index: 9999; /* Ensure it's always above other content */
 }
 
 .notification-tab:hover {
@@ -244,6 +245,7 @@ if ($hour < 12) {
   animation: bounce 1s infinite; /* Add bounce effect when there's a new notification */
 }
 
+/* Bounce animation for notification count */
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
     transform: translateY(0);
@@ -270,6 +272,7 @@ if ($hour < 12) {
   padding: 10px 15px;
   font-family: 'Arial', sans-serif;
   animation: slideDown 0.3s ease-out; /* Add smooth animation for dropdown */
+  z-index: 9998; /* Ensure it's above other content, but below the notification icon */
 }
 
 /* Add an animation for the dropdown to appear smoothly */
@@ -311,6 +314,7 @@ if ($hour < 12) {
 .notification-dropdown .list-group-item.new-notification:hover {
   background-color: #ff99cc;
 }
+
 
   </style>
 </head>
