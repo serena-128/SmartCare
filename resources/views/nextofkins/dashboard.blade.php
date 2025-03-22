@@ -519,6 +519,10 @@ if ($hour < 12) {
   <!-- Title and RSVP Button in the same row using Flexbox -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Upcoming Events</h1>
+      <div class="d-flex align-items-center">
+        <input type="text" class="form-control" id="events-search" placeholder="Search events..." style="width: 250px; margin-right: 15px;">
+    </div>
+    
     <!-- RSVP Button linking to the RSVP form -->
 <a href="{{ route('rsvp.form') }}" class="btn btn-primary">RSVP to Event</a>
 
