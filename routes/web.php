@@ -182,3 +182,6 @@ Route::get('/staff/schedule', [StaffScheduleController::class, 'index'])->name('
 // staff profile
 Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.profile');
 
+//appointment search
+Route::get('/search-appointments', [AppointmentController::class, 'searchAppointments']);
+
