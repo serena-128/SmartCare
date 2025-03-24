@@ -586,7 +586,7 @@ if ($hour < 12) {
           <img src="{{ asset('pictures/carehome_event_3.jpg') }}" alt="Event" class="img-fluid custom-img">
             </div>
           </div>
-          <a href="#" class="btn btn-outline-primary btn-sm">View More</a>
+          <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
         </div>
       </div>
     </div>
