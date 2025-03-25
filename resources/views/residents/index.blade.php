@@ -79,9 +79,7 @@
                                 </td>
                             </tr>
                         <td>
-    <a href="{{ route('residents.profile', $resident->id) }}" class="btn btn-info btn-sm">
-        👤 View Profile
-    </a>
+
                         @endforeach
                     </tbody>
                 </table>
@@ -91,12 +89,7 @@
         </div>
     </div>
 
-    <!-- Back to Dashboard -->
-    <div class="mt-4 text-center">
-        <a href="{{ route('staffDashboard') }}" class="btn btn-secondary">
-            🏠 Back to Dashboard
-        </a>
-    </div>
+
 </div>
 
 <!-- Custom Styles -->

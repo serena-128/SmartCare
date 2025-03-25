@@ -6,11 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Resident
+ * @package App\Models
+ * @version February 11, 2025, 11:35 am UTC
+ *
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $dateofbirth
+ * @property string $gender
+ * @property integer $roomnumber
+ * @property string $admissiondate
+ * @property string $medical_history
+ * @property string $allergies
+ * @property string $medications
+ * @property string $doctor_notes
+ */
 class Resident extends Model
 {
     use SoftDeletes, HasFactory;
 
-    protected $table = 'resident';
+    protected $table = 'resident'; // Ensure it matches the database table name
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -24,16 +40,19 @@ class Resident extends Model
         'gender',
         'roomnumber',
         'admissiondate',
+
     ];
 
     protected $casts = [
-        'id' => 'integer',
+        
+        'id' => 'integer',  // Ensure correct primary key reference
         'firstname' => 'string',
         'lastname' => 'string',
         'dateofbirth' => 'date',
         'gender' => 'string',
         'roomnumber' => 'integer',
         'admissiondate' => 'date',
+
     ];
 
     public static $rules = [
@@ -43,39 +62,32 @@ class Resident extends Model
         'gender' => 'nullable|string|max:20',
         'roomnumber' => 'nullable|integer',
         'admissiondate' => 'nullable|date',
+
     ];
 
-    /**
-     * Relationship: Emergency Alerts
-     */
     public function emergencyAlerts()
     {
-        return $this->hasMany(EmergencyAlert::class, 'residentid');
+        return $this->hasMany(\App\Models\EmergencyAlert::class, 'resident_id', 'id'); // Ensure correct foreign key
     }
 
     /**
-     * Relationship: (Legacy, if still needed)
-     */
-    public function diagnoses()
-    {
-        return $this->hasMany(Diagnosis::class, 'residentid');
-    }
-
-    /**
-     * Many-to-Many: Diagnosistypes (pivot: resident_diagnosis)
-     */
-    public function diagnosistypes()
-    {
-        return $this->belongsToMany(DiagnosisType::class, 'resident_diagnosis')
-            ->withPivot(['vitalsigns', 'treatment', 'testresults', 'notes', 'lastupdatedby'])
-            ->withTimestamps();
-    }
-
-    /**
-     * Accessor: Full name (Firstname + Lastname)
+     * Accessor: Get the full name of the resident
      */
     public function getFullNameAttribute()
     {
         return "{$this->firstname} {$this->lastname}";
     }
+    
+        // ✅ Add relationship with Diagnosis
+    public function diagnoses()
+    {
+        return $this->hasMany(Diagnosis::class, 'residentid');
+    }
+    public function diagnosistypes()
+{
+    return $this->belongsToMany(DiagnosisType::class, 'resident_diagnosis')
+        ->withPivot(['vitalsigns', 'treatment', 'testresults', 'notes', 'lastupdatedby'])
+        ->withTimestamps();
+}
+
 }
