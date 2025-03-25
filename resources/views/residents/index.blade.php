@@ -5,7 +5,6 @@
     <!-- Page Header with Logo -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
             <h1 class="h3 text-dark ms-3">🏥 Resident Management</h1>
         </div>
         <a class="btn btn-primary btn-lg shadow-sm" href="{!! route('residents.create') !!}">

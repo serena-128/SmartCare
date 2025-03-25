@@ -36,8 +36,6 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
-                        <li><a class="dropdown-item" href="{{ route('residents.create') }}">➕ Add New Resident</a></li>
-                        <li><a class="dropdown-item" href="{{ route('residents.index') }}">✏️ Update Resident Info</a></li>
                         <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li> <!-- ✅ Added this -->
                     </ul>
                 </li>
@@ -49,7 +47,6 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
-                        <li><a class="dropdown-item" href="{{ route('diagnoses.create') }}">➕ Add Diagnosis</a></li>
                         <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
                     </ul>
                 </li>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ config('app.name') }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -16,37 +16,12 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 </head>
 
 <body>
-    <!-- Bootstrap 5 Navbar (Add if needed) -->
-
-    <div id="page-content-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Left Side Space (for widescreen adjustment) -->
-                <div class="col-lg-2"></div>
-
-                <!-- Main Content -->
-                <div class="col-lg-8"> 
-                    @yield('content') 
-                </div>
-
-                <!-- Right Side Space (for widescreen adjustment) -->
-                <div class="col-lg-2"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ✅ Footer (Now Correctly Placed) -->
-    @include('layouts.footer')
-
-    <!-- Webpack Mix Assets -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    @stack('js_scripts')
-    <body>
     <!-- ✅ STAFF NAVBAR START -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('staffDashboard') }}">
                 <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
@@ -110,12 +85,26 @@
     </nav>
     <!-- ✅ STAFF NAVBAR END -->
 
-    <!-- Flash Messages, Page Content -->
+    <!-- ✅ MAIN CONTENT WRAPPER -->
     <main class="py-4">
-        @yield('content')
+        <div class="container">
+            @yield('content')
+        </div>
     </main>
-</body>
 
-</body>
+    <!-- ✅ FOOTER -->
+    @include('layouts.footer')
 
+    <!-- ✅ JS SCRIPTS -->
+    <script src="{{ asset('js/app.js') }}"></script>
+    @stack('js_scripts')
+
+    <!-- ✅ Optional logo styling (if not in dashboard.css) -->
+    <style>
+        .logo {
+            max-height: 50px;
+            margin-right: 10px;
+        }
+    </style>
+</body>
 </html>
