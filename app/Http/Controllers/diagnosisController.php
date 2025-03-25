@@ -2,145 +2,162 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreatediagnosisRequest;
-use App\Http\Requests\UpdatediagnosisRequest;
-use App\Repositories\diagnosisRepository;
-use App\Http\Controllers\AppBaseController;
-use Illuminate\Http\Request;
-use App\Models\Diagnosis;
 use App\Models\Resident;
-
+use App\Models\DiagnosisType;
+use App\Models\StaffMember;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Flash;
 use Response;
 
-class diagnosisController extends AppBaseController
+class DiagnosisController extends Controller
 {
-    /** @var diagnosisRepository $diagnosisRepository */
-    private $diagnosisRepository;
-
-    public function __construct(diagnosisRepository $diagnosisRepo)
-    {
-        $this->diagnosisRepository = $diagnosisRepo;
-    }
-
     /**
-     * Display a listing of the diagnosis.
-     *
-     * @return Response
+     * Display a listing of resident diagnoses (many-to-many).
      */
     public function index()
     {
-        $diagnoses = Diagnosis::with('resident')->get();
-        return view('diagnoses.index')->with('diagnoses', $diagnoses);
+        $residents = Resident::with(['diagnosistypes' => function ($query) {
+            $query->withPivot([
+                'vitalsigns', 'treatment', 'testresults', 'notes', 'lastupdatedby'
+            ]);
+        }])->get();
+
+        return view('diagnoses.index', compact('residents'));
     }
 
     /**
-     * Show the form for creating a new diagnosis.
-     *
-     * @return Response
+     * Show the form for creating a new resident diagnosis.
      */
     public function create()
     {
-        return view('diagnoses.create');
+        $residents = Resident::all();
+        $diagnosistypes = DiagnosisType::all();
+        $staff = StaffMember::all();
+
+        return view('diagnoses.create', compact('residents', 'diagnosistypes', 'staff'));
     }
 
     /**
-     * Store a newly created diagnosis in storage.
-     *
-     * @param CreatediagnosisRequest $request
-     * @return Response
+     * Store a new diagnosis in the pivot table.
      */
-    public function store(CreatediagnosisRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
-        $diagnosis = $this->diagnosisRepository->create($input);
-        Flash::success('Diagnosis saved successfully.');
-        return redirect(route('diagnoses.index'));
+        $request->validate([
+            'residentid' => 'required|exists:residents,id',
+            'diagnosistypeid' => 'required|exists:diagnosistype,id',
+            'vitalsigns' => 'nullable|string|max:255',
+            'treatment' => 'nullable|string|max:255',
+            'testresults' => 'nullable|string|max:255',
+            'notes' => 'nullable|string|max:255',
+            'lastupdatedby' => 'nullable|exists:staffmember,id',
+        ]);
+
+        $resident = Resident::findOrFail($request->residentid);
+
+        $resident->diagnosistypes()->attach($request->diagnosistypeid, [
+            'vitalsigns' => $request->vitalsigns,
+            'treatment' => $request->treatment,
+            'testresults' => $request->testresults,
+            'notes' => $request->notes,
+            'lastupdatedby' => $request->lastupdatedby,
+        ]);
+
+        Flash::success('Diagnosis assigned successfully.');
+        return redirect()->route('diagnoses.index');
     }
 
     /**
-     * Display the specified diagnosis.
-     *
-     * @param int $id
-     * @return Response
+     * Show a specific diagnosis from the pivot.
      */
     public function show($id)
     {
-        $diagnosis = $this->diagnosisRepository->find($id);
+        $diagnosis = DB::table('resident_diagnosis')->where('id', $id)->first();
 
-        if (empty($diagnosis)) {
-            Flash::error('Diagnosis not found');
-            return redirect(route('diagnoses.index'));
+        if (!$diagnosis) {
+            Flash::error('Diagnosis not found.');
+            return redirect()->route('diagnoses.index');
         }
 
-        return view('diagnoses.show')->with('diagnosis', $diagnosis);
+        $resident = Resident::find($diagnosis->residentid);
+        $diagnosistype = DiagnosisType::find($diagnosis->diagnosistypeid);
+        $staff = StaffMember::find($diagnosis->lastupdatedby);
+
+        return view('diagnoses.show', compact('diagnosis', 'resident', 'diagnosistype', 'staff'));
     }
 
     /**
-     * Show the form for editing the specified diagnosis.
-     *
-     * @param int $id
-     * @return Response
+     * Show the form for editing a resident diagnosis (pivot).
      */
     public function edit($id)
     {
-        $diagnosis = $this->diagnosisRepository->find($id);
+        $diagnosis = DB::table('resident_diagnosis')->where('id', $id)->first();
 
-        if (empty($diagnosis)) {
-            Flash::error('Diagnosis not found');
-            return redirect(route('diagnoses.index'));
+        if (!$diagnosis) {
+            Flash::error('Diagnosis not found.');
+            return redirect()->route('diagnoses.index');
         }
 
-        return view('diagnoses.edit')->with('diagnosis', $diagnosis);
+        $residents = Resident::all();
+        $diagnosistypes = DiagnosisType::all();
+        $staff = StaffMember::all();
+
+        return view('diagnoses.edit', compact('diagnosis', 'residents', 'diagnosistypes', 'staff'));
     }
 
     /**
-     * Update the specified diagnosis in storage.
-     *
-     * @param int $id
-     * @param UpdatediagnosisRequest $request
-     * @return Response
+     * Update a diagnosis in the pivot table.
      */
-    public function update($id, UpdatediagnosisRequest $request)
+    public function update(Request $request, $id)
     {
-        $diagnosis = $this->diagnosisRepository->find($id);
+        $request->validate([
+            'vitalsigns' => 'nullable|string|max:255',
+            'treatment' => 'nullable|string|max:255',
+            'testresults' => 'nullable|string|max:255',
+            'notes' => 'nullable|string|max:255',
+            'lastupdatedby' => 'nullable|exists:staffmember,id',
+        ]);
 
-        if (empty($diagnosis)) {
-            Flash::error('Diagnosis not found');
-            return redirect(route('diagnoses.index'));
+        $diagnosis = DB::table('resident_diagnosis')->where('id', $id)->first();
+
+        if (!$diagnosis) {
+            Flash::error('Diagnosis not found.');
+            return redirect()->route('diagnoses.index');
         }
 
-        $diagnosis = $this->diagnosisRepository->update($request->all(), $id);
+        DB::table('resident_diagnosis')->where('id', $id)->update([
+            'vitalsigns' => $request->vitalsigns,
+            'treatment' => $request->treatment,
+            'testresults' => $request->testresults,
+            'notes' => $request->notes,
+            'lastupdatedby' => $request->lastupdatedby,
+            'updated_at' => now(),
+        ]);
+
         Flash::success('Diagnosis updated successfully.');
-        return redirect(route('diagnoses.index'));
+        return redirect()->route('diagnoses.index');
     }
 
     /**
-     * Remove the specified diagnosis from storage.
-     *
-     * @param int $id
-     * @throws \Exception
-     * @return Response
+     * Delete a diagnosis from the pivot table.
      */
     public function destroy($id)
     {
-        $diagnosis = $this->diagnosisRepository->find($id);
+        $diagnosis = DB::table('resident_diagnosis')->where('id', $id)->first();
 
-        if (empty($diagnosis)) {
-            Flash::error('Diagnosis not found');
-            return redirect(route('diagnoses.index'));
+        if (!$diagnosis) {
+            Flash::error('Diagnosis not found.');
+            return redirect()->route('diagnoses.index');
         }
 
-        $this->diagnosisRepository->delete($id);
+        DB::table('resident_diagnosis')->where('id', $id)->delete();
+
         Flash::success('Diagnosis deleted successfully.');
-        return redirect(route('diagnoses.index'));
+        return redirect()->route('diagnoses.index');
     }
 
     /**
-     * Search for a resident's diagnosis.
-     *
-     * @param Request $request
-     * @return Response
+     * Search diagnosis by resident name.
      */
     public function search(Request $request)
     {
@@ -150,30 +167,23 @@ class diagnosisController extends AppBaseController
             return redirect()->route('diagnoses.searchPage')->with('error', 'Please enter a resident name.');
         }
 
-        // Find the resident by first or last name
         $resident = Resident::where('firstname', 'LIKE', "%$query%")
-                    ->orWhere('lastname', 'LIKE', "%$query%")
-                    ->first();
+            ->orWhere('lastname', 'LIKE', "%$query%")
+            ->first();
 
         if (!$resident) {
             return redirect()->route('diagnoses.searchPage')->with('error', 'No diagnoses found for this resident.');
         }
 
-        // Fetch only the diagnoses for the searched resident
-        $diagnoses = Diagnosis::where('residentid', $resident->id)
-                    ->with(['resident', 'lastUpdatedBy'])
-                    ->get();
-
-        return view('diagnoses.search', compact('diagnoses'));
+        $resident->load('diagnosistypes');
+        return view('diagnoses.search', compact('resident'));
     }
 
     /**
-     * Show the diagnosis search page.
-     *
-     * @return Response
+     * Show the search form view.
      */
     public function searchPage()
     {
-        return view('diagnoses.search'); // Ensure this view exists
+        return view('diagnoses.search');
     }
 }

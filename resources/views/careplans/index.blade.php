@@ -2,13 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <!-- SmartCare Logo -->
-    <div class="text-center">
-        <img src="{{ asset('images/carehome_logo.png') }}" alt="SmartCare Logo" style="max-width: 200px;">
-    </div>
-
     <h2 class="text-center text-purple mt-3">Care Plans</h2>
-
     <div class="d-flex justify-content-between">
         <a href="{{ route('careplans.create') }}" class="btn btn-primary">Add New</a>
     </div>

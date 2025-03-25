@@ -95,3 +95,11 @@
         <p>Schedules</p>
     </a>
 </li>
+<li class="nav-item">
+    <a href="{{ route('diagnosistypes.index') }}"
+       class="nav-link {{ Request::is('diagnosistypes*') ? 'active' : '' }}">
+        <p>Diagnosistypes</p>
+    </a>
+</li>
+
+

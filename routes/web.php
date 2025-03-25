@@ -173,3 +173,6 @@ Route::post('/profile/update', [NextOfKinDashboardController::class, 'updateProf
 
 // ✅ Fetching Appointments
 Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointments'])->name('appointments.fetch');
+
+
+Route::resource('diagnosistypes', App\Http\Controllers\diagnosistypeController::class);
