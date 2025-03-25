@@ -13,10 +13,10 @@
     <style>
         /* Updated Font and Styling */
         body {
-            background-color: #F8F9FA; /* Soft white */
-            color: #333;
-            font-family: 'Poppins', sans-serif; /* Changed Font */
-        }
+    background-color: #EAD8F3; /* Light Purple */
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+}
         .header {
             text-align: center;
             padding: 50px 20px;
