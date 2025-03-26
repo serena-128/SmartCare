@@ -2,56 +2,32 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * Class appointment
- * @package App\Models
- * @version February 12, 2025, 9:29 pm UTC
- *
- * @property \App\Models\Resident $residentid
- * @property \App\Models\Staffmember $staffmemberid
- * @property integer $residentid
- * @property integer $staffmemberid
- * @property string $date
- * @property time $time
- * @property string $reason
- * @property string $location
- */
-class appointment extends Model
+class Appointment extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
-    use HasFactory;
+    protected $table = 'appointment';
 
-    public $table = 'appointment';
-    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
 
-
-
-    public $fillable = [
+    protected $fillable = [
         'residentid',
         'staffmemberid',
         'date',
         'time',
         'reason',
         'location',
-        'rsvp_status',  // ✅ Add RSVP status
-        'rsvp_comments'
+        'rsvp_status',
+        'rsvp_comments',
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
@@ -59,45 +35,36 @@ class appointment extends Model
         'date' => 'date',
         'reason' => 'string',
         'location' => 'string',
-        'rsvp_status' => 'string',  // ✅ Ensure RSVP status is a string
-        'rsvp_comments' => 'string'
+        'rsvp_status' => 'string',
+        'rsvp_comments' => 'string',
     ];
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
     public static $rules = [
         'residentid' => 'nullable|integer',
         'staffmemberid' => 'nullable|integer',
-        'date' => 'nullable',
+        'date' => 'nullable|date',
         'time' => 'nullable',
         'reason' => 'nullable|string|max:100',
         'location' => 'nullable|string|max:100',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
-        'deleted_at' => 'nullable'
+        'deleted_at' => 'nullable',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function residentid()
+    // ✅ Fix: Relationship should be named 'resident'
+    public function resident()
     {
         return $this->belongsTo(\App\Models\Resident::class, 'residentid');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function staffmemberid()
+    // ✅ Fix: Relationship should be named 'staffmember'
+    public function staffmember()
     {
         return $this->belongsTo(\App\Models\Staffmember::class, 'staffmemberid');
     }
-    public function rsvps()
-{
-    return $this->hasMany(\App\Models\AppointmentRsvp::class, 'appointment_id');
-}
 
+    public function rsvps()
+    {
+        return $this->hasMany(\App\Models\AppointmentRsvp::class, 'appointment_id');
+    }
 }
