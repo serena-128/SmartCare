@@ -44,12 +44,6 @@
             <input type="text" name="roomnumber" class="form-control" value="{{ old('roomnumber', $resident->roomnumber) }}" required>
         </div>
 
-        <!-- Assigned Caregiver -->
-        <div class="mb-3">
-            <label for="assigned_staff_id" class="form-label">Assigned Caregiver (Staff ID)</label>
-            <input type="number" name="assigned_staff_id" class="form-control" value="{{ old('assigned_staff_id', $resident->assigned_staff_id) }}">
-        </div>
-
         <button type="submit" class="btn btn-success">✅ Save Changes</button>
         <a href="{{ route('residents.index') }}" class="btn btn-secondary">🏠 Cancel</a>
     </form>
