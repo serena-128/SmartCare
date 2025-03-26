@@ -19,29 +19,35 @@
         @csrf
         @method('PUT')
 
+        <!-- First Name -->
         <div class="mb-3">
             <label for="firstname" class="form-label">First Name</label>
-            <input type="text" name="firstname" class="form-control" value="{{ $resident->firstname }}" required>
+            <input type="text" name="firstname" class="form-control" value="{{ old('firstname', $resident->firstname) }}" required>
         </div>
 
+        <!-- Last Name -->
         <div class="mb-3">
             <label for="lastname" class="form-label">Last Name</label>
-            <input type="text" name="lastname" class="form-control" value="{{ $resident->lastname }}" required>
+            <input type="text" name="lastname" class="form-control" value="{{ old('lastname', $resident->lastname) }}" required>
         </div>
 
+        <!-- Date of Birth -->
         <div class="mb-3">
-            <label for="dob" class="form-label">Date of Birth</label>
-            <input type="date" name="dob" class="form-control" value="{{ $resident->dob }}" required>
+            <label for="dateofbirth" class="form-label">Date of Birth</label>
+            <input type="date" name="dateofbirth" class="form-control"
+                value="{{ old('dateofbirth', $resident->dateofbirth ? \Carbon\Carbon::parse($resident->dateofbirth)->format('Y-m-d') : '') }}" required>
         </div>
 
+        <!-- Room Number -->
         <div class="mb-3">
-            <label for="room_number" class="form-label">Room Number</label>
-            <input type="text" name="room_number" class="form-control" value="{{ $resident->room_number }}" required>
+            <label for="roomnumber" class="form-label">Room Number</label>
+            <input type="text" name="roomnumber" class="form-control" value="{{ old('roomnumber', $resident->roomnumber) }}" required>
         </div>
 
+        <!-- Assigned Caregiver -->
         <div class="mb-3">
-            <label for="assigned_caregiver" class="form-label">Assigned Caregiver</label>
-            <input type="text" name="assigned_caregiver" class="form-control" value="{{ $resident->assigned_caregiver }}">
+            <label for="assigned_staff_id" class="form-label">Assigned Caregiver (Staff ID)</label>
+            <input type="number" name="assigned_staff_id" class="form-control" value="{{ old('assigned_staff_id', $resident->assigned_staff_id) }}">
         </div>
 
         <button type="submit" class="btn btn-success">✅ Save Changes</button>
