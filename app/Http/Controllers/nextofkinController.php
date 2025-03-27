@@ -166,15 +166,18 @@ class nextofkinController extends AppBaseController
     $user = Auth::guard('nextofkin')->user();
 
     if (!Hash::check($request->current_password, $user->password)) {
-        return redirect()->back()->withErrors([
-            'current_password' => 'Current password is incorrect',
-        ])->withInput();
+        return redirect()->back()
+            ->withErrors(['current_password' => 'Current password is incorrect'])
+            ->withInput()
+            ->with('active_tab', 'settings');
     }
 
     $user->password = Hash::make($request->new_password);
     $user->save();
 
-    return redirect()->back()->with('success', 'Password updated successfully!');
+    return redirect()->back()
+        ->with('success', 'Password updated successfully!')
+        ->with('active_tab', 'settings');
 }
 
     

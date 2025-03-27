@@ -344,7 +344,10 @@ if ($hour < 12) {
         <a href="#" class="sidebar-link" onclick="showSection('appointments', this)"><i class="fas fa-calendar-check"></i> Appointments</a>
         <a href="#" class="sidebar-link" onclick="showSection('events', this)"><i class="fas fa-calendar-alt"></i> Events</a>
         <a href="#" class="sidebar-link" onclick="showSection('news', this)"><i class="fas fa-newspaper"></i> News</a>
-        <a href="#" class="sidebar-link" onclick="showSection('settings', this)"><i class="fas fa-cog"></i> Settings</a>
+        <a href="#" id="settings-sidebar-link" class="sidebar-link" onclick="showSection('settings', this); return false;">
+        <i class="fas fa-cog"></i> Settings
+         </a>
+
         <a href="{{ url('/contact') }}" class="sidebar-link">
       <i class="fas fa-envelope"></i> Contact SmartCare
     </a>
@@ -801,6 +804,18 @@ function addNewNotification(message) {
   dropdown.querySelector('.list-group').appendChild(listItem);
 }
 </script>
+@if(session('active_tab') == 'settings')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var settingsLink = document.getElementById('settings-sidebar-link');
+    if (settingsLink) {
+        // Call the function to switch to the settings section
+        showSection('settings', settingsLink);
+    }
+});
+</script>
+@endif
+
 </body>
 </html>
 
