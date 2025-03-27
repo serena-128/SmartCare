@@ -28,7 +28,7 @@ use App\Http\Controllers\StaffScheduleController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\PhotoController;
- 
+use App\Http\Controllers\PhotoGalleryController;
 
 
 /*
@@ -201,3 +201,5 @@ Route::post('/bulletin', [BulletinController::class, 'store'])->name('bulletin.s
 Route::get('/photo/create', [PhotoController::class, 'create'])->name('photo.create');
 Route::post('/photo', [PhotoController::class, 'store'])->name('photo.store');
 
+//photo gallery
+Route::get('/photogallery', [PhotoGalleryController::class, 'index'])->name('photogallery');

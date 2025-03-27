@@ -3,21 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Photo; // Make sure your Photo model exists and is set up correctly
 
 class PhotoGalleryController extends Controller
 {
     public function index()
     {
-        // Optionally fetch photos from the database.
-        // $photos = \App\Models\Photo::all();
-        // For now, we'll pass a placeholder array.
-        $photos = [
-            'photo1.jpg',
-            'photo2.jpg',
-            'photo3.jpg',
-            // Add more if needed...
-        ];
-
-        return view('photogallery.index', compact('photos'));
+        // Fetch photos from the database, ordered by newest first
+        $photos = Photo::orderBy('created_at', 'desc')->get();
+        return view('photogallery', compact('photos'));
     }
 }
