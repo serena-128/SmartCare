@@ -18,6 +18,10 @@
                     <th>Care Goals</th>
                     <th>Care Treatment</th>
                     <th>Notes</th>
+                    <th>Assessment Summary</th>
+                    <th>Diagnosis</th>
+                    <th>Evaluation Notes</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -31,19 +35,23 @@
                         <td>{{ $careplan->caregoals }}</td>
                         <td>{{ $careplan->caretreatment }}</td>
                         <td>{{ $careplan->notes }}</td>
+                        <td>{{ $careplan->assessment_summary }}</td>
+                        <td>{{ $careplan->diagnosis }}</td>
+                        <td>{{ $careplan->evaluation_notes }}</td>
                         <td>
-                            <a href="{{ route('careplans.show', $careplan->id) }}" class="btn btn-info btn-sm">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ route('careplans.edit', $careplan->id) }}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </a>
+                            @if($careplan->status === 'Active')
+                                <span class="badge bg-success">Active</span>
+                            @else
+                                <span class="badge bg-secondary">{{ $careplan->status }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('careplans.show', $careplan->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                            <a href="{{ route('careplans.edit', $careplan->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                             <form action="{{ route('careplans.destroy', $careplan->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                             </form>
                         </td>
                     </tr>

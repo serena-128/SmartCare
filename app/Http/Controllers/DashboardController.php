@@ -7,26 +7,30 @@ use App\Models\Resident;
 use App\Models\Staffmember;
 use App\Models\EmergencyAlert;
 use App\Models\CarePlan;
-use Illuminate\Support\Facades\Auth; // Ensure Auth is imported
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Use default staff ID (e.g. 2 = Mark Reilly) for dev/testing
-        $staffId = auth()->user()->staff_id ?? 2;
-    
-        // Fetch residents assigned to the logged-in staff member
-        $assignedResidents = Resident::where('assigned_staff_id', $staffId)->get();
-    
-        // ✅ FIX: Use $staffId to avoid error when auth is null
+        // ✅ Safely get the logged-in user's email or fallback
+        $staffEmail = auth()->check() ? auth()->user()->email : 'emma.kavanagh@example.com';
+
+        // ✅ Find the staff member by email
+        $staff = Staffmember::where('email', $staffEmail)->first();
+        $staffId = $staff ? $staff->id : null;
+
+        // ✅ Upcoming Appointments for this staff
         $upcomingAppointments = \App\Models\Appointment::with('resident')
             ->where('staffmemberid', $staffId)
             ->whereDate('date', '>=', now())
             ->orderBy('date')
             ->limit(5)
             ->get();
-    
+
+        // ✅ Assigned residents for this staff
+        $assignedResidents = Resident::where('assigned_staff_id', $staffId)->get();
+
         return view('staffDashboard', [
             'residentCount' => Resident::count(),
             'staffCount' => Staffmember::count(),
@@ -36,10 +40,7 @@ class DashboardController extends Controller
             'onDutyStaff' => Staffmember::where('staff_role', 'LIKE', '%Nurse%')->get(),
             'assignedResidents' => $assignedResidents,
             'carePlans' => CarePlan::with('resident')->get(),
-    
-            // ✅ Add this to pass upcoming appointments to the view
             'upcomingAppointments' => $upcomingAppointments,
         ]);
     }
-    
 }
