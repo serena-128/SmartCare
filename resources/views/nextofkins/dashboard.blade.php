@@ -536,8 +536,10 @@ if ($hour < 12) {
 
 
 
-        <div id="news" class="dashboard-section" style="display: none;">
+<div id="news" class="dashboard-section" style="display: none;">
   <h1 class="mb-4">Latest News & Updates</h1>
+  
+  <!-- Row for Latest News and Photo Gallery -->
   <div class="row">
     <!-- Latest News Column -->
     <div class="col-md-6">
@@ -553,9 +555,8 @@ if ($hour < 12) {
               @foreach($newsUpdates as $news)
                 <li class="list-group-item">
                   <strong>{{ $news->title }}</strong>
-                <p class="text-muted">{{ \Carbon\Carbon::parse($news->date)->format('M d, Y') }}</p>
-                <p>{{ $news->description }}</p>
-
+                  <p class="text-muted">{{ \Carbon\Carbon::parse($news->date)->format('M d, Y') }}</p>
+                  <p>{{ $news->description }}</p>
                 </li>
               @endforeach
             </ul>
@@ -565,32 +566,30 @@ if ($hour < 12) {
     </div>
     
     <!-- Photo Gallery Column -->
-<div class="col-md-6">
-  <div class="card">
-    <div class="card-header bg-success text-white">
-      <i class="fas fa-images"></i> Photo Gallery
-    </div>
-    <div class="card-body">
-      <div class="row">
-        @if($photoGallery->isEmpty())
-          <p>No photos available at this time.</p>
-        @else
-          @foreach($photoGallery->take(2) as $photo)
-            <div class="col-6 mb-3">
-              <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
-              <!-- Optionally, show the filename below the image -->
-              {{-- <p class="text-center mt-1">{{ $photo->filename }}</p> --}}
-            </div>
-          @endforeach
-        @endif
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <i class="fas fa-images"></i> Photo Gallery
+        </div>
+        <div class="card-body">
+          <div class="row">
+            @if($photoGallery->isEmpty())
+              <p>No photos available at this time.</p>
+            @else
+              @foreach($photoGallery->take(2) as $photo)
+                <div class="col-6 mb-3">
+                  <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
+                </div>
+              @endforeach
+            @endif
+          </div>
+          <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
+        </div>
       </div>
-      <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
     </div>
-  </div>
-</div>
+  </div> <!-- End of the first row -->
 
-  
-  <!-- Bulletin Board Section -->
+  <!-- Separate Row for Bulletin Board -->
   <div class="row mt-4">
     <div class="col-md-12">
       <div class="card">
@@ -613,6 +612,7 @@ if ($hour < 12) {
     </div>
   </div>
 </div>
+
 
 
         <div id="settings" class="dashboard-section" style="display: none;">
