@@ -657,49 +657,46 @@ if ($hour < 12) {
     </div>
 
     <!-- Account Security (Password Update) Section -->
-          @if ($errors->any())
-      <div class="alert alert-danger">
-          <ul>
-              @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-              @endforeach
+          <div class="col-md-6">
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="fas fa-lock"></i> Account Security
+    </div>
+    <div class="card-body">
+      <!-- Display errors for the password update form here -->
+      @if($errors->has('current_password') || $errors->has('new_password'))
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            @if($errors->has('current_password'))
+              <li>{{ $errors->first('current_password') }}</li>
+            @endif
+            @if($errors->has('new_password'))
+              <li>{{ $errors->first('new_password') }}</li>
+            @endif
           </ul>
-      </div>
-    @endif
-
-    @if (session('success'))
-      <div class="alert alert-success">
-          {{ session('success') }}
-      </div>
-    @endif
-
-    <div class="col-md-6">
-      <div class="card mb-4">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-lock"></i> Account Security
         </div>
-        <div class="card-body">
-          <form method="POST" action="{{ route('nextofkin.password.update') }}">
-            @csrf
-            <div class="mb-3">
-              <label for="current_password" class="form-label">Current Password</label>
-              <input type="password" class="form-control" id="current_password" name="current_password" required>
-            </div>
-            <div class="mb-3">
-              <label for="new_password" class="form-label">New Password</label>
-              <input type="password" class="form-control" id="new_password" name="new_password" required>
-            </div>
-            <div class="mb-3">
-              <label for="confirm_password" class="form-label">Confirm New Password</label>
-              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-            </div>
-            <button type="submit" class="btn btn-secondary w-100">Change Password</button>
-          </form>
+      @endif
+
+      <form method="POST" action="{{ route('nextofkin.password.update') }}">
+        @csrf
+        <div class="mb-3">
+          <label for="current_password" class="form-label">Current Password</label>
+          <input type="password" class="form-control" id="current_password" name="current_password" required>
         </div>
-      </div>
+        <div class="mb-3">
+          <label for="new_password" class="form-label">New Password</label>
+          <input type="password" class="form-control" id="new_password" name="new_password" required>
+        </div>
+        <div class="mb-3">
+          <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+        </div>
+        <button type="submit" class="btn btn-secondary w-100">Change Password</button>
+      </form>
     </div>
   </div>
 </div>
+
 
   <!-- JavaScript to handle section switching -->
   <script>
