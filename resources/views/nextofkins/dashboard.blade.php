@@ -538,61 +538,57 @@ if ($hour < 12) {
 
         <div id="news" class="dashboard-section" style="display: none;">
   <h1 class="mb-4">Latest News & Updates</h1>
-
   <div class="row">
-    <!-- Column 1: News Updates -->
+    <!-- Latest News Column -->
     <div class="col-md-6">
       <div class="card">
         <div class="card-header bg-primary text-white">
           <i class="fas fa-newspaper"></i> Latest News
         </div>
         <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item">
-              <strong>Facility Renovation Begins</strong>
-              <p class="text-muted">March 15, 2025</p>
-              <p>We’re upgrading our care home facilities to enhance the experience for residents.</p>
-            </li>
-            <li class="list-group-item">
-              <strong>New Staff Members Joining</strong>
-              <p class="text-muted">April 5, 2025</p>
-              <p>Welcome our new nurses and caregivers to SmartCare!</p>
-            </li>
-            <li class="list-group-item">
-              <strong>Health & Wellness Workshop</strong>
-              <p class="text-muted">April 20, 2025</p>
-              <p>Join us for an informative session on senior health & wellness.</p>
-            </li>
-          </ul>
+          @if($newsUpdates->isEmpty())
+            <p>No recent updates available.</p>
+          @else
+            <ul class="list-group">
+              @foreach($newsUpdates as $news)
+                <li class="list-group-item">
+                  <strong>{{ $news->title }}</strong>
+                <p class="text-muted">{{ \Carbon\Carbon::parse($news->date)->format('M d, Y') }}</p>
+                <p>{{ $news->description }}</p>
+
+                </li>
+              @endforeach
+            </ul>
+          @endif
         </div>
       </div>
     </div>
-
-    <!-- Column 2: Photo Gallery -->
-<div class="col-md-6">
-  <div class="card">
-    <div class="card-header bg-success text-white">
-      <i class="fas fa-images"></i> Photo Gallery
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-4 mb-3">
-          <img src="{{ asset('pictures/event1.jpg') }}" alt="Event" class="img-fluid custom-img">
+    
+    <!-- Photo Gallery Column -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <i class="fas fa-images"></i> Photo Gallery
         </div>
-        <div class="col-4 mb-3">
-          <img src="{{ asset('pictures/carehome_event_2.jpg') }}" alt="Event" class="img-fluid custom-img">
-        </div>
-        <div class="col-4 mb-3">
-          <img src="{{ asset('pictures/carehome_event_3.jpg') }}" alt="Event" class="img-fluid custom-img">
-            </div>
+        <div class="card-body">
+          <div class="row">
+            @if($photoGallery->isEmpty())
+              <p>No photos available at this time.</p>
+            @else
+              @foreach($photoGallery->take(3) as $photo)
+                <div class="col-4 mb-3">
+                  <img src="{{ asset('storage/photos/' . $photo->filename) }}" alt="Event" class="img-fluid custom-img">
+                </div>
+              @endforeach
+            @endif
           </div>
           <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Bulletin Board -->
+  
+  <!-- Bulletin Board Section -->
   <div class="row mt-4">
     <div class="col-md-12">
       <div class="card">
@@ -600,9 +596,16 @@ if ($hour < 12) {
           <i class="fas fa-thumbtack"></i> Bulletin Board
         </div>
         <div class="card-body">
-          <p><strong>March 25, 2025:</strong> Family Day Event - Don't forget to RSVP!</p>
-          <p><strong>April 10, 2025:</strong> Volunteer sign-ups are now open for the gardening club.</p>
-          <p><strong>April 30, 2025:</strong> Reminder: Monthly resident check-up schedule available.</p>
+          @if($bulletinBoard->isEmpty())
+            <p>No announcements at this time.</p>
+          @else
+            @foreach($bulletinBoard as $announcement)
+              <p>
+                <strong>{{ \Carbon\Carbon::parse($announcement->date)->format('M d, Y') }}:</strong>
+                {{ $announcement->message }}
+              </p>
+            @endforeach
+          @endif
         </div>
       </div>
     </div>

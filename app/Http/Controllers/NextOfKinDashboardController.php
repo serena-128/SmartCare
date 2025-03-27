@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NextOfKin; // Import NextOfKin model
-use App\Models\Resident; // Import Resident model
+use App\Models\Resident;// Import Resident model
+use App\Models\News;      // Import News model
+use App\Models\Photo;     // Import Photo model
+use App\Models\Bulletin;  // Import Bulletin model
 
 class NextOfKinDashboardController extends Controller
 {
@@ -39,8 +42,12 @@ class NextOfKinDashboardController extends Controller
     } else {
         \Log::info('Resident found:', ['id' => $resident->id, 'name' => $resident->firstname . ' ' . $resident->lastname]);
     }
+        // Fetch the dynamic content for the News section
+        $newsUpdates = News::orderBy('date', 'desc')->get();
+        $photoGallery = Photo::orderBy('created_at', 'desc')->get();
+        $bulletinBoard = Bulletin::orderBy('date', 'asc')->get();
 
-    return view('nextofkins.dashboard', compact('resident', 'nextOfKin'));
+    return view('nextofkins.dashboard', compact('resident', 'nextOfKin', 'newsUpdates', 'photoGallery', 'bulletinBoard'));
 }
 
 public function profile()
@@ -94,6 +101,15 @@ public function updateProfile(Request $request)
 
     return redirect()->route('nextofkin.profile')->with('success', 'Profile updated successfully.');
 }
+    public function dashboard()
+{
+    $newsUpdates = News::orderBy('publication_date', 'desc')->get();
+    $photoGallery = Photo::orderBy('created_at', 'desc')->get();
+    $bulletinBoard = Bulletin::orderBy('date', 'asc')->get();
+
+    return view('dashboard', compact('newsUpdates', 'photoGallery', 'bulletinBoard'));
+}
+
 
 
 }
