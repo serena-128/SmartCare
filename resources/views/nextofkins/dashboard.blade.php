@@ -579,7 +579,7 @@ if ($hour < 12) {
             <div class="col-6 mb-3">
               <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
               <!-- Optionally, show the filename below the image -->
-              <p class="text-center mt-1">{{ $photo->filename }}</p>
+              {{-- <p class="text-center mt-1">{{ $photo->filename }}</p> --}}
             </div>
           @endforeach
         @endif
