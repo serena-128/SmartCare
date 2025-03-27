@@ -25,7 +25,9 @@ use App\Http\Controllers\NextOfKinProfileController;
 use App\Http\Controllers\EventAppointmentController;
 use App\Http\Controllers\NextOfKinDashboardController;
 use App\Http\Controllers\StaffScheduleController;
-
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\BulletinController;
+use App\Http\Controllers\PhotoController;
  
 
 
@@ -187,6 +189,13 @@ Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.p
 //appointment search
 Route::get('/search-appointments', [AppointmentController::class, 'searchAppointments']);
 
-//photo gallery
-Route::get('/photogallery', [\App\Http\Controllers\PhotoGalleryController::class, 'index'])->name('photogallery');
+//photo gallery, news, bulletin
+Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
+Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+
+Route::get('/bulletin/create', [BulletinController::class, 'create'])->name('bulletin.create');
+Route::post('/bulletin', [BulletinController::class, 'store'])->name('bulletin.store');
+
+Route::get('/photo/create', [PhotoController::class, 'create'])->name('photo.create');
+Route::post('/photo', [PhotoController::class, 'store'])->name('photo.store');
 
