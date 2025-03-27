@@ -7,6 +7,8 @@ use App\Models\Event;
 use App\Observers\EventObserver;
 use App\Models\Appointment;
 use App\Observers\AppointmentObserver;
+use App\Models\News;
+use App\Observers\NewsObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
     {
        Event::observe(EventObserver::class);
        Appointment::observe(AppointmentObserver::class); 
+        News::observe(NewsObserver::class);
     }
 }
