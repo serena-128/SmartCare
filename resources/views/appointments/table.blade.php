@@ -1,5 +1,5 @@
-<table class="table table-striped">
-    <thead>
+<table class="table table-bordered table-hover text-center align-middle shadow-sm" style="background-color: #fff;">
+    <thead class="table-light text-purple fw-bold">
         <tr>
             <th>Resident</th>
             <th>Staff Member</th>
@@ -13,26 +13,22 @@
     <tbody>
         @foreach($appointments as $appointment)
             <tr>
-                <td>
-                    {{ $appointment->resident ? $appointment->resident->firstname . ' ' . $appointment->resident->lastname : 'N/A' }}
-                </td>
-                <td>
-                    {{ $appointment->staffmember ? $appointment->staffmember->firstname . ' ' . $appointment->staffmember->lastname : 'N/A' }}
-                </td>
+                <td>{{ $appointment->resident?->firstname }} {{ $appointment->resident?->lastname }}</td>
+                <td>{{ $appointment->staffmember?->firstname }} {{ $appointment->staffmember?->lastname }}</td>
                 <td>{{ \Carbon\Carbon::parse($appointment->date)->format('Y-m-d') }}</td>
                 <td>{{ \Carbon\Carbon::parse($appointment->time)->format('H:i') }}</td>
                 <td>{{ $appointment->reason }}</td>
                 <td>{{ $appointment->location }}</td>
-                <td>
-                    <a href="{{ route('appointments.show', $appointment->id) }}" class="btn btn-sm btn-info" title="View">
+                <td class="d-flex justify-content-center gap-2">
+                    <a href="{{ route('appointments.show', $appointment->id) }}" class="btn btn-info btn-sm" title="View">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{{ route('appointments.edit', $appointment->id) }}" class="btn btn-sm btn-warning" title="Edit">
+                    <a href="{{ route('appointments.edit', $appointment->id) }}" class="btn btn-warning btn-sm" title="Edit">
                         <i class="fas fa-edit"></i>
                     </a>
                     {!! Form::open(['route' => ['appointments.destroy', $appointment->id], 'method' => 'delete', 'style' => 'display:inline']) !!}
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this appointment?')">
-                            <i class="fas fa-trash"></i>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
                     {!! Form::close() !!}
                 </td>

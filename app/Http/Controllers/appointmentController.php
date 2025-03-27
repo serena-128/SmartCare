@@ -9,6 +9,8 @@ use App\Repositories\appointmentRepository;
 use App\Models\Appointment;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\Resident;
+
 use Flash;
 use Response;
 
@@ -30,8 +32,12 @@ class appointmentController extends AppBaseController
 
     public function create()
     {
-        return view('appointments.create');
+        $residents = \App\Models\Resident::all(); // Fetch all residents
+        $staffmembers = \App\Models\Staffmember::all(); // ← Make sure this model exists
+    
+        return view('appointments.create', compact('residents', 'staffmembers'));
     }
+    
 
     public function store(CreateappointmentRequest $request)
     {

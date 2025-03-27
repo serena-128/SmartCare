@@ -176,3 +176,4 @@ Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointme
 
 
 Route::resource('diagnosistypes', App\Http\Controllers\diagnosistypeController::class);
+
