@@ -43,4 +43,9 @@ class DashboardController extends Controller
             'upcomingAppointments' => $upcomingAppointments,
         ]);
     }
+    public function calendarView()
+{
+    return view('staff.calendar');
+}
+
 }

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -98,6 +101,35 @@
     <!-- ✅ JS SCRIPTS -->
     <script src="{{ asset('js/app.js') }}"></script>
     @stack('js_scripts')
+<!-- FullCalendar JS -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+
+        if (calendarEl) {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '/staff/appointments/json', // your route to fetch events
+                selectable: true,
+                select: function (info) {
+                    alert('Selected: ' + info.startStr);
+                },
+                eventClick: function (info) {
+                    alert('Event: ' + info.event.title);
+                }
+            });
+
+            calendar.render();
+        }
+    });
+</script>
 
     <!-- ✅ Optional logo styling (if not in dashboard.css) -->
     <style>
