@@ -189,7 +189,9 @@ Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.p
 //appointment search
 Route::get('/search-appointments', [AppointmentController::class, 'searchAppointments']);
 
-//photo gallery, news, bulletin
+//photo gallery
+Route::get('/photogallery', [\App\Http\Controllers\PhotoGalleryController::class, 'index'])->name('photogallery');
+
 Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
 Route::post('/news', [NewsController::class, 'store'])->name('news.store');
 
