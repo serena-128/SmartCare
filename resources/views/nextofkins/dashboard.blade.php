@@ -565,28 +565,30 @@ if ($hour < 12) {
     </div>
     
     <!-- Photo Gallery Column -->
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header bg-success text-white">
-          <i class="fas fa-images"></i> Photo Gallery
-        </div>
-        <div class="card-body">
-          <div class="row">
-            @if($photoGallery->isEmpty())
-              <p>No photos available at this time.</p>
-            @else
-              @foreach($photoGallery->take(3) as $photo)
-                <div class="col-4 mb-3">
-                  <img src="{{ asset('storage/photos/' . $photo->filename) }}" alt="Event" class="img-fluid custom-img">
-                </div>
-              @endforeach
-            @endif
-          </div>
-          <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
-        </div>
+<div class="col-md-6">
+  <div class="card">
+    <div class="card-header bg-success text-white">
+      <i class="fas fa-images"></i> Photo Gallery
+    </div>
+    <div class="card-body">
+      <div class="row">
+        @if($photoGallery->isEmpty())
+          <p>No photos available at this time.</p>
+        @else
+          @foreach($photoGallery->take(2) as $photo)
+            <div class="col-6 mb-3">
+              <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
+              <!-- Optionally, show the filename below the image -->
+              <p class="text-center mt-1">{{ $photo->filename }}</p>
+            </div>
+          @endforeach
+        @endif
       </div>
+      <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
     </div>
   </div>
+</div>
+
   
   <!-- Bulletin Board Section -->
   <div class="row mt-4">
