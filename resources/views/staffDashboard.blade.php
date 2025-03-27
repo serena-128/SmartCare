@@ -182,6 +182,37 @@
         </div>
     </div>
 </div>
+<div class="card shadow-lg mt-4">
+    <div class="card-header text-white" style="background-color: purple;">
+        <i class="fas fa-calendar-check"></i> Upcoming Appointments
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-bordered text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Resident</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($upcomingAppointments as $appt)
+                    <tr>
+                        <td>{{ $appt->resident->firstname }} {{ $appt->resident->lastname }}</td>
+                        <td>{{ \Carbon\Carbon::parse($appt->date)->format('Y-m-d') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}</td>
+                        <td>{{ $appt->reason }}</td>
+                    </tr>
+                @empty
+                    <tr><td colspan="4">No upcoming appointments.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 
 <!-- Auto Logout for Inactivity -->
