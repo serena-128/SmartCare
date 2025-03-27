@@ -10,6 +10,8 @@ use App\Models\Appointment;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\Resident;
+use App\Models\Staffmember;
+
 
 use Flash;
 use Response;
@@ -61,15 +63,13 @@ class appointmentController extends AppBaseController
 
     public function edit($id)
     {
-        $appointment = $this->appointmentRepository->find($id);
-
-        if (empty($appointment)) {
-            Flash::error('Appointment not found');
-            return redirect(route('appointments.index'));
-        }
-
-        return view('appointments.edit')->with('appointment', $appointment);
+        $appointment = Appointment::findOrFail($id);
+        $residents = Resident::all();
+        $staffmembers = Staffmember::all();
+    
+        return view('appointments.edit', compact('appointment', 'residents', 'staffmembers'));
     }
+    
 
     public function update($id, UpdateappointmentRequest $request)
     {
