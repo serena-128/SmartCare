@@ -11,6 +11,9 @@ use App\Models\News;
 use App\Observers\NewsObserver;
 use App\Models\Bulletin;
 use App\Observers\BulletinObserver;
+use App\Models\Photo;
+use App\Observers\PhotoObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,5 +38,6 @@ class AppServiceProvider extends ServiceProvider
        Appointment::observe(AppointmentObserver::class); 
         News::observe(NewsObserver::class);
         Bulletin::observe(BulletinObserver::class);
+        Photo::observe(PhotoObserver::class);
     }
 }
