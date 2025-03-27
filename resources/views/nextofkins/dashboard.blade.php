@@ -657,6 +657,22 @@ if ($hour < 12) {
     </div>
 
     <!-- Account Security (Password Update) Section -->
+          @if ($errors->any())
+      <div class="alert alert-danger">
+          <ul>
+              @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+              @endforeach
+          </ul>
+      </div>
+    @endif
+
+    @if (session('success'))
+      <div class="alert alert-success">
+          {{ session('success') }}
+      </div>
+    @endif
+
     <div class="col-md-6">
       <div class="card mb-4">
         <div class="card-header bg-secondary text-white">

@@ -9,6 +9,8 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class nextofkinController extends AppBaseController
 {
@@ -156,25 +158,30 @@ class nextofkinController extends AppBaseController
     
     public function updatePassword(Request $request)
 {
-    // Validate input
+    // Validate inputs; note 'confirmed' expects new_password_confirmation
     $request->validate([
         'current_password' => 'required',
-        'new_password' => 'required|min:6|confirmed', // 'confirmed' expects a field named new_password_confirmation
+        'new_password' => 'required|min:6|confirmed',
     ]);
 
-    // Get the authenticated user
     $user = Auth::guard('nextofkin')->user();
 
-    // Check if current password is correct
+    // Check if the current password is correct
     if (!Hash::check($request->current_password, $user->password)) {
-        return back()->withErrors(['current_password' => 'Current password is incorrect']);
+        return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect']);
     }
 
-    // Update the password
+    // Update the password (make sure you hash it)
     $user->password = Hash::make($request->new_password);
-    $user->save();
-
-    return redirect()->back()->with('success', 'Password updated successfully!');
+    
+    if ($user->save()) {
+        \Log::info('Password updated for user: ' . $user->id);
+        // For debugging: you can dd($user->password) here to see the updated hash.
+        // dd($user->password);
+        return redirect()->back()->with('success', 'Password updated successfully!');
+    } else {
+        return redirect()->back()->with('error', 'Failed to update password. Please try again.');
+    }
 }
     
 }
