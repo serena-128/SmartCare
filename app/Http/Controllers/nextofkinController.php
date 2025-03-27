@@ -154,4 +154,27 @@ class nextofkinController extends AppBaseController
         return redirect(route('nextofkins.index'));
     }
     
+    public function updatePassword(Request $request)
+{
+    // Validate input
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|min:6|confirmed', // 'confirmed' expects a field named new_password_confirmation
+    ]);
+
+    // Get the authenticated user
+    $user = Auth::guard('nextofkin')->user();
+
+    // Check if current password is correct
+    if (!Hash::check($request->current_password, $user->password)) {
+        return back()->withErrors(['current_password' => 'Current password is incorrect']);
+    }
+
+    // Update the password
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    return redirect()->back()->with('success', 'Password updated successfully!');
+}
+    
 }

@@ -203,3 +203,7 @@ Route::post('/photo', [PhotoController::class, 'store'])->name('photo.store');
 
 //photo gallery
 Route::get('/photogallery', [PhotoGalleryController::class, 'index'])->name('photogallery');
+
+//settings
+Route::post('/nextofkin/password/update', [NextOfKinController::class, 'updatePassword'])
+    ->name('nextofkin.password.update');

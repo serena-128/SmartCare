@@ -617,64 +617,67 @@ if ($hour < 12) {
 
         <div id="settings" class="dashboard-section" style="display: none;">
   <h1>Account Settings</h1>
-  <p>Manage your personal information and notification preferences.</p>
-
+  <p>Manage your notifications and account security settings.</p>
+  
   <div class="row">
-    <!-- Column 1: Profile Settings -->
+    <!-- Notification Preferences Section -->
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <i class="fas fa-user-cog"></i> Profile Settings
-        </div>
-        <div class="card-body">
-          <form method="POST" action="{{ route('nextofkin.settings.update') }}">
-            @csrf
-            <div class="mb-3">
-              <label for="name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', Auth::guard('nextofkin')->user()->firstname ?? '') }}">
-            </div>
-
-            <div class="mb-3">
-              <label for="email" class="form-label">Email Address</label>
-              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::guard('nextofkin')->user()->email ?? '') }}">
-            </div>
-
-            <div class="mb-3">
-              <label for="phone" class="form-label">Phone Number</label>
-              <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', Auth::guard('nextofkin')->user()->contactnumber ?? '') }}">
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Column 2: Notification Preferences -->
-    <div class="col-md-6">
-      <div class="card">
+      <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
           <i class="fas fa-bell"></i> Notification Preferences
         </div>
         <div class="card-body">
           <form method="POST" action="{{ route('nextofkin.notifications.update') }}">
             @csrf
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications">
-              <label class="form-check-label" for="email_notifications">Receive email notifications</label>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications"
+                     {{ Auth::guard('nextofkin')->user()->email_notifications ? 'checked' : '' }}>
+              <label class="form-check-label" for="email_notifications">
+                Receive Email Notifications
+              </label>
             </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications">
-              <label class="form-check-label" for="sms_notifications">Receive SMS alerts</label>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications"
+                     {{ Auth::guard('nextofkin')->user()->sms_notifications ? 'checked' : '' }}>
+              <label class="form-check-label" for="sms_notifications">
+                Receive SMS Alerts
+              </label>
             </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates">
-              <label class="form-check-label" for="carehome_updates">Receive care home updates</label>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates"
+                     {{ Auth::guard('nextofkin')->user()->carehome_updates ? 'checked' : '' }}>
+              <label class="form-check-label" for="carehome_updates">
+                Receive Care Home Updates
+              </label>
             </div>
-
             <button type="submit" class="btn btn-warning w-100 mt-3">Update Preferences</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Security (Password Update) Section -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-lock"></i> Account Security
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ route('nextofkin.password.update') }}">
+            @csrf
+            <div class="mb-3">
+              <label for="current_password" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="current_password" name="current_password" required>
+            </div>
+            <div class="mb-3">
+              <label for="new_password" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="new_password" name="new_password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn btn-secondary w-100">Change Password</button>
           </form>
         </div>
       </div>
