@@ -29,7 +29,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PhotoGalleryController;
-
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -207,3 +207,8 @@ Route::get('/photogallery', [PhotoGalleryController::class, 'index'])->name('pho
 //settings
 Route::post('/nextofkin/password/update', [NextOfKinController::class, 'updatePassword'])
     ->name('nextofkin.password.update');
+
+//notification count
+Route::get('/notifications/count', [NotificationController::class, 'getCount'])
+    ->name('notifications.count');
+

@@ -326,7 +326,8 @@ if ($hour < 12) {
      <!-- Notification Icon (Top-right corner) -->
   <div id="notification-tab" class="notification-tab">
     <i class="fas fa-bell"></i>
-    <span id="notification-count" class="notification-count">3</span> <!-- Example count -->
+    <span id="notification-count" class="notification-count">0</span>
+
   </div>
     <div id="notification-dropdown" class="notification-dropdown" style="display: none;">
   <ul class="list-group">
@@ -815,6 +816,41 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endif
+<script>
+function fetchNotifications() {
+    fetch("{{ route('notifications.count') }}")
+        .then(response => response.json())
+        .then(data => {
+            // Update the notification count element
+            var countElement = document.getElementById('notification-count');
+            countElement.textContent = data.count;
+
+            // Update the notification dropdown list
+            var dropdownList = document.querySelector('#notification-dropdown .list-group');
+            if(dropdownList) {
+              dropdownList.innerHTML = ''; // Clear current notifications
+
+              data.notifications.forEach(function(notification) {
+                  var listItem = document.createElement('li');
+                  listItem.classList.add('list-group-item');
+                  if(notification.is_new) {
+                      listItem.classList.add('new-notification');
+                  }
+                  // Adjust property name according to your Notification model
+                  listItem.textContent = notification.message;
+                  dropdownList.appendChild(listItem);
+              });
+            }
+        })
+        .catch(error => console.error("Error fetching notifications:", error));
+}
+
+// Poll every 30 seconds (30000 milliseconds)
+setInterval(fetchNotifications, 30000);
+
+// Also fetch notifications on page load
+document.addEventListener('DOMContentLoaded', fetchNotifications);
+</script>
 
 </body>
 </html>
