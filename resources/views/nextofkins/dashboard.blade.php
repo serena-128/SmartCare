@@ -242,7 +242,6 @@ if ($hour < 12) {
   border-radius: 50%;
   padding: 5px 8px;
   font-weight: bold;
-  animation: bounce 1s infinite; /* Add bounce effect when there's a new notification */
 }
 
 /* Bounce animation for notification count */
@@ -314,6 +313,10 @@ if ($hour < 12) {
 .notification-dropdown .list-group-item.new-notification:hover {
   background-color: #ff99cc;
 }
+    .bounce {
+  animation: bounce 1s infinite;
+}
+
 
 
   </style>
@@ -780,11 +783,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// Example to dynamically change the notification count
-function updateNotificationCount(newCount) {
-  var countElement = document.getElementById('notification-count');
-  countElement.textContent = newCount;
-}
 
 // Example to add a new notification dynamically
 function addNewNotification(message) {
@@ -808,27 +806,38 @@ document.addEventListener('DOMContentLoaded', function() {
 @endif
 <script>
   function fetchNotifications() {
-    fetch("{{ route('notifications.fetch') }}")
-      .then(response => response.json())
-      .then(data => {
-        const countElement = document.getElementById('notification-count');
+  fetch("{{ route('notifications.fetch') }}")
+    .then(response => response.json())
+    .then(data => {
+      const countElement = document.getElementById('notification-count');
+      const dropdownList = document.querySelector('#notification-dropdown .list-group');
+
+      // Update count
+      if (data.count > 0) {
         countElement.textContent = data.count;
+        countElement.style.display = 'inline-block';
+        countElement.classList.add('bounce');
+      } else {
+        countElement.style.display = 'none';
+        countElement.classList.remove('bounce');
+        countElement.textContent = ''; // Optional: remove "0"
+      }
 
-        const dropdownList = document.querySelector('#notification-dropdown .list-group');
-        dropdownList.innerHTML = '';
+      // Populate dropdown
+      dropdownList.innerHTML = '';
+      data.notifications.forEach(notification => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        if (!notification.is_read) {
+          li.classList.add('new-notification');
+        }
+        li.textContent = notification.message;
+        dropdownList.appendChild(li);
+      });
+    })
+    .catch(error => console.error('Fetch notifications failed:', error));
+}
 
-        data.notifications.forEach(notification => {
-          const li = document.createElement('li');
-          li.classList.add('list-group-item');
-          if (!notification.is_read) {
-            li.classList.add('new-notification');
-          }
-          li.textContent = notification.message;
-          dropdownList.appendChild(li);
-        });
-      })
-      .catch(error => console.error('Fetch notifications failed:', error));
-  }
 
   
 
