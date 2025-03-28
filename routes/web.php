@@ -209,6 +209,8 @@ Route::post('/nextofkin/password/update', [NextOfKinController::class, 'updatePa
     ->name('nextofkin.password.update');
 
 //notification count
-Route::get('/notifications/count', [NotificationController::class, 'getCount'])
-    ->name('notifications.count');
+Route::get('/notifications/count', [NotificationController::class, 'fetch'])->name('notifications.count');
+
+Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
 

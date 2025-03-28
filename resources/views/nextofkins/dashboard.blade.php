@@ -780,16 +780,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-document.getElementById('notification-tab').addEventListener('click', function() {
-  var dropdown = document.getElementById('notification-dropdown');
-  // Toggle the display property to show or hide the dropdown
-  if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-    dropdown.style.display = 'block';  // Show the dropdown
-  } else {
-    dropdown.style.display = 'none';   // Hide the dropdown
-  }
-});
-
 // Example to dynamically change the notification count
 function updateNotificationCount(newCount) {
   var countElement = document.getElementById('notification-count');
@@ -817,40 +807,58 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endif
 <script>
-function fetchNotifications() {
-    fetch("{{ route('notifications.count') }}")
-        .then(response => response.json())
-        .then(data => {
-            // Update the notification count element
-            var countElement = document.getElementById('notification-count');
-            countElement.textContent = data.count;
+  function fetchNotifications() {
+    fetch("{{ route('notifications.fetch') }}")
+      .then(response => response.json())
+      .then(data => {
+        const countElement = document.getElementById('notification-count');
+        countElement.textContent = data.count;
 
-            // Update the notification dropdown list
-            var dropdownList = document.querySelector('#notification-dropdown .list-group');
-            if(dropdownList) {
-              dropdownList.innerHTML = ''; // Clear current notifications
+        const dropdownList = document.querySelector('#notification-dropdown .list-group');
+        dropdownList.innerHTML = '';
 
-              data.notifications.forEach(function(notification) {
-                  var listItem = document.createElement('li');
-                  listItem.classList.add('list-group-item');
-                  if(notification.is_new) {
-                      listItem.classList.add('new-notification');
-                  }
-                  // Adjust property name according to your Notification model
-                  listItem.textContent = notification.message;
-                  dropdownList.appendChild(listItem);
-              });
-            }
-        })
-        .catch(error => console.error("Error fetching notifications:", error));
-}
+        data.notifications.forEach(notification => {
+          const li = document.createElement('li');
+          li.classList.add('list-group-item');
+          if (!notification.is_read) {
+            li.classList.add('new-notification');
+          }
+          li.textContent = notification.message;
+          dropdownList.appendChild(li);
+        });
+      })
+      .catch(error => console.error('Fetch notifications failed:', error));
+  }
 
-// Poll every 30 seconds (30000 milliseconds)
-setInterval(fetchNotifications, 30000);
+  
 
-// Also fetch notifications on page load
-document.addEventListener('DOMContentLoaded', fetchNotifications);
+  document.addEventListener('DOMContentLoaded', fetchNotifications);
+  setInterval(fetchNotifications, 30000); // Optional polling
+document.getElementById('notification-tab').addEventListener('click', function () {
+  const dropdown = document.getElementById('notification-dropdown');
+  const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+
+  // Toggle dropdown visibility
+  dropdown.style.display = isHidden ? 'block' : 'none';
+
+  if (isHidden) {
+    // Mark notifications as read when opening the dropdown
+    fetch("{{ route('notifications.markRead') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+      }
+    })
+    .then(() => {
+      document.getElementById('notification-count').textContent = '0';
+    })
+    .catch(err => console.error('Failed to mark as read:', err));
+  }
+});
+
 </script>
+
 
 </body>
 </html>
