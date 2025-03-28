@@ -10,6 +10,7 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\AppointmentRsvp;
 
 class appointmentController extends AppBaseController
 {
@@ -227,6 +228,13 @@ public function submitRsvp(Request $request)
     $appointment->rsvp_status = $request->rsvp_status;
     $appointment->rsvp_comments = $request->comments;
     $appointment->save();
+    
+    \App\Models\AppointmentRsvp::create([
+        'appointment_id' => $appointment->id,
+        'nextofkin_id'   => $nextOfKin->id,
+        'rsvp_status'    => $request->rsvp_status,
+        'comments'       => $request->comments,
+    ]);
 
     return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
 }
