@@ -164,4 +164,29 @@ class appointmentController extends AppBaseController
 
         return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
     }
+    public function fetchStaffAppointments()
+    {
+        $staff = \App\Models\Staffmember::where('email', 'emma.kavanagh@example.com')->first(); // or use session('staff_email')
+    
+        if (!$staff) {
+            return response()->json([]);
+        }
+    
+        $appointments = \App\Models\Appointment::where('staffmemberid', $staff->id)
+            ->with('resident')
+            ->get();
+    
+        return response()->json($appointments->map(function ($a) {
+            $start = \Carbon\Carbon::parse("{$a->date} {$a->time}")->toIso8601String();
+    
+            return [
+                'title' => $a->reason . ' - ' . ($a->resident->firstname ?? 'Resident'),
+                'start' => $start,
+                'description' => $a->location ?? 'No location',
+            ];
+        }));
+    }
+    
+    
+
 }

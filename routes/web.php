@@ -180,3 +180,7 @@ Route::resource('diagnosistypes', App\Http\Controllers\diagnosistypeController::
 Route::get('/staff/calendar', function () {
     return view('staff.calendar');
 })->name('staff.calendar');
+// routes/web.php
+Route::get('/staff/appointments/calendar', [App\Http\Controllers\AppointmentController::class, 'fetchStaffAppointments'])->name('appointments.calendar.staff');
+Route::get('/staff/calendar/data', [App\Http\Controllers\AppointmentController::class, 'fetchStaffAppointments']);
+
