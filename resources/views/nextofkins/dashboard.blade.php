@@ -707,29 +707,37 @@ if ($hour < 12) {
 
   <!-- JavaScript to handle section switching -->
   <script>
-    function showSection(sectionId, element) {
-      // Hide all sections
-      document.querySelectorAll('.dashboard-section').forEach(section => {
-        section.style.display = 'none';
-      });
-        
-        if (sectionId === 'appointments' || sectionId === 'events') {
-        document.getElementById('notification-tab').style.display = 'none';
-      } else {
-        document.getElementById('notification-tab').style.display = 'block';
-      }
+let appointmentsCalendar;
+let eventsCalendar;
 
-      // Show the selected section
-      document.getElementById(sectionId).style.display = 'block';
+function showSection(sectionId, element) {
+  // Hide all sections
+  document.querySelectorAll('.dashboard-section').forEach(section => {
+    section.style.display = 'none';
+  });
 
-      // Remove 'active' class from all sidebar links
-      document.querySelectorAll('.sidebar-link').forEach(link => {
-        link.classList.remove('active');
-      });
+  // Toggle notification bell visibility
+  document.getElementById('notification-tab').style.display = (sectionId === 'appointments' || sectionId === 'events') ? 'none' : 'block';
 
-      // Add 'active' class to the clicked sidebar link
-      element.classList.add('active');
-    }
+  // Show the selected section
+  const selectedSection = document.getElementById(sectionId);
+  selectedSection.style.display = 'block';
+
+  // Highlight the selected link
+  document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+  element.classList.add('active');
+
+  // Re-render calendar when needed
+  if (sectionId === 'appointments' && appointmentsCalendar) {
+    setTimeout(() => appointmentsCalendar.render(), 10); // delay ensures layout is ready
+  }
+
+  if (sectionId === 'events' && eventsCalendar) {
+    setTimeout(() => eventsCalendar.render(), 10);
+  }
+}
+
+
   </script>
 
   <!-- Bootstrap JS -->
@@ -738,48 +746,55 @@ if ($hour < 12) {
 
  <!-- Initialize FullCalendar for Appointments -->
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var appointmentsCalendarEl = document.getElementById('calendar');
-  if (appointmentsCalendarEl) {
-    var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
+document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('calendar');
+  if (calendarEl) {
+    appointmentsCalendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      // Load appointments dynamically from the route:
       events: '{{ route("appointments.fetch") }}',
-      eventClick: function(info) {
+      eventClick: function (info) {
         alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
       }
     });
-    appointmentsCalendar.render();
+
+    // Only render if the section is visible on first load
+    if (document.getElementById('appointments').style.display !== 'none') {
+      appointmentsCalendar.render();
+    }
   }
 });
+
 </script>
 
 
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var eventsCalendarEl = document.getElementById('events-calendar');
-  if (eventsCalendarEl) {
-    var eventsCalendar = new FullCalendar.Calendar(eventsCalendarEl, {
+document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('events-calendar');
+  if (calendarEl) {
+    eventsCalendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      // Use Laravel route to fetch events
       events: '/fetch-events',
-      eventClick: function(info) {
+      eventClick: function (info) {
         alert('Event: ' + info.event.title + '\n' + info.event.extendedProps.description);
       }
     });
-    eventsCalendar.render();
+
+    if (document.getElementById('events').style.display !== 'none') {
+      eventsCalendar.render();
+    }
   }
 });
+
 </script>
 
 <script>
