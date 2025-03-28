@@ -98,9 +98,6 @@
     <!-- ✅ FOOTER -->
     @include('layouts.footer')
 
-    <!-- ✅ JS SCRIPTS -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    @stack('js_scripts')
 <!-- FullCalendar JS -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
 
@@ -116,20 +113,44 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                events: '/staff/appointments/json', // your route to fetch events
-                selectable: true,
-                select: function (info) {
-                    alert('Selected: ' + info.startStr);
+                events: '/staff/appointments/json',
+
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true // set to false if you want 24-hour format
                 },
-                eventClick: function (info) {
-                    alert('Event: ' + info.event.title);
-                }
+
+                eventContent: function(info) {
+                    return {
+                        html: `
+                            <div style="font-size: 0.75rem; white-space: normal;">
+                                <strong>${info.timeText}</strong><br>
+                                ${info.event.title}
+                            </div>
+                        `
+                    };
+                },
+
+                eventDidMount: function(info) {
+                    if (info.event.extendedProps.description) {
+                        new bootstrap.Tooltip(info.el, {
+                            title: info.event.extendedProps.description,
+                            placement: 'top',
+                            trigger: 'hover',
+                            container: 'body'
+                        });
+                    }
+                },
             });
 
             calendar.render();
         }
     });
 </script>
+
+
+
 
     <!-- ✅ Optional logo styling (if not in dashboard.css) -->
     <style>

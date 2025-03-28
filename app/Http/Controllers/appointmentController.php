@@ -166,7 +166,7 @@ class appointmentController extends AppBaseController
     }
     public function fetchStaffAppointments()
     {
-        $staff = \App\Models\Staffmember::where('email', 'emma.kavanagh@example.com')->first(); // or use session('staff_email')
+        $staff = \App\Models\Staffmember::where('email', 'emma.kavanagh@example.com')->first(); // Or session('staff_email')
     
         if (!$staff) {
             return response()->json([]);
@@ -177,15 +177,17 @@ class appointmentController extends AppBaseController
             ->get();
     
         return response()->json($appointments->map(function ($a) {
-            $start = \Carbon\Carbon::parse("{$a->date} {$a->time}")->toIso8601String();
+            // If `date` is already a datetime field in DB, just combine directly with Carbon:
+            $start = \Carbon\Carbon::parse($a->date)->setTimeFromTimeString($a->time)->toIso8601String();
     
             return [
                 'title' => $a->reason . ' - ' . ($a->resident->firstname ?? 'Resident'),
                 'start' => $start,
-                'description' => $a->location ?? 'No location',
+                'description' => $a->location ?? '',
             ];
         }));
     }
+    
     
     
 

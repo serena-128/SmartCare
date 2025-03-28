@@ -181,6 +181,9 @@ Route::get('/staff/calendar', function () {
     return view('staff.calendar');
 })->name('staff.calendar');
 // routes/web.php
-Route::get('/staff/appointments/calendar', [App\Http\Controllers\AppointmentController::class, 'fetchStaffAppointments'])->name('appointments.calendar.staff');
-Route::get('/staff/calendar/data', [App\Http\Controllers\AppointmentController::class, 'fetchStaffAppointments']);
+Route::get('/staff/appointments/json', [App\Http\Controllers\appointmentController::class, 'fetchStaffAppointments'])->name('appointments.json');
 
+
+Route::get('/staff/birthdays', function () {
+    return view('staff.birthdays');
+});

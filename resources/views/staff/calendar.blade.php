@@ -8,33 +8,24 @@
 @endsection
 
 @push('js_scripts')
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        events: '/staff/calendar/data', // ✅ this must match your route
-        eventDisplay: 'block',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        eventDidMount: function(info) {
-            // Optional tooltip
-            let tooltip = new Tooltip(info.el, {
-                title: info.event.extendedProps.description,
-                placement: 'top',
-                trigger: 'hover',
-                container: 'body'
-            });
-        }
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: '/staff/calendar/data',  // ✅ This must match the route above
+            eventDisplay: 'block',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            }
+        });
+
+        calendar.render();
     });
-
-    calendar.render();
-});
 </script>
-
 
 @endpush

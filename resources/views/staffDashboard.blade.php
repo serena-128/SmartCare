@@ -60,7 +60,7 @@
                         <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
                         <li><a class="dropdown-item" href="{{ route('appointments.create') }}">➕ Schedule Appointment</a></li>
                         <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
-                        <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 Appointment Calendar</a></li>
+                        <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 Show my appointments</a></li>
 
                     </ul>
                 </li>
