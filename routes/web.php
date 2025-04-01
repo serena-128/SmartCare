@@ -214,3 +214,7 @@ Route::get('/notifications/count', [NotificationController::class, 'fetch'])->na
 Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
 Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
 
+//schedule
+Route::get('staff/schedule', [StaffScheduleController::class, 'showSchedule'])->name('staffmembers.schedule');
+
+
