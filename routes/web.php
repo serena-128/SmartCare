@@ -218,3 +218,4 @@ Route::post('/notifications/mark-read', [NotificationController::class, 'markAsR
 Route::get('staff/schedule', [StaffScheduleController::class, 'showSchedule'])->name('staffmembers.schedule');
 
 
+Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
