@@ -387,9 +387,26 @@ if ($hour < 12) {
         
         <!-- Home Section (Two-Column Layout) -->
 <div id="home" class="dashboard-section home-section">
-  <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
-  <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
-
+  <div class="row align-items-center mb-3">
+    <!-- Greeting & Date Column -->
+    <div class="col-md-6">
+      <h4>{{ $greeting }}, {{ Auth::user()->firstname }}!</h4>
+      <h5>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h5>
+    </div>
+    <!-- API Widget Column -->
+    <div class="col-md-6">
+      <div id="weather-widget" class="card">
+        <div class="card-header bg-info text-white">
+          <i class="fas fa-cloud-sun"></i> Weather Info
+        </div>
+        <div class="card-body">
+          <div id="weather-info">
+            Loading weather data...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
 
   <div class="row">
