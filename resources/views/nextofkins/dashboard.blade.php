@@ -900,6 +900,38 @@ document.getElementById('notification-tab').addEventListener('click', function (
 
 </script>
 
+<script>
+function fetchWeather() {
+  const apiKey = 'ee3f3a4d93e84548a5d204502250204'; // Your WeatherAPI.com key
+  const city = 'Dublin';
+  // WeatherAPI.com's endpoint for current weather data
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Weather data not available');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Access data using WeatherAPI.com's structure
+      const weatherInfo = document.getElementById('weather-info');
+      weatherInfo.innerHTML = `
+        <h6>Weather in ${data.location.name}</h6>
+        <p><strong>Temp:</strong> ${data.current.temp_c} °C</p>
+        <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+      `;
+    })
+    .catch(error => {
+      console.error('Error fetching weather data:', error);
+      document.getElementById('weather-info').innerHTML = '<p>Error loading weather data.</p>';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', fetchWeather);
+
+</script>
 
 </body>
 </html>
