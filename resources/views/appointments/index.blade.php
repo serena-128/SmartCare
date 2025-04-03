@@ -1,23 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header">
-        <h1 class="pull-left">appointments</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('appointments.create') !!}">Add New</a>
-        </h1>
-    </section>
-    <div class="content">
-        <div class="clearfix"></div>
-
-        @include('flash::message')
-
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-                    @include('appointments.table')
-            </div>
+<section class="content-header">
+    <div class="card text-white" style="background-color: purple;">
+        <div class="card-body text-center">
+            <h3 class="mb-0"><i class="fas fa-calendar-alt"></i> Appointments</h3>
         </div>
     </div>
-@endsection
+    <div class="mt-3 text-end">
+        <a class="btn btn-primary" href="{{ route('appointments.create') }}">
+            <i class="fas fa-plus"></i> Add New
+        </a>
+    </div>
+</section>
 
+    <!-- Flash Messages -->
+    @include('flash::message')
+
+    <!-- Appointments Table Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @include('appointments.table')
+        </div>
+    </div>
+</div>
+
+@endsection

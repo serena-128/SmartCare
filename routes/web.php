@@ -14,6 +14,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DietaryRestrictionController;
 use App\Http\Controllers\StaffTaskController;
 use App\Http\Controllers\StaffAuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\Auth\NextOfKinLoginController;
 use App\Http\Controllers\Auth\NextOfKinForgotPasswordController;
 use App\Http\Controllers\Auth\NextOfKinRegisterController;
@@ -25,11 +27,14 @@ use App\Http\Controllers\NextOfKinProfileController;
 use App\Http\Controllers\EventAppointmentController;
 use App\Http\Controllers\NextOfKinDashboardController;
 use App\Http\Controllers\StaffScheduleController;
+<<<<<<< HEAD
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PhotoGalleryController;
 use App\Http\Controllers\NotificationController;
+=======
+>>>>>>> 8c2914ce2389f72cb436bce754b08cbcad37c13a
 
 /*
 |--------------------------------------------------------------------------
@@ -44,77 +49,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Staff Authentication Routes
+// Authentication Routes
 Route::get('/login', [StaffAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login');
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
 
-Route::middleware(['auth.staff'])->group(function () {
-    Route::get('/staff/dashboard', function () {
-        return view('staffDashboard');
-    })->name('staff.dashboard'); // ✅ Correct route name
+
 });
 
-
-// Next of Kin Register Routes
-Route::prefix('nextofkin')->group(function () {
-    Route::get('register', [NextOfKinRegisterController::class, 'showRegistrationForm'])->name('nextofkin.register');
-    Route::post('register', [NextOfKinRegisterController::class, 'register'])->name('nextofkin.register.submit');
-});
-
-Route::prefix('nextofkin')->group(function () {
-    
-     // Forgot Password Route
-    Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])->name('nextofkin.forgot');
-});
-
-// Next of Kin Authentication Routes
-Route::prefix('nextofkin')->group(function () {
-    Route::get('login', [NextOfKinLoginController::class, 'showLoginForm'])->name('nextofkin.login');
-    Route::post('login', [NextOfKinLoginController::class, 'login'])->name('nextofkin.login.submit');
-    Route::post('logout', [NextOfKinLoginController::class, 'logout'])->name('nextofkin.logout');
-
-    Route::middleware('auth:nextofkin')->group(function () {
-        Route::get('dashboard', function () {
-            return view('nextofkin.dashboard');
-        })->name('nextofkin.dashboard');
-    });
-});
-
-Route::prefix('nextofkin')->group(function () {
-
-    // Show the Next of Kin forgot password form
-    Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])
-         ->name('nextofkin.forgot');
-
-    // Handle the Next of Kin forgot password form
-    Route::post('forgot', [NextOfKinForgotPasswordController::class, 'sendResetLinkEmail'])
-         ->name('nextofkin.password.email');
-});
-
-// Direct login to next of kin dashboard
-Route::middleware('auth:nextofkin')->group(function () {
-    Route::get('dashboard', [NextOfKinDashboardController::class, 'index'])->name('nextofkins.dashboard');
-});
-
-//Optional link for non registered next of kin users on the login 
-Route::get('register', [NextOfKinRegisterController::class, 'showRegistrationForm'])->name('nextofkin.register');
-
-//Route for next of kin users when signing out
-Route::get('/signed-out', function () {
-    return view('signedout');
-})->name('signed.out');
-
-//rsvp to appointment
-Route::get('/appointments/rsvp', [AppointmentController::class, 'rsvpForm'])->name('appointments.rsvp.form');
-Route::post('/appointments/rsvp', [AppointmentController::class, 'submitRsvp'])->name('appointments.rsvp.submit');
 
 
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
-Route::resource('diagnoses', DiagnosisController::class);
+
 Route::resource('standardtasks', StandardTaskController::class);
-Route::resource('careplans', CarePlanController::class);
+
 Route::resource('doses', DoseController::class);
 Route::resource('appointments', AppointmentController::class);
 Route::resource('nextofkins', NextOfKinController::class);
@@ -122,6 +73,11 @@ Route::resource('staffmembers', StaffMemberController::class);
 Route::resource('roles', RoleController::class);
 Route::resource('dietaryrestrictions', DietaryRestrictionController::class);
 Route::resource('stafftasks', StaffTaskController::class);
+Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
+Route::get('/', [DashboardController::class, 'index']);
+Route::resource('emergencyalerts', EmergencyAlertController::class);
+
+
 
 // Emergency Alert Actions
 Route::patch('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'markAsResolved'])->name('emergencyalerts.resolve');
@@ -131,61 +87,111 @@ Route::get('/main', function () {
     return view('main');
 })->name('main');
 
-//Next of Kin settings
-Route::post('/nextofkin/settings/update', [NextOfKinSettingsController::class, 'updateProfile'])->name('nextofkin.settings.update');
-Route::post('/nextofkin/notifications/update', [NextOfKinSettingsController::class, 'updateNotifications'])->name('nextofkin.notifications.update');
 
-// RSVP form
+
+
+// Route to load the search page (only the search bar)
+Route::get('/diagnoses/search', function () {
+    return view('diagnoses.search');
+})->name('diagnoses.searchPage');
+
+// Route to handle search request
+Route::get('/diagnoses/search/results', [DiagnosisController::class, 'search'])->name('diagnoses.search');
+Route::get('/residents/{id}/profile', [ResidentController::class, 'profile'])->name('residents.profile');
+// Diagnoses Routes
+Route::get('/diagnoses', [DiagnosisController::class, 'index'])->name('diagnoses.index'); // View all diagnoses
+Route::get('/diagnoses/create', [DiagnosisController::class, 'create'])->name('diagnoses.create'); // Show create form
+Route::post('/diagnoses', [DiagnosisController::class, 'store'])->name('diagnoses.store'); // Save new diagnosis
+Route::get('/diagnoses/{id}', [DiagnosisController::class, 'show'])->name('diagnoses.show'); // View specific diagnosis
+Route::get('/diagnoses/{id}/edit', [DiagnosisController::class, 'edit'])->name('diagnoses.edit'); // Show edit form
+Route::put('/diagnoses/{id}', [DiagnosisController::class, 'update'])->name('diagnoses.update'); // Update diagnosis
+Route::delete('/diagnoses/{id}', [DiagnosisController::class, 'destroy'])->name('diagnoses.destroy'); // Delete diagnosis
+Route::get('/my-schedule', [ScheduleController::class, 'mySchedule'])->name('staff.schedule');
+
+
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/staffmember/profile', function () {
+        return view('staffmembers.profile');
+    })->name('staff.profile');
+});
+
+
+Route::get('/schedule/request-day-off/{id}', [scheduleController::class, 'showRequestDayOffForm'])->name('schedule.requestDayOffForm');
+Route::post('/schedule/request-day-off/{id}/submit', [ScheduleController::class, 'submitDayOffRequest'])->name('schedule.submitDayOffRequest');
+
+
+
+
+
+// Grouping all routes under the schedules resource
+Route::resource('schedules', ScheduleController::class);
+
+Route::post('/shift-change', [ScheduleController::class, 'store'])->name('shiftChange.store');
+
+
+
+Route::resource('careplans', App\Http\Controllers\careplanController::class);
+Route::get('/careplans/{id}/edit', [CarePlanController::class, 'edit'])->name('careplans.edit');
+Route::put('/careplans/{id}', [CarePlanController::class, 'update'])->name('careplans.update');
+
+Route::prefix('nextofkin')->group(function () {
+    Route::get('register', [NextOfKinRegisterController::class, 'showRegistrationForm'])->name('nextofkin.register');
+    Route::post('register', [NextOfKinRegisterController::class, 'register'])->name('nextofkin.register.submit');
+    Route::get('forgot', [NextOfKinForgotPasswordController::class, 'showLinkRequestForm'])->name('nextofkin.forgot');
+    Route::get('login', [NextOfKinLoginController::class, 'showLoginForm'])->name('nextofkin.login');
+    Route::post('login', [NextOfKinLoginController::class, 'login'])->name('nextofkin.login.submit');
+    Route::post('logout', [NextOfKinLoginController::class, 'logout'])->name('nextofkin.logout');
+    
+    Route::middleware('auth:nextofkin')->group(function () {
+        Route::get('dashboard', [NextOfKinDashboardController::class, 'index'])->name('nextofkins.dashboard');
+    });
+
+    Route::post('settings/update', [NextOfKinSettingsController::class, 'updateProfile'])->name('nextofkin.settings.update');
+    Route::post('notifications/update', [NextOfKinSettingsController::class, 'updateNotifications'])->name('nextofkin.notifications.update');
+});
+
+// ✅ Next of Kin Profile & Settings
+Route::get('nextofkin/complete-profile', [NextOfKinProfileController::class, 'showCompleteProfileForm'])->name('nextofkin.complete-profile');
+Route::post('nextofkin/complete-profile', [NextOfKinProfileController::class, 'completeProfile'])->name('nextofkin.complete-profile.submit');
+// ✅ RSVP Form
 Route::get('/rsvp-form', [RsvpController::class, 'showForm'])->name('rsvp.form');
 Route::post('/rsvp-form', [RsvpController::class, 'submitRsvp'])->name('rsvp.submit');
 
-// Contact form
+// ✅ Contact Form
 Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
 
-//about us
+// ✅ About Us Page
 Route::view('/about', 'about')->name('about');
 
-//add events and appointments
-Route::get('/add-event', [EventController::class, 'create'])->name('events.create'); // Show form
-Route::post('/add-event', [EventController::class, 'store'])->name('events.store'); // Store event
-
-//profile confirmation
-Route::get('nextofkin/complete-profile', [NextOfKinProfileController::class, 'showCompleteProfileForm'])->name('nextofkin.complete-profile');
-Route::post('nextofkin/complete-profile', [NextOfKinProfileController::class, 'completeProfile'])->name('nextofkin.complete-profile.submit');
-
-//events
+// ✅ Event & Appointment Routes
+Route::get('/add-event', [EventController::class, 'create'])->name('events.create');
+Route::post('/add-event', [EventController::class, 'store'])->name('events.store');
 Route::get('/fetch-events', [EventController::class, 'fetchEvents']);
 
-//event and appointment form
-Route::get('/add-event-appointment', [EventAppointmentController::class, 'create'])
-    ->name('eventAppointment.create');
+Route::get('/add-event-appointment', [EventAppointmentController::class, 'create'])->name('eventAppointment.create');
+Route::post('/add-event-appointment', [EventAppointmentController::class, 'store'])->name('eventAppointment.store');
 
-Route::post('/add-event-appointment', [EventAppointmentController::class, 'store'])
-    ->name('eventAppointment.store');
-
-//appointments
-Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointments'])
-     ->name('appointments.fetch');
-
-//profile pic
-Route::get('/profile', [\App\Http\Controllers\NextOfKinDashboardController::class, 'profile'])->name('nextofkin.profile')->middleware('auth:nextofkin');
-
-//updating profile
+// ✅ Profile Picture Update
+Route::get('/profile', [NextOfKinDashboardController::class, 'profile'])->name('nextofkin.profile')->middleware('auth:nextofkin');
 Route::post('/profile/update', [NextOfKinDashboardController::class, 'updateProfile'])->name('nextofkin.profile.update');
 
-//diagnosis search
-Route::get('/diagnoses/search', [DiagnosisController::class, 'search'])->name('diagnoses.searchPage');
+// ✅ Fetching Appointments
+Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointments'])->name('appointments.fetch');
 
-//staff dashboard emergency alerts
-Route::get('/emergencyalerts', [EmergencyAlertController::class, 'index'])->name('emergencyalerts.index');
 
-//staff schedule
-Route::get('/staff/schedule', [StaffScheduleController::class, 'index'])->name('staff.schedule');
+Route::resource('diagnosistypes', App\Http\Controllers\diagnosistypeController::class);
 
-// staff profile
-Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.profile');
+Route::get('/staff/calendar', function () {
+    return view('staff.calendar');
+})->name('staff.calendar');
+// routes/web.php
+Route::get('/staff/appointments/json', [App\Http\Controllers\appointmentController::class, 'fetchStaffAppointments'])->name('appointments.json');
 
+<<<<<<< HEAD
 //appointment search
 Route::get('/search-appointments', [AppointmentController::class, 'searchAppointments']);
 
@@ -219,3 +225,9 @@ Route::get('staff/schedule', [StaffScheduleController::class, 'showSchedule'])->
 
 
 Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
+=======
+
+Route::get('/staff/birthdays', function () {
+    return view('staff.birthdays');
+});
+>>>>>>> 8c2914ce2389f72cb436bce754b08cbcad37c13a

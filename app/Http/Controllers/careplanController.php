@@ -4,58 +4,52 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatecareplanRequest;
 use App\Http\Requests\UpdatecareplanRequest;
-use App\Repositories\careplanRepository;
-use App\Http\Controllers\AppBaseController;
+use App\Repositories\CareplanRepository;
+use App\Models\CarePlan; // ✅ Add CarePlan model
+use App\Models\Resident; // ✅ Add Resident model
+use App\Models\StaffMember; // ✅ Add StaffMember model
 use Illuminate\Http\Request;
 use Flash;
 use Response;
 
-class careplanController extends AppBaseController
+class CarePlanController extends AppBaseController
 {
-    /** @var careplanRepository $careplanRepository*/
+    /** @var CarePlanRepository */
     private $careplanRepository;
 
-    public function __construct(careplanRepository $careplanRepo)
+    public function __construct(CareplanRepository $careplanRepo)
     {
         $this->careplanRepository = $careplanRepo;
     }
 
     /**
      * Display a listing of the careplan.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request)
     {
         $careplans = $this->careplanRepository->all();
 
-        return view('careplans.index')
-            ->with('careplans', $careplans);
+        return view('careplans.index')->with('careplans', $careplans);
     }
 
     /**
      * Show the form for creating a new careplan.
-     *
-     * @return Response
      */
-    public function create()
-    {
-        return view('careplans.create');
-    }
+public function create()
+{
+    $residents = Resident::all(); // Fetch all residents
+    $staffMembers = StaffMember::all(); // Fetch all staff members
+
+    return view('careplans.create', compact('residents', 'staffMembers'));
+}
+
 
     /**
      * Store a newly created careplan in storage.
-     *
-     * @param CreatecareplanRequest $request
-     *
-     * @return Response
      */
     public function store(CreatecareplanRequest $request)
     {
         $input = $request->all();
-
         $careplan = $this->careplanRepository->create($input);
 
         Flash::success('Careplan saved successfully.');
@@ -64,78 +58,47 @@ class careplanController extends AppBaseController
     }
 
     /**
-     * Display the specified careplan.
-     *
-     * @param int $id
-     *
-     * @return Response
+     * Show the specified careplan.
      */
-    public function show($id)
-    {
-        $careplan = $this->careplanRepository->find($id);
+public function show($id)
+{
+    $careplan = CarePlan::with(['resident', 'staffMember'])->find($id);
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-
-            return redirect(route('careplans.index'));
-        }
-
-        return view('careplans.show')->with('careplan', $careplan);
+    if (!$careplan) {
+        Flash::error('Careplan not found');
+        return redirect(route('careplans.index'));
     }
+
+    return view('careplans.show', compact('careplan'));
+}
+
 
     /**
      * Show the form for editing the specified careplan.
-     *
-     * @param int $id
-     *
-     * @return Response
      */
     public function edit($id)
     {
-        $careplan = $this->careplanRepository->find($id);
+        $careplan = CarePlan::findOrFail($id);
+        $residents = Resident::all(); // ✅ Fetch all residents
+        $staffMembers = StaffMember::all(); // ✅ Fetch all staff members
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
-
-            return redirect(route('careplans.index'));
-        }
-
-        return view('careplans.edit')->with('careplan', $careplan);
+        return view('careplans.edit', compact('careplan', 'residents', 'staffMembers'));
     }
 
     /**
      * Update the specified careplan in storage.
-     *
-     * @param int $id
-     * @param UpdatecareplanRequest $request
-     *
-     * @return Response
      */
-    public function update($id, UpdatecareplanRequest $request)
-    {
-        $careplan = $this->careplanRepository->find($id);
+public function update(Request $request, $id)
+{
+    $careplan = CarePlan::findOrFail($id);
+    $careplan->update($request->all());
 
-        if (empty($careplan)) {
-            Flash::error('Careplan not found');
+    return redirect()->route('careplans.index')->with('success', 'Care Plan updated successfully.');
+}
 
-            return redirect(route('careplans.index'));
-        }
-
-        $careplan = $this->careplanRepository->update($request->all(), $id);
-
-        Flash::success('Careplan updated successfully.');
-
-        return redirect(route('careplans.index'));
-    }
 
     /**
      * Remove the specified careplan from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
      */
     public function destroy($id)
     {
@@ -143,7 +106,6 @@ class careplanController extends AppBaseController
 
         if (empty($careplan)) {
             Flash::error('Careplan not found');
-
             return redirect(route('careplans.index'));
         }
 

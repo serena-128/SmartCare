@@ -55,4 +55,5 @@
         return confirm("Are you sure you want to update this resident’s information?");
     }
 </script>
+<<<<<<< HEAD
 @endsection

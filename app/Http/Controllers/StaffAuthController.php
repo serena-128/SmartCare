@@ -28,7 +28,7 @@ class StaffAuthController extends Controller
             // Store staff info in session
             Session::put('staff_id', $staff->id);
             Session::put('staff_name', $staff->firstname . ' ' . $staff->lastname);
-            return redirect()->route('staff.dashboard');
+            return redirect()->route('staffDashboard');
         }
 
         return back()->withErrors(['login_error' => 'Invalid Credentials']);
@@ -42,4 +42,3 @@ class StaffAuthController extends Controller
         return redirect('/login');
     }
 }
-

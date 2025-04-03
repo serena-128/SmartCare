@@ -6,15 +6,19 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateappointmentRequest;
 use App\Http\Requests\UpdateappointmentRequest;
 use App\Repositories\appointmentRepository;
+use App\Models\Appointment;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\Resident;
+use App\Models\Staffmember;
+
+
 use Flash;
 use Response;
 use App\Models\AppointmentRsvp;
 
 class appointmentController extends AppBaseController
 {
-    /** @var appointmentRepository $appointmentRepository*/
     private $appointmentRepository;
 
     public function __construct(appointmentRepository $appointmentRepo)
@@ -22,213 +26,149 @@ class appointmentController extends AppBaseController
         $this->appointmentRepository = $appointmentRepo;
     }
 
-    /**
-     * Display a listing of the appointment.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function index(Request $request)
+    // ✅ Display all appointments with relationships
+    public function index()
     {
-        $appointments = $this->appointmentRepository->all();
-
-        return view('appointments.index')
-            ->with('appointments', $appointments);
+        $appointments = Appointment::with(['resident', 'staffmember'])->get();
+        return view('appointments.index', compact('appointments'));
     }
 
-    /**
-     * Show the form for creating a new appointment.
-     *
-     * @return Response
-     */
     public function create()
     {
-        return view('appointments.create');
+        $residents = \App\Models\Resident::all(); // Fetch all residents
+        $staffmembers = \App\Models\Staffmember::all(); // ← Make sure this model exists
+    
+        return view('appointments.create', compact('residents', 'staffmembers'));
     }
+    
 
-    /**
-     * Store a newly created appointment in storage.
-     *
-     * @param CreateappointmentRequest $request
-     *
-     * @return Response
-     */
     public function store(CreateappointmentRequest $request)
     {
         $input = $request->all();
-
         $appointment = $this->appointmentRepository->create($input);
-
         Flash::success('Appointment saved successfully.');
-
         return redirect(route('appointments.index'));
     }
 
-    /**
-     * Display the specified appointment.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function show($id)
     {
         $appointment = $this->appointmentRepository->find($id);
 
         if (empty($appointment)) {
             Flash::error('Appointment not found');
-
             return redirect(route('appointments.index'));
         }
 
         return view('appointments.show')->with('appointment', $appointment);
     }
 
-    /**
-     * Show the form for editing the specified appointment.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function edit($id)
     {
-        $appointment = $this->appointmentRepository->find($id);
-
-        if (empty($appointment)) {
-            Flash::error('Appointment not found');
-
-            return redirect(route('appointments.index'));
-        }
-
-        return view('appointments.edit')->with('appointment', $appointment);
+        $appointment = Appointment::findOrFail($id);
+        $residents = Resident::all();
+        $staffmembers = Staffmember::all();
+    
+        return view('appointments.edit', compact('appointment', 'residents', 'staffmembers'));
     }
+    
 
-    /**
-     * Update the specified appointment in storage.
-     *
-     * @param int $id
-     * @param UpdateappointmentRequest $request
-     *
-     * @return Response
-     */
     public function update($id, UpdateappointmentRequest $request)
     {
         $appointment = $this->appointmentRepository->find($id);
 
         if (empty($appointment)) {
             Flash::error('Appointment not found');
-
             return redirect(route('appointments.index'));
         }
 
-        $appointment = $this->appointmentRepository->update($request->all(), $id);
-
+        $this->appointmentRepository->update($request->all(), $id);
         Flash::success('Appointment updated successfully.');
-
         return redirect(route('appointments.index'));
     }
 
-    /**
-     * Remove the specified appointment from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
     public function destroy($id)
     {
         $appointment = $this->appointmentRepository->find($id);
 
         if (empty($appointment)) {
             Flash::error('Appointment not found');
-
             return redirect(route('appointments.index'));
         }
 
         $this->appointmentRepository->delete($id);
-
         Flash::success('Appointment deleted successfully.');
-
         return redirect(route('appointments.index'));
     }
+
+    // ✅ JSON calendar feed for FullCalendar
     public function fetchAppointments(Request $request)
-{
-    // Get the logged-in Next-of-Kin (using your custom guard)
-    $nextOfKin = Auth::guard('nextofkin')->user();
+    {
+        $nextOfKin = Auth::guard('nextofkin')->user();
 
-    // If there's no Next-of-Kin or resident assigned, return empty JSON
-    if (!$nextOfKin || !$nextOfKin->residentid) {
-        return response()->json([]);
-    }
-
-    // Fetch appointments for the resident linked to this next-of-kin
-    $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)->get();
-
-    // Format the appointments for FullCalendar using Carbon
-    $formattedAppointments = $appointments->map(function ($appointment) {
-        // Create a Carbon instance from the date field
-        $start = \Carbon\Carbon::parse($appointment->date);
-        // If a time is provided, merge it with the date
-        if ($appointment->time) {
-            $start->setTimeFromTimeString($appointment->time);
+        if (!$nextOfKin || !$nextOfKin->residentid) {
+            return response()->json([]);
         }
-        return [
-            'title'       => $appointment->reason, // Use the reason as the event title
-            'start'       => $start->toIso8601String(), // Format as ISO8601
-            'description' => $appointment->location ?? '',
-        ];
-    });
 
-    return response()->json($formattedAppointments);
-}
-public function rsvpForm()
-{
-    // Get the logged-in Next-of-Kin using your custom guard
-    $nextOfKin = Auth::guard('nextofkin')->user();
+        $appointments = Appointment::where('residentid', $nextOfKin->residentid)->get();
 
-    // Check if the next-of-kin is assigned to a resident
-    if (!$nextOfKin || !$nextOfKin->residentid) {
-        return redirect()->back()->with('error', 'No resident assigned.');
+        $formatted = $appointments->map(function ($appointment) {
+            $start = \Carbon\Carbon::parse($appointment->date);
+            if ($appointment->time) {
+                $start->setTimeFromTimeString($appointment->time);
+            }
+            return [
+                'title' => $appointment->reason,
+                'start' => $start->toIso8601String(),
+                'description' => $appointment->location ?? '',
+            ];
+        });
+
+        return response()->json($formatted);
     }
 
-    // Fetch only future appointments for the resident
-    $appointments = \App\Models\Appointment::where('residentid', $nextOfKin->residentid)
-        ->whereDate('date', '>=', now()) // Get only future appointments
-        ->orderBy('date', 'asc')
-        ->get();
+    // ✅ RSVP Form View for Next-of-Kin
+    public function rsvpForm()
+    {
+        $nextOfKin = Auth::guard('nextofkin')->user();
 
-    return view('appointments.rsvp', compact('appointments'));
-}
+        if (!$nextOfKin || !$nextOfKin->residentid) {
+            return redirect()->back()->with('error', 'No resident assigned.');
+        }
 
+        $appointments = Appointment::where('residentid', $nextOfKin->residentid)
+            ->whereDate('date', '>=', now())
+            ->orderBy('date')
+            ->get();
+
+        return view('appointments.rsvp', compact('appointments'));
+    }
+
+    // ✅ Handle RSVP Submission
 
 public function submitRsvp(Request $request)
 {
-    // Get the logged-in next-of-kin
     $nextOfKin = Auth::guard('nextofkin')->user();
 
     if (!$nextOfKin) {
         return redirect()->route('appointments.rsvp.form')->with('error', 'You must be logged in to RSVP.');
     }
 
-    // Validate the form input
+    // Validate incoming request data.
     $request->validate([
-        'appointment_id' => 'required|exists:appointment,id',
-        'rsvp_status' => 'required|in:yes,no,maybe',
-        'comments' => 'nullable|string|max:255',
+        'appointment_id' => 'required|exists:appointments,id',
+        'rsvp_status'    => 'required|in:yes,no,maybe',
+        'comments'       => 'nullable|string|max:255',
     ]);
 
-    // Find the appointment
-    $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+    // Find the appointment using the validated appointment_id.
+    $appointment = Appointment::findOrFail($request->appointment_id);
 
-    // Update RSVP status
+    // Update the appointment's RSVP status and comments.
     $appointment->rsvp_status = $request->rsvp_status;
     $appointment->rsvp_comments = $request->comments;
     $appointment->save();
-    
+
+    // Create an AppointmentRsvp record for tracking the RSVP.
     \App\Models\AppointmentRsvp::create([
         'appointment_id' => $appointment->id,
         'nextofkin_id'   => $nextOfKin->id,
@@ -239,5 +179,31 @@ public function submitRsvp(Request $request)
     return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
 }
 
+    public function fetchStaffAppointments()
+    {
+        $staff = \App\Models\Staffmember::where('email', 'emma.kavanagh@example.com')->first(); // Or session('staff_email')
+    
+        if (!$staff) {
+            return response()->json([]);
+        }
+    
+        $appointments = \App\Models\Appointment::where('staffmemberid', $staff->id)
+            ->with('resident')
+            ->get();
+    
+        return response()->json($appointments->map(function ($a) {
+            // If `date` is already a datetime field in DB, just combine directly with Carbon:
+            $start = \Carbon\Carbon::parse($a->date)->setTimeFromTimeString($a->time)->toIso8601String();
+    
+            return [
+                'title' => $a->reason . ' - ' . ($a->resident->firstname ?? 'Resident'),
+                'start' => $start,
+                'description' => $a->location ?? '',
+            ];
+        }));
+    }
+    
+    
+    
 
 }

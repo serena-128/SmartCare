@@ -154,17 +154,34 @@ class residentController extends AppBaseController
 
         return redirect(route('residents.index'));
     }
-    public function showResidentDashboard($residentId)
-{
-    // Fetch the resident data from the database
-    $resident = Resident::find($residentId);
-    
-    if (!$resident) {
-        // If no resident is found, you could redirect or display an error
-        return redirect()->route('home')->with('error', 'Resident not found.');
+
+    /**
+     * Show the profile of a resident.
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function profile($id)
+    {
+        $resident = Resident::with(['diagnoses'])->findOrFail($id);
+        return view('residents.profile', compact('resident'));
     }
 
-    // Return the view with the resident data
-    return view('resident.dashboard', compact('resident'));
-}
+    /**
+     * Show Resident Dashboard.
+     *
+     * @param int $residentId
+     * @return Response
+     */
+    public function showResidentDashboard($residentId)
+    {
+        // Fetch the resident data from the database
+        $resident = Resident::find($residentId);
+        
+        if (!$resident) {
+            return redirect()->route('home')->with('error', 'Resident not found.');
+        }
+
+        return view('resident.dashboard', compact('resident'));
+    }
 }

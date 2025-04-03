@@ -4,10 +4,10 @@
     <p>{!! $careplan->residentid !!}</p>
 </div>
 
-<!-- Roleid Field -->
+<!-- Staffmemberid Field -->
 <div class="form-group">
-    {!! Form::label('roleid', 'Roleid:') !!}
-    <p>{!! $careplan->roleid !!}</p>
+    {!! Form::label('staffmemberid', 'Staffmemberid:') !!}
+    <p>{!! $careplan->staffmemberid !!}</p>
 </div>
 
 <!-- Caregoals Field -->
