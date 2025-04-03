@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use App\Models\Resident;
+<<<<<<< HEAD
+=======
+
+>>>>>>> komal
 
 class residentController extends AppBaseController
 {
@@ -154,6 +158,7 @@ class residentController extends AppBaseController
 
         return redirect(route('residents.index'));
     }
+<<<<<<< HEAD
     public function showResidentDashboard($residentId)
 {
     // Fetch the resident data from the database
@@ -167,4 +172,13 @@ class residentController extends AppBaseController
     // Return the view with the resident data
     return view('resident.dashboard', compact('resident'));
 }
+=======
+    public function profile($id)
+{
+    $resident = Resident::with(['diagnoses'])->findOrFail($id);
+    return view('residents.profile', compact('resident'));
+}
+    
+
+>>>>>>> komal
 }

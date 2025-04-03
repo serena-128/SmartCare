@@ -3,7 +3,11 @@
 @section('content')
 <div class="container mt-5">
     <h2 class="text-center"><span>📅</span> My Schedule</h2>
+<<<<<<< HEAD
     <a href="{{ route('staffDashboard') }}" class="btn btn-secondary mb-3">⬅ Back to Dashboard</a>
+=======
+    <a href="{{ route('dashboard') }}" class="btn btn-secondary mb-3">⬅ Back to Dashboard</a>
+>>>>>>> komal
 
     <table class="table table-bordered">
         <thead>

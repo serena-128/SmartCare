@@ -5,6 +5,10 @@
     <!-- Page Header with Logo -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
+<<<<<<< HEAD
+=======
+            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
+>>>>>>> komal
             <h1 class="h3 text-dark ms-3">🏥 Resident Management</h1>
         </div>
         <a class="btn btn-primary btn-lg shadow-sm" href="{!! route('residents.create') !!}">
@@ -79,7 +83,13 @@
                                 </td>
                             </tr>
                         <td>
+<<<<<<< HEAD
 
+=======
+    <a href="{{ route('residents.profile', $resident->id) }}" class="btn btn-info btn-sm">
+        👤 View Profile
+    </a>
+>>>>>>> komal
                         @endforeach
                     </tbody>
                 </table>
@@ -89,7 +99,16 @@
         </div>
     </div>
 
+<<<<<<< HEAD
 
+=======
+    <!-- Back to Dashboard -->
+    <div class="mt-4 text-center">
+        <a href="{{ route('dashboard') }}" class="btn btn-secondary">
+            🏠 Back to Dashboard
+        </a>
+    </div>
+>>>>>>> komal
 </div>
 
 <!-- Custom Styles -->
@@ -112,4 +131,8 @@
     }
 </style>
 
+<<<<<<< HEAD
 @endsection
+=======
+@endsection
+>>>>>>> komal

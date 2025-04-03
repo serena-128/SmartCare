@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateemergencyalertRequest;
 use App\Repositories\emergencyalertRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\emergencyalert;
+
 use Flash;
 use Response;
 
@@ -27,13 +29,14 @@ class emergencyalertController extends AppBaseController
      *
      * @return Response
      */
-    public function index(Request $request)
-    {
-        $emergencyalerts = $this->emergencyalertRepository->all();
+public function index()
+{
+    // Fetch all emergency alerts
+    $emergencyalerts = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy'])->get();
 
-        return view('emergencyalerts.index')
-            ->with('emergencyalerts', $emergencyalerts);
-    }
+    // Pass to the view
+    return view('emergencyalerts.index', compact('emergencyalerts'));
+}
 
     /**
      * Show the form for creating a new emergencyalert.

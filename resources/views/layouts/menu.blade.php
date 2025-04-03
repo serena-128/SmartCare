@@ -5,16 +5,12 @@
     </a>
 </li>
 
-
 <li class="nav-item">
-<<<<<<< HEAD
-=======
     <a href="{{ route('diagnoses.index') }}"
        class="nav-link {{ Request::is('diagnoses*') ? 'active' : '' }}">
         <p>Diagnoses</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('emergencyalerts.index') }}"
@@ -23,14 +19,12 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('standardtasks.index') }}"
        class="nav-link {{ Request::is('standardtasks*') ? 'active' : '' }}">
         <p>Standardtasks</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('careplans.index') }}"
@@ -39,14 +33,12 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('doses.index') }}"
        class="nav-link {{ Request::is('doses*') ? 'active' : '' }}">
         <p>Doses</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('appointments.index') }}"
@@ -55,7 +47,6 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('nextofkins.index') }}"
        class="nav-link {{ Request::is('nextofkins*') ? 'active' : '' }}">
@@ -63,33 +54,19 @@
     </a>
 </li>
 
-
 <li class="nav-item">
-    <a href="{{ route('staffmembers.index') }}"
-       class="nav-link {{ Request::is('staffmembers*') ? 'active' : '' }}">
-        <p>Staffmembers</p>
-    </a>
-</li>
-
-
-<li class="nav-item">
->>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
     <a href="{{ route('roles.index') }}"
        class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
         <p>Roles</p>
     </a>
 </li>
 
-
-<<<<<<< HEAD
-=======
 <li class="nav-item">
     <a href="{{ route('staffMembers.index') }}"
        class="nav-link {{ Request::is('staffMembers*') ? 'active' : '' }}">
         <p>Staff Members</p>
     </a>
 </li>
-
 
 <li class="nav-item">
     <a href="{{ route('dietaryrestrictions.index') }}"
@@ -98,7 +75,6 @@
     </a>
 </li>
 
-
 <li class="nav-item">
     <a href="{{ route('stafftasks.index') }}"
        class="nav-link {{ Request::is('stafftasks*') ? 'active' : '' }}">
@@ -106,5 +82,16 @@
     </a>
 </li>
 
+<li class="nav-item">
+    <a href="{{ route('medicationReminders.index') }}"
+       class="nav-link {{ Request::is('medicationReminders*') ? 'active' : '' }}">
+        <p>Medication Reminders</p>
+    </a>
+</li>
 
->>>>>>> efdb38d5da495b7d094d9a7bc3b71e13f8fa490c
+<li class="nav-item">
+    <a href="{{ route('schedules.index') }}"
+       class="nav-link {{ Request::is('schedules*') ? 'active' : '' }}">
+        <p>Schedules</p>
+    </a>
+</li>

@@ -5,14 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ config('app.name') }} | Login</title>
 
+<<<<<<< HEAD
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+=======
+@section('content')
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 10px;">
+        <div class="text-center">
+            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
+        </div>
+
+        <h3 class="text-center mb-3">👨‍⚕️ Staff Login</h3>
+>>>>>>> komal
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
           integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+<<<<<<< HEAD
     <!-- AdminLTE -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css"
           integrity="sha512-mxrUXSjrxl8vm5GwafxcqTrEwO1/oBNU25l20GODsysHReZo4uhVISzAKzaABH6/tTfAxZrY2FprmeAP5UZY8A=="
@@ -35,6 +47,25 @@
 <div class="login-box">
     <div class="login-logo">
         <a href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>
+=======
+        <form action="{{ route('staff.login') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label class="form-label">📧 Email Address</label>
+                <input type="email" name="email" class="form-control rounded-pill" required placeholder="Enter your email">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">🔑 Password</label>
+                <input type="password" name="password" class="form-control rounded-pill" required placeholder="Enter your password">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary w-100 rounded-pill">Login</button>
+
+
+        </form>
+>>>>>>> komal
     </div>
 
     <!-- /.login-logo -->
@@ -99,6 +130,7 @@
     </div>
 
 </div>
+<<<<<<< HEAD
 <!-- /.login-box -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
@@ -120,3 +152,14 @@
 
 </body>
 </html>
+=======
+
+<style>
+    .logo {
+        display: block;
+        margin: 0 auto 20px;
+        max-width: 180px;
+    }
+</style>
+@endsection
+>>>>>>> komal
