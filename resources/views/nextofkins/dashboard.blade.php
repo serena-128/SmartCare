@@ -528,7 +528,7 @@ if ($hour < 12) {
     <div class="d-flex align-items-center">
             <input type="text" class="form-control" id="appointments-search" placeholder="Search appointments..." style="width: 250px; margin-right: 15px;">
         </div>
-        <a href="{{ route('appointments.rsvp.form') }}" class="btn btn-primary">
+        <a href="{{ route('rsvp.form') }}" class="btn btn-primary">
             <i class="fas fa-check-circle"></i> RSVP to Appointment
         </a>
     </div>
