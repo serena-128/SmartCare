@@ -86,7 +86,7 @@
 <body>
     
     <!-- Back to Dashboard Button -->
-    <a href="{{ url('/dashboard#') }}" class="btn btn-primary back-button">
+    <a href="{{ url('/nextofkin/dashboard#') }}" class="btn btn-primary back-button">
         <i class="fas fa-arrow-left"></i> Back to Dashboard
     </a>
     
