@@ -69,7 +69,7 @@
   <div class="container">
     <div class="profile-container text-center">
       <!-- Back to Dashboard Button -->
-      <a href="{{ url('/dashboard#') }}" class="back-button">
+      <a href="{{ url('/nextofkin/dashboard#') }}" class="back-button">
         <i class="fas fa-arrow-left"></i> Back to Dashboard
       </a>
       <h1>Your Profile</h1>
