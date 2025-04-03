@@ -190,3 +190,8 @@ Route::get('/events/{event}', [EventController::class, 'show'])->name('events.sh
 Route::get('/staff/birthdays', function () {
     return view('staff.birthdays');
 });
+
+//signed out
+Route::get('/signed-out', function () {
+    return view('signedout'); // Create a view for this if needed
+})->name('signed.out');
