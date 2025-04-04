@@ -198,3 +198,6 @@ Route::get('/signed-out', function () {
 
 Route::post('/events/{id}/rsvp', [EventController::class, 'rsvp'])->middleware('auth:nextofkin');
 
+//unrsvp
+Route::delete('/events/{id}/rsvp', [EventController::class, 'unrsvp'])->middleware('auth:nextofkin');
+

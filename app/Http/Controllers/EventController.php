@@ -74,4 +74,24 @@ public function rsvp($id)
     return response()->json(['success' => true]);
 }
 
+    public function unrsvp($id)
+{
+    $user = Auth::guard('nextofkin')->user();
+
+    $rsvp = EventRsvp::where('event_id', $id)
+        ->where('nextofkin_id', $user->id)
+        ->first();
+
+    if (!$rsvp) {
+        return response()->json(['success' => false, 'message' => 'You have not RSVPed to this event.']);
+    }
+
+    $rsvp->delete();
+
+    // Decrement RSVP count
+    Event::where('id', $id)->decrement('rsvp_count');
+
+    return response()->json(['success' => true]);
+}
+
 }

@@ -732,6 +732,7 @@ if ($hour < 12) {
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- JavaScript to handle section switching -->
   <script>
@@ -784,18 +785,39 @@ document.addEventListener('DOMContentLoaded', function () {
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      events: '{{ route("appointments.fetch") }}',
       eventClick: function (info) {
-        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
-    });
-
-    // Only render if the section is visible on first load
-    if (document.getElementById('appointments').style.display !== 'none') {
-      appointmentsCalendar.render();
+  Swal.fire({
+    title: 'RSVP to Event',
+    text: `Do you want to RSVP to "${info.event.title}"?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, RSVP',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`/events/${info.event.id}/rsvp`, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire('Success!', 'Your RSVP was submitted.', 'success');
+        } else {
+          Swal.fire('Note', data.message || 'Already RSVPed.', 'info');
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'Something went wrong.', 'error');
+      });
     }
-  }
-});
+  });
+}
+
 
 </script>
 
