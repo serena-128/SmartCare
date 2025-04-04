@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use Illuminate\Support\Facades\DB;
+use App\Models\EventRsvp;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class EventController extends Controller
 {
@@ -31,13 +35,43 @@ class EventController extends Controller
 
         return redirect()->back()->with('success', 'Event/Appointment added successfully!');
     }
-    public function fetchEvents()
-    {
-        // Fetch events from the 'events' table
-        $events = DB::table('events')
-            ->select('title', DB::raw("start_date as start"), 'description')
-            ->get();
+   public function fetchEvents()
+{
+    $events = DB::table('events')
+        ->select('id', 'title', DB::raw("start_date as start"), 'description')
+        ->get();
 
-        return response()->json($events);
+    return response()->json($events);
+}
+
+public function rsvp($id)
+{
+    $user = Auth::guard('nextofkin')->user(); // using 'nextofkin' guard
+
+    // Check if already RSVPed
+    $alreadyRsvped = EventRsvp::where('event_id', $id)
+        ->where('nextofkin_id', $user->id)
+        ->exists();
+
+    if ($alreadyRsvped) {
+        return response()->json([
+            'success' => false,
+            'message' => 'You have already RSVPed to this event.'
+        ]);
     }
+
+    // Save RSVP
+    EventRsvp::create([
+        'event_id' => $id,
+        'nextofkin_id' => $user->id,
+        'event_title' => Event::findOrFail($id)->title,
+        'nextofkin_name' => $user->firstname . ' ' . $user->lastname,
+    ]);
+
+    // Increment RSVP count
+    Event::where('id', $id)->increment('rsvp_count');
+
+    return response()->json(['success' => true]);
+}
+
 }

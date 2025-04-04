@@ -813,8 +813,30 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       events: '/fetch-events',
       eventClick: function (info) {
-        alert('Event: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
+    if (confirm("Do you want to RSVP to this event: " + info.event.title + "?")) {
+        fetch(`/events/${info.event.id}/rsvp`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('RSVP submitted successfully!');
+            } else {
+                alert(data.message || 'You may have already RSVPed.');
+            }
+        })
+        .catch(error => {
+            console.error('RSVP error:', error);
+            alert('Something went wrong while submitting your RSVP.');
+        });
+    }
+}
+
     });
 
     if (document.getElementById('events').style.display !== 'none') {
@@ -942,6 +964,29 @@ function fetchWeather() {
 
 document.addEventListener('DOMContentLoaded', fetchWeather);
 
+</script>
+<script>
+    document.querySelectorAll('.rsvp-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const eventId = this.dataset.eventId;
+
+            fetch(`/events/${eventId}/rsvp`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('RSVP submitted successfully!');
+                    // Optionally update RSVP count on UI
+                }
+            });
+        });
+    });
 </script>
 
 </body>

@@ -195,3 +195,6 @@ Route::get('/staff/birthdays', function () {
 Route::get('/signed-out', function () {
     return view('signedout'); // Create a view for this if needed
 })->name('signed.out');
+
+Route::post('/events/{id}/rsvp', [EventController::class, 'rsvp'])->middleware('auth:nextofkin');
+
