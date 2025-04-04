@@ -35,11 +35,23 @@ class EventController extends Controller
 
         return redirect()->back()->with('success', 'Event/Appointment added successfully!');
     }
-   public function fetchEvents()
+public function fetchEvents()
 {
-    $events = DB::table('events')
-        ->select('id', 'title', DB::raw("start_date as start"), 'description')
-        ->get();
+    $user = Auth::guard('nextofkin')->user();
+
+    $events = Event::all()->map(function ($event) use ($user) {
+        $hasRsvped = EventRsvp::where('event_id', $event->id)
+            ->where('nextofkin_id', $user->id)
+            ->exists();
+
+        return [
+            'id' => $event->id,
+            'title' => $event->title,
+            'start' => $event->start_date,
+            'description' => $event->description,
+            'rsvped' => $hasRsvped, // 👈 this will help us toggle the button
+        ];
+    });
 
     return response()->json($events);
 }
@@ -74,7 +86,7 @@ public function rsvp($id)
     return response()->json(['success' => true]);
 }
 
-    public function unrsvp($id)
+   public function unrsvp($id)
 {
     $user = Auth::guard('nextofkin')->user();
 
@@ -87,11 +99,10 @@ public function rsvp($id)
     }
 
     $rsvp->delete();
-
-    // Decrement RSVP count
     Event::where('id', $id)->decrement('rsvp_count');
 
     return response()->json(['success' => true]);
 }
+
 
 }

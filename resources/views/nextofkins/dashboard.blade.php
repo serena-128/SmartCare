@@ -786,29 +786,36 @@ document.addEventListener('DOMContentLoaded', function () {
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
       eventClick: function (info) {
+  const alreadyRsvped = info.event.extendedProps.rsvped;
+  const action = alreadyRsvped ? 'Un-RSVP' : 'RSVP';
+  const method = alreadyRsvped ? 'DELETE' : 'POST';
+  const url = `/events/${info.event.id}/rsvp`;
+
   Swal.fire({
-    title: 'RSVP to Event',
-    text: `Do you want to RSVP to "${info.event.title}"?`,
+    title: `${action} to Event`,
+    text: `Do you want to ${action.toLowerCase()} for "${info.event.title}"?`,
     icon: 'question',
     showCancelButton: true,
-    confirmButtonText: 'Yes, RSVP',
+    confirmButtonText: `Yes, ${action}`,
     cancelButtonText: 'Cancel'
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch(`/events/${info.event.id}/rsvp`, {
-        method: 'POST',
+      fetch(url, {
+        method: method,
         headers: {
           'X-CSRF-TOKEN': '{{ csrf_token() }}',
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
+        }
       })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          Swal.fire('Success!', 'Your RSVP was submitted.', 'success');
+          Swal.fire('Success!', `You have ${alreadyRsvped ? 'cancelled your RSVP' : 'RSVPed'} for this event.`, 'success');
+
+          // 🔄 Refresh calendar so RSVP state updates
+          eventsCalendar.refetchEvents();
         } else {
-          Swal.fire('Note', data.message || 'Already RSVPed.', 'info');
+          Swal.fire('Note', data.message || 'Something went wrong.', 'info');
         }
       })
       .catch(() => {
