@@ -385,74 +385,73 @@ if ($hour < 12) {
       <!-- Main Content -->
       <div class="col-md-10 content">
         
-        <!-- Home Section (Two-Column Layout) -->
-<div id="home" class="dashboard-section home-section">
-  <div class="row align-items-center mb-3">
-    <!-- Greeting & Date Column -->
+        <!-- New Home Section -->
+<div id="home" class="dashboard-section home-section container my-4">
+  <!-- Colorful Greeting Banner -->
+  <div style="background: linear-gradient(to right, #800080, #ff66b2); color: white; padding: 1.5rem; border-radius: 10px; text-align: center; margin-bottom: 2rem;">
+    <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
+    <p style="font-size: 1.2rem;">Today is: <strong>{{ now()->format('l, d M Y') }}</strong></p>
+  </div>
+
+  <div class="row">
+    <!-- Resident Details Column -->
     <div class="col-md-6">
-      <h4>{{ $greeting }}, {{ Auth::user()->firstname }}!</h4>
-      <h5>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h5>
-    </div>
-    <!-- API Widget Column -->
-    <div class="col-md-6">
-      <div id="weather-widget" class="card">
-        <div class="card-header bg-info text-white">
-          <i class="fas fa-cloud-sun"></i> Weather Info
+      <div class="card" style="border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem;">
+        <div class="card-header bg-primary text-white">
+          <h3>Resident Details</h3>
         </div>
         <div class="card-body">
-          <div id="weather-info">
-            Loading weather data...
-          </div>
+          @if(isset($resident) && $resident)
+            <h5>Name: {{ $resident->firstname }} {{ $resident->lastname }}</h5>
+            <p><strong>Room:</strong> {{ $resident->roomnumber }}</p>
+            <p><strong>Age:</strong> {{ \Carbon\Carbon::parse($resident->dateofbirth)->age }}</p>
+            <p><strong>Admission:</strong> {{ \Carbon\Carbon::parse($resident->admissiondate)->format('d M Y') }}</p>
+          @else
+            <div class="alert alert-warning">
+              <strong>No resident assigned.</strong> Please contact the admin.
+            </div>
+          @endif
+        </div>
+      </div>
+      <!-- Resident's Photo -->
+      <div style="text-align: center;">
+        <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="max-width: 300px; border-radius: 10px;">
+      </div>
+    </div>
+
+    <!-- Latest Appointment & Event Column -->
+    <div class="col-md-6">
+      <div class="card" style="border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem;">
+        <div class="card-header bg-success text-white">
+          <h3>Latest Appointment</h3>
+        </div>
+        <div class="card-body">
+          @if(isset($latestAppointment))
+            <p><strong>Type:</strong> {{ $latestAppointment->reason }}</p>
+            <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($latestAppointment->date)->format('d M Y') }} at {{ $latestAppointment->time }}</p>
+            <p><strong>Location:</strong> {{ $latestAppointment->location }}</p>
+          @else
+            <p>No recent appointment.</p>
+          @endif
+        </div>
+      </div>
+
+      <div class="card" style="border-radius: 10px; overflow: hidden;">
+        <div class="card-header bg-warning text-white">
+          <h3>Latest Event</h3>
+        </div>
+        <div class="card-body">
+          @if(isset($latestEvent))
+            <p><strong>Title:</strong> {{ $latestEvent->title }}</p>
+            <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($latestEvent->date)->format('d M Y') }}</p>
+            <p><strong>Description:</strong> {{ $latestEvent->description }}</p>
+          @else
+            <p>No recent event.</p>
+          @endif
         </div>
       </div>
     </div>
   </div>
-  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
-
-  <div class="row">
-    <!-- Column 1: Resident Information -->
-    <div class="col-md-6 border-end border-3" style="border-color: #4B0082;">
-      <h3>Resident</h3>
-      @if(isset($resident) && $resident)
-        <div class="card">
-          <div class="card-body">
-            <h5>Resident Name: {{ $resident->firstname }} {{ $resident->lastname }}</h5>
-            <p><strong>Room Number:</strong> {{ $resident->roomnumber }}</p>
-            <p><strong>Age:</strong> {{ \Carbon\Carbon::parse($resident->dateofbirth)->age }}</p>
-            <p><strong>Admission Date:</strong> {{ \Carbon\Carbon::parse($resident->admissiondate)->format('d M Y') }}</p>
-          </div>
-        </div>
-      @else
-        <div class="alert alert-warning">
-          <strong>No resident assigned.</strong> Please contact the admin to link a resident.
-        </div>
-      @endif
-
-      <!-- Resident's Photo Below the Resident Info -->
-      <div class="text-center mt-4">
-        <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="width: 300px; height: auto;">
-      </div>
-    </div>
-
-    <!-- Column 2: Upcoming Appointments & Events -->
-    <div class="col-md-6">
-      <h3>Upcoming Appointments & Events</h3>
-      <div class="card">
-        <div class="card-header">Appointments</div>
-        <div class="card-body">
-          <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
-          <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
-        </div>
-      </div>
-      <div class="card mt-3">
-        <div class="card-header">Events</div>
-        <div class="card-body">
-          <p>Family Day - 25th March 2025</p>
-          <p>Music Therapy Session - 30th March 2025</p>
-        </div>
-      </div>
-    </div>
-  </div> <!-- End of Row -->
 </div>
 
 
@@ -631,12 +630,24 @@ if ($hour < 12) {
               </p>
             @endforeach
           @endif
+         </div>
+    </div>
+  </div>
+
+  <!-- Weather Widget Column -->
+  <div class="col-md-6">
+    <div id="weather-widget" class="card">
+      <div class="card-header bg-info text-white">
+        <i class="fas fa-cloud-sun"></i> Weather Info
+      </div>
+      <div class="card-body">
+        <div id="weather-info">
+          Loading weather data...
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 
         <div id="settings" class="dashboard-section" style="display: none;">
