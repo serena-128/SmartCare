@@ -20,3 +20,4 @@ public function down()
         $table->dropColumn(['rsvp_status', 'rsvp_comments']);
     });
 }
+}

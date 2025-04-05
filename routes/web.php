@@ -187,3 +187,5 @@ Route::get('/staff/appointments/json', [App\Http\Controllers\appointmentControll
 Route::get('/staff/birthdays', function () {
     return view('staff.birthdays');
 });
+
+Route::get('/appointments/rsvp', [AppointmentController::class, 'rsvpForm'])->name('appointments.rsvp.form');
