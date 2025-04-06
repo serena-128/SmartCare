@@ -785,45 +785,50 @@ document.addEventListener('DOMContentLoaded', function () {
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      eventClick: function (info) {
-  const alreadyRsvped = info.event.extendedProps.rsvped;
-  const action = alreadyRsvped ? 'Un-RSVP' : 'RSVP';
-  const method = alreadyRsvped ? 'DELETE' : 'POST';
-  const url = `/events/${info.event.id}/rsvp`;
+      events: '/fetch-appointments', // Endpoint should return appointments data
+      eventClick: function(info) {
+        // Example: handling an appointment RSVP (adjust as needed)
+        const alreadyRsvped = info.event.extendedProps.rsvped;
+        const action = alreadyRsvped ? 'Un-RSVP' : 'RSVP';
+        // Use an appointment-specific endpoint if applicable
+        const url = `/appointments/${info.event.id}/rsvp`;
 
-  Swal.fire({
-    title: `${action} to Event`,
-    text: `Do you want to ${action.toLowerCase()} for "${info.event.title}"?`,
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: `Yes, ${action}`,
-    cancelButtonText: 'Cancel'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      fetch(url, {
-        method: method,
-        headers: {
-          'X-CSRF-TOKEN': '{{ csrf_token() }}',
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          Swal.fire('Success!', `You have ${alreadyRsvped ? 'cancelled your RSVP' : 'RSVPed'} for this event.`, 'success');
-
-          // 🔄 Refresh calendar so RSVP state updates
-          eventsCalendar.refetchEvents();
-        } else {
-          Swal.fire('Note', data.message || 'Something went wrong.', 'info');
-        }
-      })
-      .catch(() => {
-        Swal.fire('Error', 'Something went wrong.', 'error');
-      });
-    }
-  });
-}
+        Swal.fire({
+          title: `${action} Appointment`,
+          text: `Do you want to ${action.toLowerCase()} for "${info.event.title}"?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: `Yes, ${action}`,
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(url, {
+              method: alreadyRsvped ? 'DELETE' : 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Success!', `Your appointment RSVP has been updated.`, 'success');
+                appointmentsCalendar.refetchEvents();
+              } else {
+                Swal.fire('Note', data.message || 'Something went wrong.', 'info');
+              }
+            })
+            .catch(() => {
+              Swal.fire('Error', 'Something went wrong.', 'error');
+            });
+          }
+        });
+      }
+    });
+    // You can call appointmentsCalendar.render() here if the calendar container is visible
+    // or use your section switching logic to render it when the section is shown.
+  }
+});
 
 
 </script>
