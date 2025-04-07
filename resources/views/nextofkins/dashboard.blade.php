@@ -23,6 +23,7 @@ if ($hour < 12) {
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <!-- FullCalendar CSS -->
@@ -764,26 +765,40 @@ function showSection(sectionId, element) {
  <!-- Initialize FullCalendar for Appointments -->
   <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const calendarEl = document.getElementById('calendar');
-  if (calendarEl) {
-    appointmentsCalendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      events: '{{ route("appointments.fetch") }}',
-      eventClick: function (info) {
-        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
-    });
+    const calendarEl = document.getElementById('calendar');
+    if (calendarEl) {
+        appointmentsCalendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: '{{ route("appointments.fetch") }}',  // Fetch appointments
+            eventClick: function (info) {
+                // Show SweetAlert popup to confirm RSVP
+                Swal.fire({
+                    title: info.event.title,
+                    text: info.event.extendedProps.description,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'RSVP Yes',
+                    cancelButtonText: 'RSVP No',
+                    customClass: {
+                        popup: 'my-sweetalert-popup'
+                    }
+                }).then((result) => {
+                    let rsvpStatus = result.isConfirmed ? 'yes' : 'no';
+                    handleRSVP(info.event.id, rsvpStatus);  // Call RSVP handler with status
+                });
+            }
+        });
 
-    // Only render if the section is visible on first load
-    if (document.getElementById('appointments').style.display !== 'none') {
-      appointmentsCalendar.render();
+        // Render calendar if visible
+        if (document.getElementById('appointments').style.display !== 'none') {
+            appointmentsCalendar.render();
+        }
     }
-  }
 });
 
 </script>
@@ -811,8 +826,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
+      
+    
+      </script>
+<script>
+function handleRSVP(appointmentId, rsvpStatus) {
+    const nextOfKinId = {{ Auth::guard('nextofkin')->user()->id }};  // Get the logged-in Next of Kin's ID
 
-</script>
+    // Send the RSVP data to the server
+    fetch("{{ route('appointments.rsvp') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"  // Laravel CSRF token for security
+        },
+        body: JSON.stringify({
+            appointment_id: appointmentId,
+            nextofkin_id: nextOfKinId,
+            rsvp_status: rsvpStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Thank you!', `Your RSVP status: ${rsvpStatus}`, 'success');
+        } else {
+            Swal.fire('Oops!', 'There was an error with your RSVP. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error!', 'Unable to send RSVP at the moment.', 'error');
+    });
+}
+
+      </script>
 
 <script>
 

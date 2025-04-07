@@ -224,6 +224,24 @@ public function submitRsvp(Request $request)
         return response()->json(['success' => false]);
     }
 }
+public function handleRSVP(Request $request)
+{
+    // Validate the incoming data
+    $validated = $request->validate([
+        'appointment_id' => 'required|integer',
+        'nextofkin_id' => 'required|integer',
+        'rsvp_status' => 'required|in:yes,no',
+    ]);
+
+    // Store the RSVP status in the appointment_rsvps table
+    AppointmentRsvp::create([
+        'appointment_id' => $validated['appointment_id'],
+        'nextofkin_id' => $validated['nextofkin_id'],
+        'rsvp_status' => $validated['rsvp_status'],
+    ]);
+
+    return response()->json(['success' => true]);
+}
    
     
 
