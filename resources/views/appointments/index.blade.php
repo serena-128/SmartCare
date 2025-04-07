@@ -1,16 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <!-- Page Header with Styling -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-purple mb-0" style="color: #6a1b9a;">
-            📅 Appointments
-        </h2>
-        <a href="{{ route('appointments.create') }}" class="btn btn-primary shadow">
-            <i class="fas fa-plus-circle"></i> Add New
+<section class="content-header">
+    <div class="card text-white" style="background-color: purple;">
+        <div class="card-body text-center">
+            <h3 class="mb-0"><i class="fas fa-calendar-alt"></i> Appointments</h3>
+        </div>
+    </div>
+    <div class="mt-3 text-end">
+        <a class="btn btn-primary" href="{{ route('appointments.create') }}">
+            <i class="fas fa-plus"></i> Add New
         </a>
     </div>
+</section>
 
     <!-- Flash Messages -->
     @include('flash::message')
@@ -22,4 +24,5 @@
         </div>
     </div>
 </div>
+
 @endsection

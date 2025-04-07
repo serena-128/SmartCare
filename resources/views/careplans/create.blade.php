@@ -57,12 +57,37 @@
                     <label class="form-label fw-bold">Notes</label>
                     <textarea name="notes" class="form-control" rows="3" required placeholder="Enter any additional notes"></textarea>
                 </div>
+                <div class="mb-3">
+    <label for="assessment_summary" class="form-label">Assessment Summary</label>
+    <textarea class="form-control" name="assessment_summary" rows="3" required></textarea>
+</div>
+
+<div class="mb-3">
+    <label for="diagnosis" class="form-label">Diagnosis</label>
+    <textarea class="form-control" name="diagnosis" rows="2" required></textarea>
+</div>
+
+<div class="mb-3">
+    <label for="evaluation_notes" class="form-label">Evaluation Notes</label>
+    <textarea class="form-control" name="evaluation_notes" rows="2" required></textarea>
+</div>
+
+<div class="mb-3">
+    <label for="status" class="form-label">Status</label>
+    <select class="form-control" name="status" required>
+        <option value="Active" selected>Active</option>
+        <option value="Inactive">Inactive</option>
+        <option value="Completed">Completed</option>
+    </select>
+</div>
+
 
                 <!-- Submit Button -->
                 <div class="text-center">
                     <button type="submit" class="btn btn-success btn-lg">Save</button>
                     <a href="{{ route('careplans.index') }}" class="btn btn-secondary btn-lg">Cancel</a>
                 </div>
+                
             </form>
         </div>
     </div>

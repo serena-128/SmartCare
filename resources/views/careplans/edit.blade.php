@@ -56,6 +56,30 @@
                     <label class="form-label fw-bold">Notes</label>
                     <textarea name="notes" class="form-control" rows="3" required>{{ $careplan->notes }}</textarea>
                 </div>
+                <div class="mb-3">
+    <label for="assessment_summary" class="form-label">Assessment Summary</label>
+    <textarea class="form-control" name="assessment_summary" rows="3" required>{{ $careplan->assessment_summary }}</textarea>
+</div>
+
+<div class="mb-3">
+    <label for="diagnosis" class="form-label">Diagnosis</label>
+    <textarea class="form-control" name="diagnosis" rows="2" required>{{ $careplan->diagnosis }}</textarea>
+</div>
+
+<div class="mb-3">
+    <label for="evaluation_notes" class="form-label">Evaluation Notes</label>
+    <textarea class="form-control" name="evaluation_notes" rows="2" required>{{ $careplan->evaluation_notes }}</textarea>
+</div>
+
+<div class="mb-3">
+    <label for="status" class="form-label">Status</label>
+    <select class="form-control" name="status" required>
+        <option value="Active" {{ $careplan->status === 'Active' ? 'selected' : '' }}>Active</option>
+        <option value="Inactive" {{ $careplan->status === 'Inactive' ? 'selected' : '' }}>Inactive</option>
+        <option value="Completed" {{ $careplan->status === 'Completed' ? 'selected' : '' }}>Completed</option>
+    </select>
+</div>
+
 
                 <!-- Submit Button -->
                 <div class="text-center">

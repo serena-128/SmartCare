@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateresidentRequest;
-use App\Http\Requests\UpdateresidentRequest;
-use App\Repositories\residentRepository;
-use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Flash;
-use Response;
 use App\Models\Resident;
+use App\Models\CareLog;
+use App\Models\User;
+use App\Repositories\residentRepository;
+use Flash;
 
-class residentController extends AppBaseController
+class ResidentController extends Controller
 {
-    /** @var residentRepository $residentRepository*/
     private $residentRepository;
 
     public function __construct(residentRepository $residentRepo)
@@ -21,163 +18,96 @@ class residentController extends AppBaseController
         $this->residentRepository = $residentRepo;
     }
 
-    /**
-     * Display a listing of the resident.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function index(Request $request)
     {
         $residents = $this->residentRepository->all();
-
-        return view('residents.index')
-            ->with('residents', $residents);
+        return view('residents.index', compact('residents'));
     }
 
-    /**
-     * Show the form for creating a new resident.
-     *
-     * @return Response
-     */
     public function create()
     {
         return view('residents.create');
     }
 
-    /**
-     * Store a newly created resident in storage.
-     *
-     * @param CreateresidentRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateresidentRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
-
-        $resident = $this->residentRepository->create($input);
-
+        $resident = $this->residentRepository->create($request->all());
         Flash::success('Resident saved successfully.');
-
         return redirect(route('residents.index'));
     }
 
-    /**
-     * Display the specified resident.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $resident = $this->residentRepository->find($id);
+        $resident = Resident::with('diagnoses')->findOrFail($id);
 
-        if (empty($resident)) {
-            Flash::error('Resident not found');
+        $careLogsQuery = CareLog::where('resident_id', $id);
 
-            return redirect(route('residents.index'));
+        if ($request->filled('date')) {
+            $careLogsQuery->whereDate('logged_at', $request->date);
         }
 
-        return view('residents.show')->with('resident', $resident);
+        if ($request->filled('caregiver_id')) {
+            $careLogsQuery->where('caregiver_id', $request->caregiver_id);
+        }
+
+        $careLogs = $careLogsQuery->orderBy('logged_at', 'desc')->get();
+        $caregivers = User::all();
+
+        return view('residents.show', compact('resident', 'careLogs', 'caregivers'));
     }
 
-    /**
-     * Show the form for editing the specified resident.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function edit($id)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
-        return view('residents.edit')->with('resident', $resident);
+        return view('residents.edit', compact('resident'));
     }
 
-    /**
-     * Update the specified resident in storage.
-     *
-     * @param int $id
-     * @param UpdateresidentRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateresidentRequest $request)
+    public function update(Request $request, $id)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
-        $resident = $this->residentRepository->update($request->all(), $id);
-
+        $this->residentRepository->update($request->all(), $id);
         Flash::success('Resident updated successfully.');
 
         return redirect(route('residents.index'));
     }
 
-    /**
-     * Remove the specified resident from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
     public function destroy($id)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
         $this->residentRepository->delete($id);
-
         Flash::success('Resident deleted successfully.');
 
         return redirect(route('residents.index'));
     }
 
-    /**
-     * Show the profile of a resident.
-     *
-     * @param int $id
-     * @return Response
-     */
     public function profile($id)
     {
-        $resident = Resident::with(['diagnoses'])->findOrFail($id);
+        $resident = Resident::with('diagnoses')->findOrFail($id);
         return view('residents.profile', compact('resident'));
     }
 
-    /**
-     * Show Resident Dashboard.
-     *
-     * @param int $residentId
-     * @return Response
-     */
     public function showResidentDashboard($residentId)
     {
-        // Fetch the resident data from the database
         $resident = Resident::find($residentId);
-        
+
         if (!$resident) {
             return redirect()->route('home')->with('error', 'Resident not found.');
         }

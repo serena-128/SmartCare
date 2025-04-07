@@ -3,10 +3,10 @@
 return [
 
     'defaults' => [
-        'guard' => 'nextofkin',  // Set 'nextofkin' as the default if needed
-        'passwords' => 'nextofkins',
+        'guard' => 'web',  // Keep 'web' as the default guard unless NextOfKin should be the default
+        'passwords' => 'users',
     ],
-        
+
     'guards' => [
         'web' => [
             'driver'   => 'session',
@@ -40,7 +40,7 @@ return [
         ],
 
         'nextofkins' => [
-            'provider' => 'nextofkins',  
+            'provider' => 'nextofkins',
             'table'    => 'password_resets',
             'expire'   => 60,
             'throttle' => 60,

@@ -7,14 +7,14 @@ use App\Http\Requests\UpdateemergencyalertRequest;
 use App\Repositories\emergencyalertRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use App\Models\emergencyalert;
+use App\Models\EmergencyAlert;
 
 use Flash;
 use Response;
 
-class emergencyalertController extends AppBaseController
+class EmergencyAlertController extends AppBaseController
 {
-    /** @var emergencyalertRepository $emergencyalertRepository*/
+    /** @var emergencyalertRepository $emergencyalertRepository */
     private $emergencyalertRepository;
 
     public function __construct(emergencyalertRepository $emergencyalertRepo)
@@ -29,14 +29,14 @@ class emergencyalertController extends AppBaseController
      *
      * @return Response
      */
-public function index()
-{
-    // Fetch all emergency alerts
-    $emergencyalerts = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy'])->get();
+    public function index()
+    {
+        // Fetch all emergency alerts
+        $emergencyalerts = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy'])->get();
 
-    // Pass to the view
-    return view('emergencyalerts.index', compact('emergencyalerts'));
-}
+        // Pass to the view
+        return view('emergencyalerts.index', compact('emergencyalerts'));
+    }
 
     /**
      * Show the form for creating a new emergencyalert.
@@ -61,7 +61,7 @@ public function index()
 
         $emergencyalert = $this->emergencyalertRepository->create($input);
 
-        Flash::success('Emergencyalert saved successfully.');
+        Flash::success('Emergency alert saved successfully.');
 
         return redirect(route('emergencyalerts.index'));
     }
@@ -78,7 +78,7 @@ public function index()
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergencyalert not found');
+            Flash::error('Emergency alert not found');
 
             return redirect(route('emergencyalerts.index'));
         }
@@ -98,7 +98,7 @@ public function index()
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergencyalert not found');
+            Flash::error('Emergency alert not found');
 
             return redirect(route('emergencyalerts.index'));
         }
@@ -119,14 +119,14 @@ public function index()
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergencyalert not found');
+            Flash::error('Emergency alert not found');
 
             return redirect(route('emergencyalerts.index'));
         }
 
         $emergencyalert = $this->emergencyalertRepository->update($request->all(), $id);
 
-        Flash::success('Emergencyalert updated successfully.');
+        Flash::success('Emergency alert updated successfully.');
 
         return redirect(route('emergencyalerts.index'));
     }
@@ -145,20 +145,15 @@ public function index()
         $emergencyalert = $this->emergencyalertRepository->find($id);
 
         if (empty($emergencyalert)) {
-            Flash::error('Emergencyalert not found');
+            Flash::error('Emergency alert not found');
 
             return redirect(route('emergencyalerts.index'));
         }
 
         $this->emergencyalertRepository->delete($id);
 
-        Flash::success('Emergencyalert deleted successfully.');
+        Flash::success('Emergency alert deleted successfully.');
 
         return redirect(route('emergencyalerts.index'));
     }
-        public function index()
-    {
-        return view('emergencyalerts.index'); // Ensure this view exists
-    }
-
 }
