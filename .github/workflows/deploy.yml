@@ -1,0 +1,30 @@
+name: GitHub Actions Deploy
+run-name: ${{ github.actor }} has pushed and the repo will be deployed to the server
+on: [push]
+jobs:
+  deploy:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          ssh-keyscan -t ed25519 $REMOTE_HOSTNAME >> ~/.ssh/known_hosts
+          chmod 664 ~/.ssh/known_hosts
+          echo "$REMOTE_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          cat >>~/.ssh/config <<END
+          Host $REMOTE_HOSTNAME
+            PubKeyAuthentication yes
+            IdentitiesOnly yes
+            HostName $REMOTE_HOSTNAME
+            User $REMOTE_APP_USERNAME
+            IdentityFile ~/.ssh/id_rsa
+            StrictHostKeyChecking no
+          END
+        env:
+          REMOTE_APP_USERNAME: ${{ secrets.REMOTE_APP_USERNAME }}
+          REMOTE_PRIVATE_KEY: ${{ secrets.REMOTE_PRIVATE_KEY }}
+          REMOTE_HOSTNAME: ${{ secrets.REMOTE_HOSTNAME }}
+      - name: cd into app folder and run deploy
+        run: ssh -n -f ${{ secrets.REMOTE_HOSTNAME }} 'cd `ls` && php vendor/bin/envoy run deploy >> ../.deploy.log'
