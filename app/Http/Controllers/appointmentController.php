@@ -234,7 +234,12 @@ public function handleRSVP(Request $request)
         'nextofkin_id' => 'required|integer',
         'rsvp_status' => 'required|in:yes,no',
     ]);
-
+    
+     // Update the appointment record with the new RSVP status
+    $appointment = Appointment::findOrFail($validated['appointment_id']);
+    $appointment->rsvp_status = $validated['rsvp_status'];
+    $appointment->save();
+    
     // Store the RSVP status in the appointment_rsvps table
     AppointmentRsvp::create([
         'appointment_id' => $validated['appointment_id'],
