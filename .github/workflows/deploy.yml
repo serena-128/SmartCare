@@ -1,6 +1,10 @@
 name: GitHub Actions Deploy
 run-name: ${{ github.actor }} has pushed and the repo will be deployed to the server
-on: [push]
+on:
+  push:
+    branches:
+        - main
+        - feature-branch
 jobs:
   deploy:
     name: "Deploy"
