@@ -27,13 +27,18 @@ class staff_profilesController extends AppBaseController
      *
      * @return Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $staffProfiles = $this->staffProfilesRepository->all();
-
-        return view('staff_profiles.index')
-            ->with('staffProfiles', $staffProfiles);
+        $userId = auth()->id();
+        $staffProfile = \App\Models\StaffProfile::where('user_id', $userId)->first();
+    
+        if (!$staffProfile) {
+            return redirect()->route('staffProfiles.create');
+        }
+    
+        return redirect()->route('staffProfiles.show', $staffProfile->id);
     }
+    
 
     /**
      * Show the form for creating a new staff_profiles.
@@ -54,14 +59,18 @@ class staff_profilesController extends AppBaseController
      */
     public function store(Createstaff_profilesRequest $request)
     {
-        $input = $request->all();
-
-        $staffProfiles = $this->staffProfilesRepository->create($input);
-
-        Flash::success('Staff Profiles saved successfully.');
-
-        return redirect(route('staffProfiles.index'));
+        $data = $request->all();
+        $data['user_id'] = auth()->id(); // attach logged-in user
+    
+        if ($request->hasFile('profile_picture')) {
+            $data['profile_picture'] = $request->file('profile_picture')->store('profiles', 'public');
+        }
+    
+        \App\Models\StaffProfile::create($data);
+    
+        return redirect()->route('staffProfiles.index')->with('success', 'Profile created successfully!');
     }
+    
 
     /**
      * Display the specified staff_profiles.
@@ -72,16 +81,16 @@ class staff_profilesController extends AppBaseController
      */
     public function show($id)
     {
-        $staffProfiles = $this->staffProfilesRepository->find($id);
-
-        if (empty($staffProfiles)) {
-            Flash::error('Staff Profiles not found');
-
-            return redirect(route('staffProfiles.index'));
+        $staffProfile = \App\Models\StaffProfile::findOrFail($id);
+    
+        // Check if the profile belongs to the current user
+        if ($staffProfile->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access.');
         }
-
-        return view('staff_profiles.show')->with('staffProfiles', $staffProfiles);
+    
+        return view('staff_profiles.show', compact('staffProfile'));
     }
+    
 
     /**
      * Show the form for editing the specified staff_profiles.
@@ -153,4 +162,16 @@ class staff_profilesController extends AppBaseController
 
         return redirect(route('staffProfiles.index'));
     }
+    public function myProfile()
+    {
+        $userId = auth()->id();
+        $profile = \App\Models\StaffProfile::where('user_id', $userId)->first();
+    
+        if (!$profile) {
+            return redirect()->route('staffProfiles.create')->with('warning', 'Please create your profile.');
+        }
+    
+        return redirect()->route('staffProfiles.show', $profile->id);
+    }
+    
 }

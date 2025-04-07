@@ -81,6 +81,11 @@ class staff_profiles extends Model
         'created_at' => 'nullable',
         'updated_at' => 'nullable'
     ];
+    public function user()
+{
+    return $this->belongsTo(\App\Models\User::class);
+}
+
 
     
 }
