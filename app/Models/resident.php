@@ -40,11 +40,9 @@ class Resident extends Model
         'gender',
         'roomnumber',
         'admissiondate',
-
     ];
 
     protected $casts = [
-        
         'id' => 'integer',  // Ensure correct primary key reference
         'firstname' => 'string',
         'lastname' => 'string',
@@ -52,7 +50,6 @@ class Resident extends Model
         'gender' => 'string',
         'roomnumber' => 'integer',
         'admissiondate' => 'date',
-
     ];
 
     public static $rules = [
@@ -62,7 +59,6 @@ class Resident extends Model
         'gender' => 'nullable|string|max:20',
         'roomnumber' => 'nullable|integer',
         'admissiondate' => 'nullable|date',
-
     ];
 
     public function emergencyAlerts()
@@ -78,16 +74,22 @@ class Resident extends Model
         return "{$this->firstname} {$this->lastname}";
     }
     
-        // ✅ Add relationship with Diagnosis
+    // ✅ Add relationship with Diagnosis
     public function diagnoses()
     {
         return $this->hasMany(Diagnosis::class, 'residentid');
     }
-    public function diagnosistypes()
-{
-    return $this->belongsToMany(DiagnosisType::class, 'resident_diagnosis')
-        ->withPivot(['vitalsigns', 'treatment', 'testresults', 'notes', 'lastupdatedby'])
-        ->withTimestamps();
-}
 
+    public function diagnosistypes()
+    {
+        return $this->belongsToMany(DiagnosisType::class, 'resident_diagnosis')
+            ->withPivot(['vitalsigns', 'treatment', 'testresults', 'notes', 'lastupdatedby'])
+            ->withTimestamps();
+    }
+
+    // ✅ Add relationship with Medications
+    public function medications()
+    {
+        return $this->hasMany(Medication::class);
+    }
 }
