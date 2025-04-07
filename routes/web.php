@@ -189,3 +189,5 @@ Route::get('/staff/birthdays', function () {
 });
 
 Route::get('/appointments/rsvp', [AppointmentController::class, 'rsvpForm'])->name('appointments.rsvp.form');
+
+Route::resource('staffProfiles', App\Http\Controllers\staff_profilesController::class);
