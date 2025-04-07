@@ -1,0 +1,164 @@
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styling - Full Width Fix */
+.navbar {
+    background-color: #e6e0f8 !important; /* Light White Purple */
+    width: 100vw; /* Ensure it spans the full viewport width */
+    position: fixed; /* Keep it fixed at the top */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+.container-fluid {
+    width: 100%; /* Ensure the navbar content spans fully */
+    max-width: 100%;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #000 !important; /* Changed font color to black */
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem; /* Increased font size */
+}
+
+.navbar-brand img {
+    max-width: 95px; /* Increased logo size */
+    margin-right: 15px;
+}
+
+.navbar-nav .nav-link {
+    color: #000 !important; /* Changed font color to black */
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #800080;
+}
+
+/* Fix Page Content to Not Be Hidden Under Navbar */
+.container {
+    padding-top: 80px; /* Push content below fixed navbar */
+}
+
+/* Dropdown Menu Fix */
+.navbar-nav .dropdown-menu {
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-nav .dropdown-item {
+    color: #4b0082;
+}
+
+.navbar-nav .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #800080;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out;
+    background: #fff;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Staff On-Duty Section */
+.card-header {
+    background-color: #800080 !important;
+    color: white;
+    font-weight: 600;
+}
+
+.staff-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Soft Shadow & Padding */
+.container {
+    padding-top: 100px;
+}
+
+.card-body {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Fix for Text Readability */
+.text-primary {
+    color: #4b0082 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+/* Resident Creation Page Styling */
+.resident-form-container {
+    max-width: 700px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    margin-top: 20px;
+}
+
+/* Input Fields */
+.form-control {
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #800080;
+    box-shadow: 0px 0px 5px rgba(128, 0, 128, 0.5);
+}
+
+/* Labels */
+.form-label {
+    font-weight: 600;
+    color: #4b0082;
+}
+
+/* Submit Button */
+.btn-primary {
+    background-color: #800080 !important;
+    border-color: #800080;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #5a005a !important;
+}
+
+/* Centered Header */
+.resident-form-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #4b0082;
+    margin-bottom: 20px;
+}
