@@ -174,4 +174,5 @@ class staff_profilesController extends AppBaseController
         return redirect()->route('staffProfiles.show', $profile->id);
     }
     
+    
 }
