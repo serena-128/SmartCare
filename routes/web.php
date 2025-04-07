@@ -195,3 +195,6 @@ Route::get('/staff/birthdays', function () {
 Route::get('/signed-out', function () {
     return view('signedout'); // Create a view for this if needed
 })->name('signed.out');
+
+Route::post('appointments/rsvp', [AppointmentController::class, 'storeRSVP'])->name('appointments.rsvp');
+

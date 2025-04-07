@@ -203,7 +203,28 @@ public function submitRsvp(Request $request)
         }));
     }
     
-    
+ public function storeRSVP(Request $request)
+{
+    $validated = $request->validate([
+        'appointment_id' => 'required|exists:appointments,id',
+        'nextofkin_id' => 'required|exists:next_of_kins,id',
+        'rsvp_status' => 'required|in:yes,no',
+    ]);
+
+    // Store the RSVP
+    $appointmentRSVP = AppointmentRSVP::create([
+        'appointment_id' => $validated['appointment_id'],
+        'nextofkin_id' => $validated['nextofkin_id'],
+        'rsvp_status' => $validated['rsvp_status']
+    ]);
+
+    if ($appointmentRSVP) {
+        return response()->json(['success' => true]);
+    } else {
+        return response()->json(['success' => false]);
+    }
+}
+   
     
 
 }
