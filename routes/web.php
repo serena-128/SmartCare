@@ -198,5 +198,6 @@ Route::get('/signed-out', function () {
 
 Route::post('appointments/rsvp', [AppointmentController::class, 'handleRSVP'])->name('appointments.rsvp');
 
+Route::post('/events/rsvp', [\App\Http\Controllers\EventController::class, 'handleRSVP'])->name('events.rsvp');
 
 

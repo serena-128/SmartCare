@@ -817,8 +817,21 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       events: '/fetch-events',
       eventClick: function (info) {
-        alert('Event: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
+        Swal.fire({
+          title: info.event.title,
+          text: info.event.extendedProps.description,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'RSVP Yes',
+          cancelButtonText: 'RSVP No',
+          customClass: {
+            popup: 'my-sweetalert-popup'
+          }
+        }).then((result) => {
+          let rsvpStatus = result.isConfirmed ? 'yes' : 'no';
+          handleEventRSVP(info.event.id, rsvpStatus);
+        });
+      } // ✅ ← this closing brace was missing
     });
 
     if (document.getElementById('events').style.display !== 'none') {
@@ -826,8 +839,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
+
       
     
+      </script>
+<script>
+function handleEventRSVP(eventId, rsvpStatus) {
+  const nextOfKinId = {{ Auth::guard('nextofkin')->user()->id }};
+
+  fetch("{{ route('events.rsvp') }}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    body: JSON.stringify({
+      event_id: eventId,
+      nextofkin_id: nextOfKinId,
+      rsvp_status: rsvpStatus
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      Swal.fire('Thank you!', 'Your RSVP has been recorded.', 'success');
+    } else {
+      Swal.fire('Oops!', data.message || 'There was an error with your RSVP. Please try again.', 'error');
+    }
+  })
+  .catch(error => {
+    Swal.fire('Error!', 'Unable to send RSVP at the moment.', 'error');
+  });
+}
+
       </script>
 <script>
 function handleRSVP(appointmentId, rsvpStatus) {
