@@ -117,6 +117,7 @@ class appointmentController extends AppBaseController
                 $start->setTimeFromTimeString($appointment->time);
             }
             return [
+                'id' => $appointment->id,
                 'title' => $appointment->reason,
                 'start' => $start->toIso8601String(),
                 'description' => $appointment->location ?? '',
@@ -206,10 +207,11 @@ public function submitRsvp(Request $request)
  public function storeRSVP(Request $request)
 {
     $validated = $request->validate([
-        'appointment_id' => 'required|exists:appointments,id',
-        'nextofkin_id' => 'required|exists:next_of_kins,id',
-        'rsvp_status' => 'required|in:yes,no',
-    ]);
+    'appointment_id' => 'required|exists:appointment,id',
+    'nextofkin_id'   => 'required|exists:nextofkin,id',
+    'rsvp_status'    => 'required|in:yes,no',
+]);
+
 
     // Store the RSVP
     $appointmentRSVP = AppointmentRSVP::create([
