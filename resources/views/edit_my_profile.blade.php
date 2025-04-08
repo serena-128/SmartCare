@@ -2,100 +2,77 @@
 
 @section('content')
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
 <style>
     body {
-        margin-top: 20px;
-        background: #f8f9fa; /* light purple tint */
+        background: #f5f5f5;
     }
     .panel {
-        box-shadow: none;
-    }
-    .panel-heading {
-        border-bottom: 0;
-    }
-    .panel-title {
-        font-size: 17px;
-    }
-    .panel-title > small {
-        font-size: .75em;
-        color: #999999;
-    }
-    .panel-body *:first-child {
-        margin-top: 0;
-    }
-    .panel-default > .panel-heading {
-        background-color: transparent;
-        border-color: rgba(0, 0, 0, 0.07);
-    }
-    form label {
-        color: #999999;
-        font-weight: 400;
-    }
-    .form-horizontal .form-group {
-        margin-left: -15px;
-        margin-right: -15px;
+        border-radius: .25rem;
+        box-shadow: 0 2px 6px rgba(218, 218, 253, 0.65), 0 2px 6px rgba(206, 206, 238, 0.54);
+        background-color: white;
     }
     .profile-avatar {
-        width: 200px;
-        margin: 0 auto;
-        border: 4px solid #f3f3f3;
+        width: 160px;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+    label {
+        color: #6c757d;
+        font-weight: 500;
     }
 </style>
 
-<div class="container bootstrap snippets bootdeys">
+<div class="container bootstrap snippets bootdeys mt-4">
     <div class="row">
-        <div class="col-xs-12 col-sm-9">
-            <form class="form-horizontal" method="POST" action="{{ route('my.profile.update') }}" enctype="multipart/form-data">
+        <div class="col-md-4 text-center">
+            <div class="panel p-4">
+                @if($staff->profile_picture)
+                    <img src="{{ asset('storage/' . $staff->profile_picture) }}" class="profile-avatar" alt="Profile Image">
+                @else
+                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="profile-avatar" alt="Default Avatar">
+                @endif
+                <h4 class="mt-2">{{ $staff->firstname }} {{ $staff->lastname }}</h4>
+                <p class="text-muted">{{ $staff->staff_role }}</p>
+                <p class="text-muted">{{ $staff->email }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <form method="POST" action="{{ route('my.profile.update') }}" enctype="multipart/form-data" class="panel p-4" onsubmit="return confirmUpdate();">
                 @csrf
 
-                <div class="panel panel-default">
-                    <div class="panel-body text-center">
-                        @if($staff->profile_picture)
-                            <img src="{{ asset('storage/' . $staff->profile_picture) }}" class="img-circle profile-avatar" alt="User avatar">
-                        @else
-                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="img-circle profile-avatar" alt="User avatar">
-                        @endif
-                    </div>
+                <h4 class="mb-3">Edit Profile</h4>
+
+                <div class="form-group mb-3">
+                    <label for="contactnumber">Phone Number</label>
+                    <input type="text" name="contactnumber" value="{{ $staff->contactnumber }}" class="form-control">
                 </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">User Info</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Phone Number</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" name="contactnumber" value="{{ $staff->contactnumber }}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Address</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" name="address" value="{{ $staff->address }}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Profile Image</label>
-                            <div class="col-sm-10">
-                                <input type="file" name="profile_picture" class="form-control">
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" value="{{ $staff->address }}" class="form-control">
                 </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <div class="col-sm-10 col-sm-offset-2">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <a href="{{ route('my.profile') }}" class="btn btn-default">Cancel</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group mb-4">
+                    <label for="profile_picture">Profile Image</label>
+                    <input type="file" name="profile_picture" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                    <a href="{{ route('my.profile') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function confirmUpdate() {
+        return confirm('Are you sure you want to update your profile?');
+    }
+</script>
 @endsection
