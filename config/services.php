@@ -30,5 +30,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     
+    'vonage' => [
+    'key'    => env('NEXMO_KEY'),
+    'secret' => env('NEXMO_SECRET'),
+    'sms_from' => env('NEXMO_SMS_FROM'),
+],
+
 
 ];

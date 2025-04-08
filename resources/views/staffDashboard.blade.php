@@ -72,8 +72,12 @@
                 <li class="nav-item">
     <a class="nav-link" href="{{ route('staffmembers.schedule') }}">📅 My Schedule</a>
 </li>
-
-
+<!-- Add Message Tab -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('staffMessages') }}">
+                <i class="fas fa-comment-alt"></i> Messages
+            </a>
+        </li>
                 <!-- Profile & Logout -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">

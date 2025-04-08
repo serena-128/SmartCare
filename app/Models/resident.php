@@ -89,5 +89,9 @@ class Resident extends Model
         ->withPivot(['vitalsigns', 'treatment', 'testresults', 'notes', 'lastupdatedby'])
         ->withTimestamps();
 }
+ public function assignedCaregiver()
+    {
+        return $this->belongsTo(StaffMember::class, 'assigned_staff_id');
+    }  
 
 }

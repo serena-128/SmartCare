@@ -9,6 +9,8 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\Message;
+
 
 class StaffMemberController extends AppBaseController
 {
@@ -157,5 +159,15 @@ class StaffMemberController extends AppBaseController
     public function profile()
     {
         return view('staffmember.profile');
+    }
+    public function viewMessages()
+    {
+        // Fetch all messages for the staff (either for all staff or the assigned caregiver)
+        $messages = Message::where('recipient', 'all')
+                            ->orWhere('recipient', 'caregiver')
+                            ->where('caregiver_id', auth()->user()->id) // Only show if the staff is the caregiver
+                            ->get();
+
+        return view('staff.messages', compact('messages'));
     }
 }

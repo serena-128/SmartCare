@@ -349,6 +349,7 @@ if ($hour < 12) {
         <a href="#" class="sidebar-link" onclick="showSection('appointments', this)"><i class="fas fa-calendar-check"></i> Appointments</a>
         <a href="#" class="sidebar-link" onclick="showSection('events', this)"><i class="fas fa-calendar-alt"></i> Events</a>
         <a href="#" class="sidebar-link" onclick="showSection('news', this)"><i class="fas fa-newspaper"></i> News</a>
+        <a href="#" class="sidebar-link" onclick="showSection('message', this)"><i class="fas fa-comment-alt"></i> Send Message </a>
         <a href="#" id="settings-sidebar-link" class="sidebar-link" onclick="showSection('settings', this); return false;">
         <i class="fas fa-cog"></i> Settings
          </a>
@@ -636,6 +637,33 @@ if ($hour < 12) {
       </div>
     </div>
   </div>
+</div>
+
+<div id="message" class="dashboard-section" style="display: none;">
+  <h1>Send Message</h1>
+  <p>Communicate with care home staff.</p>
+  
+  <form method="POST" action="{{ route('nextofkin.sendMessage') }}">
+    @csrf
+    <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea class="form-control" name="message" rows="3" placeholder="Type your message here..." required></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="recipient">Recipient</label>
+        <select class="form-control" name="recipient" required>
+            <option value="all">All Staff</option>
+            @if($resident && $resident->assignedCaregiver)
+                <option value="caregiver">{{ $resident->assignedCaregiver->firstname }} {{ $resident->assignedCaregiver->lastname }}</option>
+            @else
+                <option value="caregiver">No Caregiver Assigned</option>
+            @endif
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Send Message</button>
+  </form>
 </div>
 
 

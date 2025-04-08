@@ -34,5 +34,16 @@ class StaffDashboardController extends Controller
             'carePlans' => $carePlans // Pass care plans to the view
         ]);
     }
+    public function showDashboard()
+{
+    // Fetch all messages for the staff (either for all or the assigned caregiver)
+    $messages = Message::where('recipient', 'all')
+                        ->orWhere('recipient', 'caregiver')
+                        ->where('caregiver_id', auth()->user()->id) // Only show if the staff is the caregiver
+                        ->get();
+
+    return view('staff.dashboard', compact('messages'));
+}
+
 }
 

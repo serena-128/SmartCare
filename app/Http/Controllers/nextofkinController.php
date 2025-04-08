@@ -11,6 +11,12 @@ use Flash;
 use Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Resident;  // Add this line
+use App\Models\NextOfKin;
+use Illuminate\Support\Facades\Http;
+use App\Models\Message;
+
+
 
 class nextofkinController extends AppBaseController
 {
@@ -178,6 +184,44 @@ class nextofkinController extends AppBaseController
     return redirect()->back()
         ->with('success', 'Password updated successfully!')
         ->with('active_tab', 'settings');
+}
+public function sendMessage(Request $request)
+{
+    $validated = $request->validate([
+        'message' => 'required|string',
+        'recipient' => 'required|in:caregiver,staff,all',
+    ]);
+
+    $recipient = $validated['recipient'];
+    $sender = auth()->user()->firstname . ' ' . auth()->user()->lastname;
+
+    if ($recipient === 'all') {
+        // Send message to all staff
+        Message::create([
+            'message' => $validated['message'],
+            'sender' => $sender,
+            'recipient' => 'all',
+        ]);
+    } elseif ($recipient === 'caregiver') {
+        // Send message to the assigned caregiver
+        $resident = auth()->user()->resident; // Get the resident linked to the Next of Kin
+
+        if ($resident && $resident->assignedCaregiver) {
+            $caregiver = $resident->assignedCaregiver; // Get the assigned caregiver
+
+            // Store the message for the assigned caregiver
+            Message::create([
+                'message' => $validated['message'],
+                'sender' => $sender,
+                'recipient' => 'caregiver',
+                'caregiver_id' => $caregiver->id, // Store the caregiver's ID
+            ]);
+        } else {
+            return redirect()->back()->with('error', 'No caregiver assigned to this resident.');
+        }
+    }
+
+    return redirect()->back()->with('success', 'Message sent successfully!');
 }
 
     

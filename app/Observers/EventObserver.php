@@ -7,7 +7,7 @@ use App\Models\Notification;
 use App\Models\NextOfKin; // Your next-of-kin model
 use App\Mail\NewEventNotification; // Your Mailable for event notifications
 use Illuminate\Support\Facades\Mail;
-use Nexmo\Laravel\Facade\Nexmo; 
+use Vonage\Laravel\Facade\Vonage;
 
 class EventObserver
 {
@@ -38,7 +38,7 @@ class EventObserver
 
             // Send an SMS notification if enabled
             if ($nextOfKin->sms_notifications) {
-                Nexmo::message()->send([
+                Vonage::message()->send([
                     'to'   => $nextOfKin->contactnumber,
                     'from' => config('services.nexmo.sms_from'),
                     'text' => 'New event: ' . $event->title . '. View details: ' . route('events.show', $event->id),
