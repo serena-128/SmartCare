@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Only if you have a layout, otherwise skip this --}}
+@extends('layouts.app')
 
 @section('content')
     <h1>Overdue Medications</h1>
@@ -13,6 +13,7 @@
                     <th>Medication</th>
                     <th>Scheduled Time</th>
                     <th>Taken</th>
+                    <th>Action</th> {{-- Added action column --}}
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,17 @@
                         <td>{{ $med->medication_name }}</td>
                         <td>{{ $med->scheduled_time }}</td>
                         <td>{{ $med->taken ? 'Yes' : 'No' }}</td>
+                        <td>
+                            @if (!$med->taken)
+                                <form method="POST" action="{{ route('medications.markTaken', $med->id) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit">Mark as Taken</button>
+                                </form>
+                            @else
+                                ✅
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

@@ -137,12 +137,12 @@ Route::get('/diagnoses/search', function () {
 
 
 use App\Http\Controllers\ResidentCareDashboardController;
+use App\Http\Controllers\MedicationController;
 
 Route::get('/resident-care-dashboard', [ResidentCareDashboardController::class, 'index'])
     ->name('resident_care_dashboard');
 
-use App\Http\Controllers\MedicationController;
+Route::get('/medications/overdue', [MedicationController::class, 'showOverdue'])->name('medications.overdue');
+Route::patch('/medications/{id}/mark-taken', [MedicationController::class, 'markTaken'])->name('medications.markTaken');
 
-Route::get('/medications/overdue', [MedicationController::class, 'showOverdue'])
-    ->name('medications.overdue');
 
