@@ -20,7 +20,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $profile_picture
  * @property string $bio
  */
-class staff_profiles extends Model
+class StaffProfile extends Model
+
 {
     use SoftDeletes;
 

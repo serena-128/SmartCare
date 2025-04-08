@@ -27,7 +27,7 @@ use App\Http\Controllers\NextOfKinProfileController;
 use App\Http\Controllers\EventAppointmentController;
 use App\Http\Controllers\NextOfKinDashboardController;
 use App\Http\Controllers\StaffScheduleController;
-use App\Http\Controllers\staff_profilesController;
+use App\Http\Controllers\staffProfilesController;
 
 
 /*
@@ -192,7 +192,8 @@ Route::get('/staff/birthdays', function () {
 
 Route::get('/appointments/rsvp', [AppointmentController::class, 'rsvpForm'])->name('appointments.rsvp.form');
 
-Route::resource('staffProfiles', App\Http\Controllers\staff_profilesController::class);
-Route::get('/my-profile', [staff_profilesController::class, 'myProfile'])->name('staffProfiles.my');
+Route::resource('staffProfiles', App\Http\Controllers\StaffProfilesController::class);
+
+Route::get('/my-profile', [StaffProfilesController::class, 'myProfile'])->name('staffProfiles.my');
 
 

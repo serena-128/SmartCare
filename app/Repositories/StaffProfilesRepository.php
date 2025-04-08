@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Models\staff_profiles;
+use App\Models\StaffProfile;
 use App\Repositories\BaseRepository;
 
 /**
- * Class staff_profilesRepository
+ * Class StaffProfilesRepository
  * @package App\Repositories
  * @version April 7, 2025, 5:37 pm UTC
 */
 
-class staff_profilesRepository extends BaseRepository
+class StaffProfilesRepository extends BaseRepository
 {
     /**
      * @var array
@@ -39,9 +39,11 @@ class staff_profilesRepository extends BaseRepository
 
     /**
      * Configure the Model
-     **/
+     *
+     * @return string
+     */
     public function model()
     {
-        return staff_profiles::class;
+        return StaffProfile::class;
     }
 }
