@@ -386,6 +386,9 @@ if ($hour < 12) {
         <a href="#" class="sidebar-link" onclick="showSection('events', this)"><i class="fas fa-calendar-alt"></i> Events</a>
         <a href="#" class="sidebar-link" onclick="showSection('news', this)"><i class="fas fa-newspaper"></i> News</a>
         <a href="#" class="sidebar-link" onclick="showSection('message', this)"><i class="fas fa-comment-alt"></i> Send Message </a>
+          <a href="#" class="sidebar-link" onclick="showSection('received-messages', this)">
+          <i class="fas fa-envelope-open-text"></i> Received Messages
+        </a>
         <a href="#" id="settings-sidebar-link" class="sidebar-link" onclick="showSection('settings', this); return false;">
         <i class="fas fa-cog"></i> Settings
          </a>
@@ -764,6 +767,27 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
   </form>
 </div>
 
+<div id="received-messages" class="dashboard-section" style="display: none;">
+  <h1>Received Messages</h1>
+  <p>Below are the messages you have received from care home staff:</p>
+  
+  <!-- Display messages if available -->
+  @if(isset($receivedMessages) && !$receivedMessages->isEmpty())
+    <ul class="list-group">
+      @foreach($receivedMessages as $message)
+        <li class="list-group-item">
+          <strong>{{ $message->sender_name }}</strong>:
+          {{ $message->message_content }}
+          <span class="badge bg-secondary">
+            {{ \Carbon\Carbon::parse($message->created_at)->format('M d, Y H:i') }}
+          </span>
+        </li>
+      @endforeach
+    </ul>
+  @else
+    <p>No messages available.</p>
+  @endif
+</div>
 
 
         <div id="settings" class="dashboard-section" style="display: none;">
