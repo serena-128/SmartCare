@@ -28,7 +28,8 @@
                     <tr>
                         <td>{{ $med->resident->full_name ?? 'Unknown' }}</td>
                         <td>{{ $med->medication_name }}</td>
-                        <td>{{ $med->scheduled_time }}</td>
+                        <td>{{ \Carbon\Carbon::parse($med->scheduled_time)->diffForHumans() }}</td>
+
                         <td>{{ $med->taken ? 'Yes' : 'No' }}</td>
                         <td>
                             @if (!$med->taken)
