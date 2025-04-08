@@ -93,5 +93,10 @@ class Resident extends Model
     {
         return $this->belongsTo(StaffMember::class, 'assigned_staff_id');
     }  
+public function nextOfKin()
+{
+    return $this->hasMany(\App\Models\NextOfKin::class, 'residentid', 'id');
+}
+
 
 }

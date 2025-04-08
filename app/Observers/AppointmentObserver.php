@@ -3,29 +3,37 @@
 namespace App\Observers;
 
 use App\Models\Appointment;
-use App\Models\Notification;
-use App\Models\NextOfKin;
+use App\Models\Notification as CustomNotification; // your custom notification log model
+use App\Mail\NewAppointmentNotification;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentObserver
 {
-    /**
-     * Handle the Appointment "created" event.
-     *
-     * @param  \App\Models\Appointment  $appointment
-     * @return void
-     */
     public function created(Appointment $appointment)
     {
-        // Find all next-of-kin records linked to the resident for which this appointment was created.
-        $nextOfKins = NextOfKin::where('residentid', $appointment->residentid)->get();
+        // Get the resident linked to this appointment.
+        $resident = $appointment->resident;
+        if (!$resident) {
+            return; // No resident linked – nothing to do.
+        }
 
-        foreach ($nextOfKins as $nextOfKin) {
-            Notification::create([
-                'nextofkin_id' => $nextOfKin->id,
-                'message'      => 'A new appointment has been scheduled for your resident: ' . $appointment->title,
-                'is_new'       => true,
-                // Add any additional fields as needed.
-            ]);
+        // Retrieve the resident's next-of-kin.
+        $nextOfKins = $resident->nextOfKin;  // This might be a Collection.
+
+        if ($nextOfKins && $nextOfKins->isNotEmpty()) {
+            foreach ($nextOfKins as $nextOfKin) {
+                // Log the notification record.
+                CustomNotification::create([
+                    'nextofkin_id' => $nextOfKin->id,
+                    'message'      => 'A new appointment has been scheduled for ' . $resident->full_name . ': ' . $appointment->reason,
+                    'is_new'       => true,
+                ]);
+
+                // Send an email if enabled.
+                if ($nextOfKin->email_notifications) {
+                    Mail::to($nextOfKin->email)->send(new NewAppointmentNotification($appointment));
+                }
+            }
         }
     }
 }

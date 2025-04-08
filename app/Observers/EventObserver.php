@@ -3,11 +3,10 @@
 namespace App\Observers;
 
 use App\Models\Event;
-use App\Models\Notification;
-use App\Models\NextOfKin; // Your next-of-kin model
-use App\Mail\NewEventNotification; // Your Mailable for event notifications
+use App\Models\Notification as CustomNotification;
+use App\Models\NextOfKin;
+use App\Mail\NewEventNotification;
 use Illuminate\Support\Facades\Mail;
-use Vonage\Laravel\Facade\Vonage;
 
 class EventObserver
 {
@@ -19,30 +18,20 @@ class EventObserver
      */
     public function created(Event $event)
     {
-        // Retrieve all next-of-kin users who need to be notified.
+        // Retrieve all next-of-kin (or you can filter them as needed).
         $nextOfKins = NextOfKin::all();
 
         foreach ($nextOfKins as $nextOfKin) {
-            // Insert notification record into your custom notifications table
-            Notification::create([
-                'nextofkin_id' => $nextOfKin->id, 
+            // Insert a record into your custom notifications table (if you use one)
+            CustomNotification::create([
+                'nextofkin_id' => $nextOfKin->id,
                 'message'      => 'A new event has been added: ' . $event->title,
                 'is_new'       => true,
-                // Add any additional fields as required
             ]);
 
-            // Send an email notification if enabled
+            // Send an email notification if enabled.
             if ($nextOfKin->email_notifications) {
                 Mail::to($nextOfKin->email)->send(new NewEventNotification($event));
-            }
-
-            // Send an SMS notification if enabled
-            if ($nextOfKin->sms_notifications) {
-                Vonage::message()->send([
-                    'to'   => $nextOfKin->contactnumber,
-                    'from' => config('services.nexmo.sms_from'),
-                    'text' => 'New event: ' . $event->title . '. View details: ' . route('events.show', $event->id),
-                ]);
             }
         }
     }

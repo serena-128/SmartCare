@@ -200,6 +200,8 @@ Route::post('appointments/rsvp', [AppointmentController::class, 'handleRSVP'])->
 
 Route::post('/events/rsvp', [\App\Http\Controllers\EventController::class, 'handleRSVP'])->name('events.rsvp');
 
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
 Route::post('/nextofkin/send-message', [NextOfKinController::class, 'sendMessage'])->name('nextofkin.sendMessage');
 
 // Route to view staff messages
