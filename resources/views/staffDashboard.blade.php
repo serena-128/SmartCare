@@ -245,5 +245,114 @@
     .border-danger { border-left: 5px solid #dc3545 !important; }
     .border-info { border-left: 5px solid #17a2b8 !important; }
 </style>
+<!-- FAQ Chatbot 💬 -->
+<div id="faq-chatbot">
+    <div id="chat-icon" onclick="toggleChat()">
+        💬
+    </div>
+    <div id="chat-box">
+        <div id="chat-header">SmartCare Assistant</div>
+        <div id="chat-body">
+            <div class="chat-message bot">Hi! I’m your assistant. How can I help?</div>
+        </div>
+        <input type="text" id="chat-input" placeholder="Type your question..." onkeydown="handleChatKey(event)">
+    </div>
+</div>
+
+<style>
+    #faq-chatbot {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+    #chat-icon {
+        background: #6a1b9a;
+        color: #fff;
+        padding: 12px 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    #chat-box {
+        display: none;
+        width: 300px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #chat-header {
+        background: #6a1b9a;
+        color: #fff;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+    }
+    #chat-body {
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 10px;
+        font-size: 14px;
+    }
+    #chat-input {
+        border: none;
+        border-top: 1px solid #ddd;
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+    }
+    .chat-message {
+        margin-bottom: 10px;
+    }
+    .chat-message.user {
+        text-align: right;
+        color: #333;
+    }
+    .chat-message.bot {
+        color: #6a1b9a;
+    }
+</style>
+
+<script>
+    function toggleChat() {
+        const box = document.getElementById("chat-box");
+        box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    function handleChatKey(e) {
+        if (e.key === "Enter") {
+            const input = document.getElementById("chat-input");
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage("user", message);
+            input.value = "";
+
+            const response = getBotReply(message.toLowerCase());
+            setTimeout(() => addMessage("bot", response), 500);
+        }
+    }
+
+    function addMessage(type, text) {
+        const body = document.getElementById("chat-body");
+        const msg = document.createElement("div");
+        msg.className = `chat-message ${type}`;
+        msg.innerText = text;
+        body.appendChild(msg);
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function getBotReply(question) {
+        if (question.includes("visiting")) return "Visiting hours are from 9am to 7pm daily.";
+        if (question.includes("emergency")) return "In case of an emergency, alert via the Emergency Alerts page.";
+        if (question.includes("profile")) return "You can update your profile under '👤 My Profile'.";
+        if (question.includes("appointment")) return "Appointments can be scheduled under 'Tasks & Appointments'.";
+        return "I'm not sure, please contact admin.";
+    }
+</script>
+
 
 @endsection
