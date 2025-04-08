@@ -318,6 +318,42 @@ if ($hour < 12) {
   animation: bounce 1s infinite;
 }
 
+ #home {
+  background: linear-gradient(135deg, #E6E6FA, #D8BFD8); /* Light purple gradient */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  }
+  /* Add text-shadow to the greeting and date for better readability */
+  #home h4, #home h5 {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  /* Customize card headers inside the Home section with gradients */
+  #home .card-header {
+    background: linear-gradient(135deg, #ffcc80, #ffb74d);
+    color: #333;
+    font-weight: bold;
+  }
+  /* Weather widget header with blue gradient */
+  #weather-widget .card-header {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    font-weight: bold;
+  }
+  /* Calendar card header with a warm red-purple gradient */
+  /* If your calendar card's header is contained in a specific selector,
+     you can adjust the selector below. For example: */
+  .calendar-card .card-header,
+  #next-week-calendar ~ .card-header {
+    background: linear-gradient(135deg, #7b4397, #dc2430);
+    color: #fff;
+    font-weight: bold;
+  }
+      #home h3 {
+  color: #000000; 
+  font-weight: bold;
+}
 
 
   </style>
@@ -398,7 +434,7 @@ if ($hour < 12) {
   </div>
   <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information with the latest weather update, and your schedule for the upcoming week.</p>
 
-  <div class="row">
+  <div class="row allign-items-stretch">
     <!-- Left Column: Resident Info & Weather Widget -->
     <div class="col-md-6 border-end border-3" style="border-color: #4B0082;">
       <h3>Resident</h3>
