@@ -37,16 +37,17 @@
                             </form>
                         </div>
                         
-                        <!-- Navigation Buttons -->
-                        <div class="mt-4">
-                            @if($previousMessage)
-                                <a href="{{ route('staff.messages', $previousMessage->id) }}" class="btn btn-secondary">Previous</a>
-                            @endif
-                            
-                            @if($nextMessage)
-                                <a href="{{ route('staff.messages', $nextMessage->id) }}" class="btn btn-secondary float-end">Next</a>
-                            @endif
-                        </div>
+                     <!-- Navigation Buttons -->
+                    <div class="mt-4 d-flex justify-content-between">
+                        @if($previousMessage)
+                            <a href="{{ route('staff.messages', $previousMessage->id) }}" class="btn btn-secondary">Previous</a>
+                        @endif
+
+                        @if($nextMessage)
+                            <a href="{{ route('staff.messages', $nextMessage->id) }}" class="btn btn-secondary">Next</a>
+                        @endif
+                    </div>
+
                     @else
                         <p>No message found.</p>
                     @endif
