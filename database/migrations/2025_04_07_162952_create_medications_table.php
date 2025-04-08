@@ -15,10 +15,10 @@ class CreateMedicationsTable extends Migration
     {
         Schema::create('medications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('resident_id')->constrained(); // Link to Resident table
+            $table->foreignId('resident_id')->constrained()->onDelete('cascade'); // cascade on delete
             $table->string('medication_name');
             $table->timestamp('scheduled_time');
-            $table->boolean('taken')->default(false); // Track whether medication is taken or not
+            $table->boolean('taken')->default(false); // Track if taken
             $table->timestamps();
         });
     }
