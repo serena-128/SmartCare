@@ -75,7 +75,7 @@
                             👤 {{ session('staff_name') }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('staff.profile') }}">⚙️ Settings</a></li>
+                            <a href="{{ route('my.profile') }}" class="nav-link">👤 My Profile</a>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
