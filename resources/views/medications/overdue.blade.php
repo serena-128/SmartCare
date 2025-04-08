@@ -28,15 +28,18 @@
                     <tr>
                         <td>{{ $med->resident->full_name ?? 'Unknown' }}</td>
                         <td>{{ $med->medication_name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($med->scheduled_time)->diffForHumans() }}</td>
-
+                        <td title="{{ $med->scheduled_time }}">
+                            {{ \Carbon\Carbon::parse($med->scheduled_time)->diffForHumans() }}
+                        </td>
                         <td>{{ $med->taken ? 'Yes' : 'No' }}</td>
                         <td>
                             @if (!$med->taken)
                                 <form method="POST" action="{{ route('medications.markTaken', $med->id) }}">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit">Mark as Taken</button>
+                                    <button type="submit" style="background-color: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px;">
+                                        Mark as Taken
+                                    </button>
                                 </form>
                             @else
                                 ✅
