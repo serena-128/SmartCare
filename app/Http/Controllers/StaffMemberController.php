@@ -163,21 +163,28 @@ class StaffMemberController extends AppBaseController
     }
 
     
-    public function viewMessages()
-    {
-        // Fetch received messages for the logged-in staff
-        $messages = Message::where('recipient', 'all')
-                            ->orWhere('recipient', 'caregiver')
-                            ->where('caregiver_id', auth()->user()->id) // Only show if the staff is the caregiver
+   public function viewMessages($messageId = null)
+{
+    // Fetch received messages
+    $messages = Message::where('recipient', 'all')
+                        ->orWhere('recipient', 'caregiver')
+                        ->where('caregiver_id', auth()->user()->id) // Only show if the staff is the caregiver
+                        ->get();
+
+    // Fetch sent messages
+    $sentMessages = Message::where('sender', auth()->user()->email)
                             ->get();
 
-        // Fetch sent messages for the logged-in staff
-        $sentMessages = Message::where('sender', auth()->user()->email)
-                            ->get();
+    // If no message ID is passed, get the first message
+    $currentMessage = $messageId ? Message::findOrFail($messageId) : $messages->first();
 
-        // Pass both received and sent messages to the view
-        return view('staff.messages', compact('messages', 'sentMessages'));
-    }
+    // Get the previous and next messages
+    $previousMessage = $messages->where('id', '<', $currentMessage->id)->last();
+    $nextMessage = $messages->where('id', '>', $currentMessage->id)->first();
+
+    return view('staff.messages', compact('currentMessage', 'previousMessage', 'nextMessage', 'sentMessages'));
+}
+
 
  public function reply(Request $request, $messageId)
     {

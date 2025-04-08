@@ -206,3 +206,5 @@ Route::post('/nextofkin/send-message', [NextOfKinController::class, 'sendMessage
 Route::get('/staff/messages', [StaffMemberController::class, 'viewMessages'])->name('staffMessages');
 
 Route::post('/staff/reply/{messageId}', [StaffMemberController::class, 'reply'])->name('staff.reply');
+
+Route::get('/staff/messages/{messageId?}', [StaffMemberController::class, 'viewMessages'])->name('staff.messages');
