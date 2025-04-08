@@ -9,6 +9,8 @@ use App\Models\Resident;// Import Resident model
 use App\Models\News;      // Import News model
 use App\Models\Photo;     // Import Photo model
 use App\Models\Bulletin;  // Import Bulletin model
+use App\Models\Message;
+
 
 class NextOfKinDashboardController extends Controller
 {
@@ -35,7 +37,11 @@ class NextOfKinDashboardController extends Controller
 
     // Fetch the resident assigned to this Next-of-Kin
        $resident = Resident::find($nextOfKin->residentid);
+        
+         // Fetch messages for this Next of Kin
+    $receivedMessages = Message::where('nextofkin_id', $nextOfKin->id)->orderBy('created_at', 'desc')->get();
 
+    // Debugging: Check if Resident is found
     // Debugging: Check if Resident is found
     if (!$resident) {
         \Log::warning('Resident not found for NextOfKin:', ['nextofkin_id' => $nextOfKin->id, 'residentid' => $nextOfKin->residentid]);
@@ -47,7 +53,7 @@ class NextOfKinDashboardController extends Controller
         $photoGallery = Photo::orderBy('created_at', 'desc')->get();
         $bulletinBoard = Bulletin::orderBy('date', 'asc')->get();
 
-    return view('nextofkins.dashboard', compact('resident', 'nextOfKin', 'newsUpdates', 'photoGallery', 'bulletinBoard'));
+    return view('nextofkins.dashboard', compact('resident', 'nextOfKin', 'newsUpdates', 'photoGallery', 'bulletinBoard', 'receivedMessages'));
 }
 
 public function profile()
