@@ -17,4 +17,5 @@ class Message extends Model
     ];
 
     // Define any relationships if needed
+
 }

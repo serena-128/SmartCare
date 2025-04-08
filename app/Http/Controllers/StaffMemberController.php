@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use App\Models\Message;
+use App\Mail\MessageReply;
 
 
 class StaffMemberController extends AppBaseController
@@ -160,14 +161,44 @@ class StaffMemberController extends AppBaseController
     {
         return view('staffmember.profile');
     }
+
+    
     public function viewMessages()
     {
-        // Fetch all messages for the staff (either for all staff or the assigned caregiver)
+        // Fetch received messages for the logged-in staff
         $messages = Message::where('recipient', 'all')
                             ->orWhere('recipient', 'caregiver')
                             ->where('caregiver_id', auth()->user()->id) // Only show if the staff is the caregiver
                             ->get();
 
-        return view('staff.messages', compact('messages'));
+        // Fetch sent messages for the logged-in staff
+        $sentMessages = Message::where('sender', auth()->user()->email)
+                            ->get();
+
+        // Pass both received and sent messages to the view
+        return view('staff.messages', compact('messages', 'sentMessages'));
+    }
+
+ public function reply(Request $request, $messageId)
+    {
+        // Find the message by ID
+        $message = Message::findOrFail($messageId);
+
+        // Get the Next of Kin's email (assuming `nextOfKin` is a relationship on the `Message` model)
+        $nextOfKinEmail = $message->nextOfKin->email;
+
+        // Create a new reply message
+        $replyMessage = new Message();
+        $replyMessage->message = $request->input('reply');
+        $replyMessage->recipient = 'nextofkin';
+        $replyMessage->caregiver_id = auth()->user()->id;
+        $replyMessage->next_of_kin_id = $message->nextOfKin->id; // Assuming the message belongs to a Next of Kin
+        $replyMessage->save();
+
+        // Send the reply to the Next of Kin via email
+        Mail::to($nextOfKinEmail)->send(new MessageReply($replyMessage));
+
+        return redirect()->route('staff.messages')->with('success', 'Reply sent successfully.');
     }
 }
+
