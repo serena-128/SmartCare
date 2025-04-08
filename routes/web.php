@@ -210,3 +210,5 @@ Route::get('/staff/messages', [StaffMemberController::class, 'viewMessages'])->n
 Route::post('/staff/reply/{messageId}', [StaffMemberController::class, 'reply'])->name('staff.reply');
 
 Route::get('/staff/messages/{messageId?}', [StaffMemberController::class, 'viewMessages'])->name('staff.messages');
+
+Route::middleware('auth:nextofkin')->get('/received-messages', [NextOfKinController::class, 'showReceivedMessages'])->name('nextofkin.receivedMessages');

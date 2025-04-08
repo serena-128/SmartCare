@@ -771,6 +771,10 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
   <h1>Received Messages</h1>
   <p>Below are the messages you have received from care home staff:</p>
   
+ <div id="received-messages" class="dashboard-section" style="display: none;">
+  <h1>Received Messages</h1>
+  <p>Below are the messages you have received from care home staff:</p>
+  
   <!-- Display messages if available -->
   @if(isset($receivedMessages) && !$receivedMessages->isEmpty())
     <ul class="list-group">
@@ -788,6 +792,7 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
     <p>No messages available.</p>
   @endif
 </div>
+
 
 
         <div id="settings" class="dashboard-section" style="display: none;">

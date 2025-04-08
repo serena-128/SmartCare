@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use App\Models\Message;
-use App\Mail\MessageReply;
+
 
 
 class StaffMemberController extends AppBaseController
@@ -199,11 +199,13 @@ class StaffMemberController extends AppBaseController
         $replyMessage->message = $request->input('reply');
         $replyMessage->recipient = 'nextofkin';
         $replyMessage->caregiver_id = auth()->user()->id;
-        $replyMessage->next_of_kin_id = $message->nextOfKin->id; // Assuming the message belongs to a Next of Kin
+        $replyMessage->nextofkin_id = $message->nextofkin_id; // ✅ correct column name
+        $replyMessage->sender = auth()->user()->firstname . ' ' . auth()->user()->lastname;
+        $replyMessage->parent_id = $message->id;
         $replyMessage->save();
 
-        // Send the reply to the Next of Kin via email
-        Mail::to($nextOfKinEmail)->send(new MessageReply($replyMessage));
+
+    
 
         return redirect()->route('staff.messages')->with('success', 'Reply sent successfully.');
     }

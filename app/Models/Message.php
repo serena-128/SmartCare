@@ -16,6 +16,11 @@ class Message extends Model
         'caregiver_id', // If applicable
     ];
 
-    // Define any relationships if needed
+public function nextOfKin()
+{
+    return $this->belongsTo(\App\Models\NextOfKin::class, 'nextofkin_id');
+}
+
 
 }
+
