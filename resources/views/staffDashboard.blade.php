@@ -315,6 +315,10 @@
         color: #6a1b9a;
     }
 </style>
+<script>
+    const addResidentUrl = "{{ route('residents.create') }}";
+</script>
+
 
 <script>
     function toggleChat() {
@@ -337,21 +341,74 @@
     }
 
     function addMessage(type, text) {
-        const body = document.getElementById("chat-body");
-        const msg = document.createElement("div");
-        msg.className = `chat-message ${type}`;
-        msg.innerText = text;
-        body.appendChild(msg);
-        body.scrollTop = body.scrollHeight;
+    const body = document.getElementById("chat-body");
+    const msg = document.createElement("div");
+    msg.className = `chat-message ${type}`;
+    msg.innerHTML = text; // ✅ Use innerHTML to allow clickable links
+    body.appendChild(msg);
+    body.scrollTop = body.scrollHeight;
+}
+
+
+function getBotReply(question) {
+    if (question.includes("visiting")) {
+        return "Visiting hours are from 9am to 7pm daily.";
     }
 
-    function getBotReply(question) {
-        if (question.includes("visiting")) return "Visiting hours are from 9am to 7pm daily.";
-        if (question.includes("emergency")) return "In case of an emergency, alert via the Emergency Alerts page.";
-        if (question.includes("profile")) return "You can update your profile under '👤 My Profile'.";
-        if (question.includes("appointment")) return "Appointments can be scheduled under 'Tasks & Appointments'.";
-        return "I'm not sure, please contact admin.";
+    if (question.includes("emergency")) {
+        return "In case of an emergency, go to the Emergency Alerts tab immediately.";
     }
+
+    if (question.includes("profile")) {
+        return "You can view and edit your profile under '👤 My Profile' in the top right menu.";
+    }
+
+    if (question.includes("appointment") || question.includes("schedule")) {
+        return "To schedule an appointment, go to '📅 Tasks & Appointments' and click 'Schedule Appointment'.";
+    }
+
+    // ✅ Keep this BEFORE the general 'resident' check
+    if (question.includes("add") && question.includes("resident")) {
+        return `Doctors can add a new resident from the Residents tab. ➕ <a href="${addResidentUrl}" target="_blank">Click here to add</a>.`;
+    }
+
+    if (question.includes("resident")) {
+        return "You can view resident information under '🏥 Residents' > View Residents.";
+    }
+
+    if (question.includes("care plan")) {
+        return "Care plans can be found under '🏥 Residents' > Care Plans.";
+    }
+
+    if (question.includes("medication")) {
+        return "Medication alerts and records can be found in the Medical Info or MAR section.";
+    }
+
+    if (question.includes("on duty") || question.includes("staff")) {
+        return "The 'Staff On-Duty Now' section shows who's currently working.";
+    }
+
+    if (question.includes("tasks")) {
+        return "You can assign or view tasks in the '📅 Tasks & Appointments' dropdown.";
+    }
+
+    if (question.includes("calendar")) {
+        return "Your schedule and upcoming tasks are available in the '📅 My Schedule' section.";
+    }
+
+    if (question.includes("logout")) {
+        return "Click on your name in the top right and select 'Logout'.";
+    }
+
+    if (question.includes("chat") || question.includes("message")) {
+        return "Currently, you can use this chatbot for quick help. Messaging between staff is coming soon!";
+    }
+
+    return "I'm not sure about that. Please check the documentation or ask a supervisor.";
+}
+
+
+
 </script>
 
 
