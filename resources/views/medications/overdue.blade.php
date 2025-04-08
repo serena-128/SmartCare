@@ -3,6 +3,13 @@
 @section('content')
     <h1>Overdue Medications</h1>
 
+    {{-- Optional success message --}}
+    @if (session('success'))
+        <div style="color: green; margin-bottom: 10px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     @if ($medications->isEmpty())
         <p>No overdue medications found.</p>
     @else
@@ -13,7 +20,7 @@
                     <th>Medication</th>
                     <th>Scheduled Time</th>
                     <th>Taken</th>
-                    <th>Action</th> {{-- Added action column --}}
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
