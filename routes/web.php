@@ -141,3 +141,8 @@ use App\Http\Controllers\ResidentCareDashboardController;
 Route::get('/resident-care-dashboard', [ResidentCareDashboardController::class, 'index'])
     ->name('resident_care_dashboard');
 
+use App\Http\Controllers\MedicationController;
+
+Route::get('/medications/overdue', [MedicationController::class, 'showOverdue'])
+    ->name('medications.overdue');
+
