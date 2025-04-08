@@ -205,3 +205,33 @@ Route::get('/my-profile', function () {
     $staff = \App\Models\StaffMember::find(Session::get('staff_id'));
     return view('my_profile', compact('staff'));
 })->name('my.profile');
+Route::get('/my-profile/edit', function () {
+    if (!Session::has('staff_id')) {
+        return redirect('/login');
+    }
+
+    $staff = \App\Models\StaffMember::find(Session::get('staff_id'));
+    return view('edit_my_profile', compact('staff'));
+})->name('my.profile.edit');
+
+Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
+    if (!Session::has('staff_id')) {
+        return redirect('/login');
+    }
+
+    $staff = \App\Models\StaffMember::find(Session::get('staff_id'));
+
+    // Update phone number
+    $staff->contactnumber = $request->contactnumber;
+
+
+    // Upload profile image
+    if ($request->hasFile('profile_picture')) {
+        $path = $request->file('profile_picture')->store('staff_images', 'public');
+        $staff->profile_picture = $path;
+    }
+
+    $staff->save();
+
+    return redirect()->route('my.profile')->with('success', 'Profile updated!');
+})->name('my.profile.update');
