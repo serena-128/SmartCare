@@ -387,36 +387,23 @@ if ($hour < 12) {
       <!-- Main Content -->
       <div class="col-md-10 content">
         
-        <!-- Home Section (Two-Column Layout) -->
+<!-- Home Section (Two-Column Layout) -->
 <div id="home" class="dashboard-section home-section">
-  <div class="row align-items-center mb-3">
-    <!-- Greeting & Date Column -->
-    <div class="col-md-6">
+  <!-- Greeting Section (full-width) -->
+  <div class="row mb-3">
+    <div class="col-12">
       <h4>{{ $greeting }}, {{ Auth::user()->firstname }}!</h4>
       <h5>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h5>
     </div>
-    <!-- API Widget Column -->
-    <div class="col-md-6">
-      <div id="weather-widget" class="card">
-        <div class="card-header bg-info text-white">
-          <i class="fas fa-cloud-sun"></i> Weather Info
-        </div>
-        <div class="card-body">
-          <div id="weather-info">
-            Loading weather data...
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
+  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information with the latest weather update, and your schedule for the upcoming week.</p>
 
   <div class="row">
-    <!-- Column 1: Resident Information -->
+    <!-- Left Column: Resident Info & Weather Widget -->
     <div class="col-md-6 border-end border-3" style="border-color: #4B0082;">
       <h3>Resident</h3>
       @if(isset($resident) && $resident)
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-body">
             <h5>Resident Name: {{ $resident->firstname }} {{ $resident->lastname }}</h5>
             <p><strong>Room Number:</strong> {{ $resident->roomnumber }}</p>
@@ -430,32 +417,107 @@ if ($hour < 12) {
         </div>
       @endif
 
-      <!-- Resident's Photo Below the Resident Info -->
-      <div class="text-center mt-4">
-        <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="width: 300px; height: auto;">
+      <!-- Weather Widget (positioned below Resident Info) -->
+      <div id="weather-widget" class="card">
+        <div class="card-header bg-info text-white">
+          <i class="fas fa-cloud-sun"></i> Weather Info
+        </div>
+        <div class="card-body">
+          <div id="weather-info">Loading weather data...</div>
+        </div>
       </div>
     </div>
 
-    <!-- Column 2: Upcoming Appointments & Events -->
+    <!-- Right Column: Next Week's Calendar -->
     <div class="col-md-6">
-      <h3>Upcoming Appointments & Events</h3>
+      <h3>Upcoming Week Schedule</h3>
       <div class="card">
-        <div class="card-header">Appointments</div>
+        <div class="card-header">Next Week's Calendar</div>
         <div class="card-body">
-          <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
-          <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
-        </div>
-      </div>
-      <div class="card mt-3">
-        <div class="card-header">Events</div>
-        <div class="card-body">
-          <p>Family Day - 25th March 2025</p>
-          <p>Music Therapy Session - 30th March 2025</p>
+          <!-- Calendar container -->
+          <div id="next-week-calendar"></div>
         </div>
       </div>
     </div>
   </div> <!-- End of Row -->
 </div>
+
+<!-- Calendar Initialization Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('next-week-calendar');
+  if (!calendarEl) return;
+  
+  // Fetch and merge appointments and events so that both are visible on the calendar:
+  Promise.all([
+    fetch('{{ route("appointments.fetch") }}').then(res => res.json()),
+    fetch('{{ route("events.fetch") }}').then(res => res.json())
+  ]).then(function(data) {
+    var appointments = data[0];
+    var events = data[1];
+    var allEvents = appointments.concat(events);
+    
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'listWeek',  // Compact list view
+      headerToolbar: false,       // Remove navigation buttons
+      contentHeight: 250,         // Set fixed height to avoid overlapping the footer
+      // Restrict the visible range to next week only:
+      visibleRange: function(currentDate) {
+        // Calculate next Monday
+        let nextMonday = new Date(currentDate.valueOf());
+        let day = nextMonday.getDay();
+        let diff = (day === 0 ? 1 : 8 - day);
+        nextMonday.setDate(nextMonday.getDate() + diff);
+        // Next week's Sunday
+        let nextSunday = new Date(nextMonday.valueOf());
+        nextSunday.setDate(nextMonday.getDate() + 6);
+        return {
+          start: nextMonday,
+          end: nextSunday
+        };
+      },
+      events: allEvents,
+      eventClick: function(info) {
+        Swal.fire({
+          title: info.event.title,
+          text: info.event.extendedProps.description || '',
+          icon: 'info'
+        });
+      }
+    });
+    calendar.render();
+  }).catch(function(error) {
+    console.error("Error fetching calendar events: ", error);
+  });
+});
+</script>
+
+<!-- Weather Fetch Script -->
+<script>
+function fetchWeather() {
+  const apiKey = 'ee3f3a4d93e84548a5d204502250204'; // Your WeatherAPI.com key
+  const city = 'Dublin';
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) { throw new Error('Weather data not available'); }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('weather-info').innerHTML = `
+        <h6>Weather in ${data.location.name}</h6>
+        <p><strong>Temp:</strong> ${data.current.temp_c} °C</p>
+        <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+      `;
+    })
+    .catch(error => {
+      console.error('Error fetching weather data:', error);
+      document.getElementById('weather-info').innerHTML = '<p>Error loading weather data.</p>';
+    });
+}
+document.addEventListener('DOMContentLoaded', fetchWeather);
+</script>
 
 
 
