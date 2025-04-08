@@ -197,3 +197,11 @@ Route::resource('staffProfiles', App\Http\Controllers\StaffProfilesController::c
 Route::get('/my-profile', [StaffProfilesController::class, 'myProfile'])->name('staffProfiles.my');
 
 
+Route::get('/my-profile', function () {
+    if (!Session::has('staff_id')) {
+        return redirect('/login');
+    }
+
+    $staff = \App\Models\StaffMember::find(Session::get('staff_id'));
+    return view('my_profile', compact('staff'));
+})->name('my.profile');

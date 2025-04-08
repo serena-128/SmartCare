@@ -80,7 +80,8 @@
                         👤 {{ session('staff_name') }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ route('staffProfiles.my') }}">👤 My Profile</a></li>
+                    <a href="{{ route('my.profile') }}" class="nav-link">👤 My Profile</a>
+
 
 
                             <form action="{{ route('logout') }}" method="POST">

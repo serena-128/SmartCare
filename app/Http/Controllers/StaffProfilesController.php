@@ -28,13 +28,14 @@ class StaffProfilesController extends AppBaseController
     {
         $userId = auth()->id();
         $staffProfile = StaffProfile::where('user_id', $userId)->first();
-
+    
         if (!$staffProfile) {
-            return redirect()->route('staffProfiles.create');
+            return redirect()->route('staffProfiles.create')->with('warning', 'No profile found. Please create one.');
         }
-
+    
         return redirect()->route('staffProfiles.show', $staffProfile->id);
     }
+    
 
     /**
      * Show the form for creating a new staff profile.

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Class staff_profiles
+ * Class staffProfiles
  * @package App\Models
  * @version April 7, 2025, 5:37 pm UTC
  *
