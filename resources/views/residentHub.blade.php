@@ -21,6 +21,7 @@
         padding: 30px 20px;
         margin-bottom: 30px;
         transition: transform 0.2s ease-in-out;
+        height: 100%;
     }
     .feature-card:hover {
         transform: translateY(-5px);
@@ -36,32 +37,33 @@
     .feature-card p {
         font-size: 14px;
         color: #555;
+        min-height: 50px;
     }
 </style>
 
 <div class="container resident-hub">
     <h2>🏥 Resident Management Hub</h2>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="feature-card">
-                <img src="{{ asset('images/view_residents.png') }}" alt="View Residents">
+    <div class="row justify-content-center">
+        <div class="col-md-4 d-flex">
+            <div class="feature-card w-100">
+                <img src="{{ asset('pictures/view_residents.jpg') }}" alt="View Residents">
                 <h5>View Residents</h5>
                 <p>Browse through the complete resident list.</p>
                 <a href="{{ route('residents.index') }}" class="btn btn-outline-primary">View</a>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="feature-card">
-                <img src="{{ asset('images/add_resident.png') }}" alt="Add Resident">
+        <div class="col-md-4 d-flex">
+            <div class="feature-card w-100">
+                <img src="{{ asset('pictures/add_resident.png') }}" alt="Add Resident">
                 <h5>Add New Resident</h5>
                 <p>Register a new resident into the care system.</p>
                 <a href="{{ route('residents.create') }}" class="btn btn-outline-success">Add</a>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="feature-card">
-                <img src="{{ asset('images/search_resident.png') }}" alt="Search Resident">
+        <div class="col-md-4 d-flex">
+            <div class="feature-card w-100">
+                <img src="{{ asset('pictures/search_resident.png') }}" alt="Search Resident">
                 <h5>Search Resident</h5>
                 <p>Quickly find residents by name, room, or DOB.</p>
                 <a href="{{ route('residents.search') }}" class="btn btn-outline-info">Search</a>
