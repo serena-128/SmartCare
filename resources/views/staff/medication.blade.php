@@ -161,22 +161,58 @@
                     </thead>
                     <tbody>
                         @foreach($products as $product)
-                            <tr>
-                                <td>{{ $product->name }}</td>
-                                <td>{{ $product->stock }}</td>
-                                <td>€{{ number_format($product->price, 2) }}</td>
-                                <td>
-                                    <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="form-control" style="width: 80px;">
+                        <tr>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->stock }}</td>
+                            <td>€{{ number_format($product->price, 2) }}</td>
+                            <td>
+                                <form method="POST" action="{{ route('pharmacy.addToCart') }}">
+                                    @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                </td>
-                                <td>
-                                    <button type="submit" class="btn btn-primary">Buy</button>
-                                </td>
-                            </tr>
+                                    <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="form-control mb-1" style="width: 80px;">
+                                    <button class="btn btn-sm btn-primary">Add to Cart</button>
+                                </form>
+                            </td>
+                        </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </form>
+        @if(session('cart'))
+            <hr>
+            <h4 class="mt-4">🛒 Your Cart</h4>
+            <form method="POST" action="{{ route('pharmacy.checkout') }}">
+                @csrf
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php $grandTotal = 0; @endphp
+                        @foreach(session('cart') as $item)
+                            @php $total = $item['quantity'] * $item['price']; $grandTotal += $total; @endphp
+                            <tr>
+                                <td>{{ $item['name'] }}</td>
+                                <td>{{ $item['quantity'] }}</td>
+                                <td>€{{ number_format($item['price'], 2) }}</td>
+                                <td>€{{ number_format($total, 2) }}</td>
+                            </tr>
+                        @endforeach
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
+                            <td><strong>€{{ number_format($grandTotal, 2) }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">🧾 Checkout</button>
+            </form>
+        @endif
 
             <hr>
             <h4 class="mt-4">🚚 Your Orders</h4>

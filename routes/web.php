@@ -37,6 +37,7 @@ use App\Http\Controllers\FitbitController;
 use App\Http\Controllers\OpenFDAController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\PharmacyController;
+use App\Http\Controllers\CartController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -242,3 +243,9 @@ Route::post('/pharmacy/purchase', [PharmacyController::class, 'placeOrder'])->na
 Route::post('/pharmacy/ship/{order}', [PharmacyController::class, 'markShipped'])->name('pharmacy.ship');
 
 
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::get('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
+Route::post('/pharmacy/add-to-cart', [PharmacyController::class, 'addToCart'])->name('pharmacy.addToCart');
+Route::post('/pharmacy/checkout', [PharmacyController::class, 'checkout'])->name('pharmacy.checkout');

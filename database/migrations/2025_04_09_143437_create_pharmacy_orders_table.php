@@ -15,7 +15,6 @@ class CreatePharmacyOrdersTable extends Migration
     {
         Schema::create('pharmacy_orders', function (Blueprint $table) {
     $table->id();
-    $table->foreignId('staffmember_id')->constrained()->onDelete('cascade');
     $table->foreignId('product_id')->constrained()->onDelete('cascade');
     $table->integer('quantity');
     $table->enum('status', ['Ordered', 'Shipped'])->default('Ordered');

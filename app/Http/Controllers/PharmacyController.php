@@ -46,4 +46,58 @@ class PharmacyController extends Controller
         $order->update(['status' => 'Shipped']);
         return back()->with('success', 'Order marked as shipped.');
     }
+    // In your PharmacyController
+// Add to cart
+public function addToCart(Request $request)
+{
+    $productId = $request->input('product_id');
+    $quantity = $request->input('quantity');
+
+    $cart = session()->get('cart', []);
+
+    if (isset($cart[$productId])) {
+        $cart[$productId]['quantity'] += $quantity;
+    } else {
+        $product = Product::findOrFail($productId);
+        $cart[$productId] = [
+            'name' => $product->name,
+            'price' => $product->price,
+            'quantity' => $quantity,
+        ];
+    }
+
+    session()->put('cart', $cart);
+
+    return back()->with('success', 'Added to cart!');
+}
+
+// Checkout cart
+public function checkout()
+{
+    $cart = session('cart', []);
+    if (empty($cart)) return back()->with('error', 'Cart is empty.');
+
+    foreach ($cart as $productId => $item) {
+        $product = Product::findOrFail($productId);
+
+        if ($product->stock < $item['quantity']) {
+            return back()->with('error', "Not enough stock for {$item['name']}.");
+        }
+
+        // Create order
+        PharmacyOrder::create([
+            'product_id' => $productId,
+            'quantity' => $item['quantity'],
+            'status' => 'Ordered'
+        ]);
+
+        // Update stock
+        $product->stock -= $item['quantity'];
+        $product->save();
+    }
+
+    session()->forget('cart');
+    return back()->with('success', 'Order placed successfully!');
+}
+
 }
