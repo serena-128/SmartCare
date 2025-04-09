@@ -40,7 +40,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" data-bs-toggle="dropdown">🏥 Residents</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
+                            <li><a class="nav-link" href="{{ route('resident.hub') }}">🏡 Resident Management</a></li>
                             <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li>
                         </ul>
                     </li>

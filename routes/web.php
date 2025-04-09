@@ -235,3 +235,7 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 
     return redirect()->route('my.profile')->with('success', 'Profile updated!');
 })->name('my.profile.update');
+Route::get('/resident-hub', function () {
+    return view('residentHub');
+})->name('resident.hub');
+Route::get('/residents/search', [App\Http\Controllers\ResidentController::class, 'search'])->name('residents.search');
