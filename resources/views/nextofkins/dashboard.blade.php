@@ -769,23 +769,19 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
 
 <div id="received-messages" class="dashboard-section" style="display: none;">
   <h1>Received Messages</h1>
-  <p>Below are the messages you have received from care home staff:</p>
+  <p>Messages sent to you by care home staff:</p>
   
-  <!-- Display messages if available -->
-  @if(isset($receivedMessages) && !$receivedMessages->isEmpty())
+  @if($receivedMessages && $receivedMessages->count() > 0)
     <ul class="list-group">
       @foreach($receivedMessages as $message)
         <li class="list-group-item">
-          <strong>{{ $message->sender_name }}</strong>: 
-          <p>{{ $message->message }}</p> <!-- Use the 'message' column from the database -->
-          <span class="badge bg-secondary">
-            {{ \Carbon\Carbon::parse($message->created_at)->format('M d, Y H:i') }}
-          </span>
+          <strong>{{ $message->sender }}</strong> ({{ $message->created_at->format('M d, Y H:i') }})
+          <p>{{ $message->message }}</p>
         </li>
       @endforeach
     </ul>
   @else
-    <p>No messages available.</p>
+    <div class="alert alert-info">No messages found.</div>
   @endif
 </div>
 

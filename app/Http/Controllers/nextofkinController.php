@@ -192,46 +192,49 @@ public function sendMessage(Request $request)
         'recipient' => 'required|in:caregiver,staff,all',
     ]);
 
-    $recipient = $validated['recipient'];
-    $sender = auth()->user()->firstname . ' ' . auth()->user()->lastname;
-    $nextofkinId = auth()->id(); 
+    $nextofkin = auth()->guard('nextofkin')->user();
+    $nextofkinId = $nextofkin->id;
+    $sender = $nextofkin->firstname . ' ' . $nextofkin->lastname;
 
-    if ($recipient === 'all') {
-        // Send message to all staff
-        Message::create([
-            'message' => $validated['message'],
-            'sender' => $sender,
-            'recipient' => 'all',
-            'nextofkin_id' => $nextofkinId,
-        ]);
-    } elseif ($recipient === 'caregiver') {
-        // Send message to the assigned caregiver
-        $resident = auth()->user()->resident; // Get the resident linked to the Next of Kin
+    try {
+        if ($validated['recipient'] === 'all') {
+            Message::create([
+                'message' => $validated['message'],
+                'sender' => $sender,
+                'recipient' => 'all',
+                'nextofkin_id' => $nextofkinId,
+            ]);
+        } elseif ($validated['recipient'] === 'caregiver') {
+            if (!$nextofkin->resident) {
+                return redirect()->back()->with('error', 'No resident linked to your account.');
+            }
 
-        if ($resident && $resident->assignedCaregiver) {
-            $caregiver = $resident->assignedCaregiver; // Get the assigned caregiver
+            if (!$nextofkin->resident->assignedCaregiver) {
+                return redirect()->back()->with('error', 'No caregiver assigned to your resident.');
+            }
 
-            // Store the message for the assigned caregiver
             Message::create([
                 'message' => $validated['message'],
                 'sender' => $sender,
                 'recipient' => 'caregiver',
-                'caregiver_id' => $caregiver->id, // Store the caregiver's ID
+                'caregiver_id' => $nextofkin->resident->assignedCaregiver->id,
                 'nextofkin_id' => $nextofkinId,
             ]);
-        } else {
-            return redirect()->back()->with('error', 'No caregiver assigned to this resident.');
         }
-    }
 
-    return redirect()->back()->with('success', 'Message sent successfully!');
+        return redirect()->back()->with('success', 'Message sent successfully!');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error sending message: ' . $e->getMessage());
+    }
 }
-    public function showReceivedMessages()
+public function showReceivedMessages()
 {
-    // Fetch messages where the logged-in next of kin is the recipient
+    $nextofkinId = auth()->guard('nextofkin')->id();
+
     $receivedMessages = Message::where('recipient', 'nextofkin')
-                                ->where('nextofkin_id', auth()->guard('nextofkin')->user()->id)
-                                ->get();
+                              ->where('nextofkin_id', $nextofkinId)
+                              ->orderBy('created_at', 'desc')
+                              ->get();
 
     return view('nextofkin.dashboard', compact('receivedMessages'));
 }

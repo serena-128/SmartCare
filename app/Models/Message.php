@@ -10,11 +10,12 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'message',
-        'sender',
-        'recipient',
-        'caregiver_id', // If applicable
-    ];
+    'message',
+    'sender',
+    'recipient',
+    'nextofkin_id', // Make sure this exists
+    'caregiver_id',
+];
 
 public function nextOfKin()
 {
