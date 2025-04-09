@@ -36,14 +36,18 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <!-- Residents Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" data-bs-toggle="dropdown">🏥 Residents</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="nav-link" href="{{ route('resident.hub') }}">🏡 Resident Management</a></li>
-                            <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li>
-                        </ul>
-                    </li>
+                <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Residents Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">
+                        🏥 Residents
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-link" href="{{ route('resident.hub') }}"> Resident Management</a></li>
+                        <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li> <!-- ✅ Added this -->
+                    </ul>
+                </li>
 
                     <!-- Medical Records Dropdown -->
                     <li class="nav-item dropdown">
