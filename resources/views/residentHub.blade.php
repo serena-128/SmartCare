@@ -42,7 +42,7 @@
 </style>
 
 <div class="container resident-hub">
-    <h2>🏥 Resident Management Hub</h2>
+    <h2>Resident Management Hub</h2>
 
     <div class="row justify-content-center">
         <div class="col-md-4 d-flex">
