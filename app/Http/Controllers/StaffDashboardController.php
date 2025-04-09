@@ -50,8 +50,9 @@ class StaffDashboardController extends Controller
 
 public function showMedicationInfo(Request $request)
 {
-    $drugName = $request->input('drugName');
+    $residents = Resident::all(); // 🩺 Include all residents
 
+    $drugName = $request->query('drugName');
     $drugData = null;
 
     if ($drugName) {
@@ -65,7 +66,27 @@ public function showMedicationInfo(Request $request)
         }
     }
 
-    return view('staff.medication', compact('drugData', 'drugName'));
+    return view('staff.medication', compact('residents', 'drugData', 'drugName'));
+}
+
+    public function showMedicationPage(Request $request)
+{
+    $residents = Resident::all();
+    $drugName = $request->query('drugName');
+    $drugData = null;
+
+    if ($drugName) {
+        $response = Http::get('https://api.fda.gov/drug/label.json', [
+            'search' => 'openfda.brand_name:' . $drugName,
+            'limit' => 1
+        ]);
+
+        if ($response->successful() && isset($response['results'][0])) {
+            $drugData = $response['results'][0];
+        }
+    }
+
+    return view('staff.medications', compact('residents', 'drugData', 'drugName'));
 }
 
 }
