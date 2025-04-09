@@ -154,6 +154,7 @@
                         <tr>
                             <th>Product</th>
                             <th>In Stock</th>
+                            <th>Price</th>
                             <th>Quantity</th>
                             <th>🛒 Action</th>
                         </tr>
@@ -163,6 +164,7 @@
                             <tr>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->stock }}</td>
+                                <td>€{{ number_format($product->price, 2) }}</td>
                                 <td>
                                     <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="form-control" style="width: 80px;">
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
