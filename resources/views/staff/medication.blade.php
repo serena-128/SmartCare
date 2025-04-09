@@ -147,8 +147,6 @@
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
-            <form action="{{ url('/pharmacy/purchase') }}" method="POST">
-                @csrf
                 <table class="table table-bordered">
                     <thead>
                         <tr>
