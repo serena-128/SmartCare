@@ -41,6 +41,7 @@
                         <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" data-bs-toggle="dropdown">🏥 Residents</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}">💊 Medications</a></li>
                             <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li>
                         </ul>
                     </li>
@@ -66,6 +67,12 @@
 
                     <!-- Alerts, Schedule, Profile -->
                     <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.index') }}">🚨 Emergency Alerts</a></li>
+                    <!-- Add Message Tab -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('staffMessages') }}">
+                        <i class="fas fa-comment-alt"></i> Messages
+                    </a>
+                </li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a></li>
 
                     <!-- Profile -->

@@ -34,6 +34,8 @@ use App\Http\Controllers\PhotoGalleryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\GoogleFitController;
 use App\Http\Controllers\FitbitController;
+use App\Http\Controllers\OpenFDAController;
+use App\Http\Controllers\StaffDashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -225,3 +227,8 @@ Route::get('/fitbit/data', [App\Http\Controllers\FitbitController::class, 'fetch
 Route::get('/nextofkin/fitbit-summary', [FitbitController::class, 'showFitbitSummary'])->name('fitbit.summary');
 Route::get('/fitbit/summary', [FitbitController::class, 'summary']);
 Route::get('/fitbit/callback', [FitbitController::class, 'handleCallback']);
+
+Route::get('/staff/drug-info/{name}', [\App\Http\Controllers\OpenFDAController::class, 'fetchDrugInfo'])->name('staff.drug.info');
+Route::get('/staff/medication/{drugName}', [StaffDashboardController::class, 'showMedicationInfo'])->name('staff.medication');
+
+Route::get('/staff/medication-search', [StaffDashboardController::class, 'showMedicationInfo'])->name('staff.medication');

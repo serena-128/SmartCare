@@ -8,6 +8,8 @@ use App\Models\Staffmember;
 use App\Models\EmergencyAlert;
 use App\Models\CarePlan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
 
 class StaffDashboardController extends Controller
 {
@@ -43,6 +45,27 @@ class StaffDashboardController extends Controller
                         ->get();
 
     return view('staff.dashboard', compact('messages'));
+}
+  
+
+public function showMedicationInfo(Request $request)
+{
+    $drugName = $request->input('drugName');
+
+    $drugData = null;
+
+    if ($drugName) {
+        $response = Http::get('https://api.fda.gov/drug/label.json', [
+            'search' => 'openfda.brand_name:' . $drugName,
+            'limit' => 1
+        ]);
+
+        if ($response->successful() && isset($response['results'][0])) {
+            $drugData = $response['results'][0];
+        }
+    }
+
+    return view('staff.medication', compact('drugData', 'drugName'));
 }
 
 }
