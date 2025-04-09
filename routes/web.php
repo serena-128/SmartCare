@@ -234,3 +234,5 @@ Route::get('/staff/medication/{drugName}', [StaffDashboardController::class, 'sh
 Route::get('/staff/medication-search', [StaffDashboardController::class, 'showMedicationInfo'])->name('staff.medication');
 Route::get('/staff/medications', [StaffDashboardController::class, 'showMedicationPage'])->name('staff.medications');
 
+Route::post('/pharmacy/purchase', [App\Http\Controllers\PharmacyController::class, 'purchase'])->name('pharmacy.purchase');
+

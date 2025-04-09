@@ -112,9 +112,41 @@
         </div>
 
         <!-- Pharmacy Info Tab -->
-        <div class="tab-pane fade" id="pharmacy" role="tabpanel">
-            <p>Coming soon: pharmacy contact info, stock availability, or integration with a prescription provider.</p>
+        <!-- Pharmacy Info Tab -->
+<div class="tab-pane fade" id="pharmacy" role="tabpanel">
+    <div class="row">
+        <!-- Available Products -->
+        <div class="col-md-6">
+            <h5>🛍 Available Medications</h5>
+            <ul class="list-group mb-4">
+                @foreach(['Paracetamol', 'Ibuprofen', 'Amoxicillin'] as $product)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $product }}
+                        <form method="POST" action="{{ route('pharmacy.purchase') }}">
+                            @csrf
+                            <input type="hidden" name="product" value="{{ $product }}">
+                            <button class="btn btn-sm btn-success">Buy</button>
+                        </form>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+
+        <!-- Shipped Orders -->
+        <div class="col-md-6">
+            <h5>🚚 Shipped Medications</h5>
+            <ul class="list-group">
+                @foreach(session('shipped') ?? [] as $shipped)
+                    <li class="list-group-item">
+                        {{ $shipped }} – <span class="text-success">Shipped</span>
+                    </li>
+                @endforeach
+                @if(empty(session('shipped')))
+                    <li class="list-group-item text-muted">No orders yet.</li>
+                @endif
+            </ul>
         </div>
     </div>
 </div>
+
 @endsection
