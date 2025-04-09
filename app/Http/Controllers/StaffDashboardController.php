@@ -9,6 +9,8 @@ use App\Models\EmergencyAlert;
 use App\Models\CarePlan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Models\Product;
+use App\Models\Pharmacyorder;
 
 
 class StaffDashboardController extends Controller
@@ -50,23 +52,23 @@ class StaffDashboardController extends Controller
 
 public function showMedicationInfo(Request $request)
 {
-    $residents = Resident::all(); // 🩺 Include all residents
+    $drugName = $request->input('drugName');
 
-    $drugName = $request->query('drugName');
-    $drugData = null;
+    $response = Http::get('https://api.fda.gov/drug/label.json', [
+        'search' => 'openfda.brand_name:' . $drugName,
+        'limit' => 1
+    ]);
 
-    if ($drugName) {
-        $response = Http::get('https://api.fda.gov/drug/label.json', [
-            'search' => 'openfda.brand_name:' . $drugName,
-            'limit' => 1
-        ]);
+    $drugData = $response->successful() && isset($response['results'][0])
+        ? $response['results'][0]
+        : null;
 
-        if ($response->successful() && isset($response['results'][0])) {
-            $drugData = $response['results'][0];
-        }
-    }
+    // 🩺 Medication Center data
+    $residents = Resident::all();
+    $products = Product::all();
+    $orders = PharmacyOrder::with('product')->get();
 
-    return view('staff.medication', compact('residents', 'drugData', 'drugName'));
+    return view('staff.medication', compact('drugName', 'drugData', 'residents', 'products', 'orders'));
 }
 
     public function showMedicationPage(Request $request)

@@ -3,7 +3,39 @@
 @section('content')
 @php
     use Illuminate\Support\Str;
+
     $activeTab = request()->has('drugName') ? 'lookup' : 'residents';
+
+    function clean($text, $keyword) {
+        $text = preg_replace('/[\x{200B}\x{00A0}]/u', '', $text);
+        $text = trim($text);
+        return preg_replace('/^' . preg_quote($keyword, '/') . '[:\s]*/i', '', $text);
+    }
+
+    function highlightWarnings($text) {
+        $keywords = [
+            'heart attack',
+            'stroke',
+            'allergic reaction',
+            'bleeding',
+            'vomit blood',
+            'faint',
+            'bloody or black stools',
+            'liver damage',
+            'rash',
+            'skin reaction',
+            'seek medical help',
+            'stop use',
+            'overdose',
+        ];
+
+        foreach ($keywords as $word) {
+            $pattern = '/' . preg_quote($word, '/') . '/i';
+            $text = preg_replace($pattern, '<strong class="text-danger">⚠️ $0</strong>', $text);
+        }
+
+        return $text;
+    }
 @endphp
 
 <div class="container">
@@ -74,14 +106,6 @@
                         <strong>✅ {{ $drugName }}</strong>
                     </div>
                     <div class="card-body">
-                        @php
-                            function clean($text, $keyword) {
-                                $text = preg_replace('/[\x{200B}\x{00A0}]/u', '', $text);
-                                $text = trim($text);
-                                return preg_replace('/^' . preg_quote($keyword, '/') . '[:\s]*/i', '', $text);
-                            }
-                        @endphp
-
                         @if(isset($drugData['indications_and_usage']))
                             <p><strong>Usage:</strong></p>
                             <p>{{ clean($drugData['indications_and_usage'][0], 'Uses') }}</p>
@@ -100,7 +124,9 @@
 
                         @if(isset($drugData['warnings']))
                             <p><strong>Warnings:</strong></p>
-                            <p>{{ clean($drugData['warnings'][0], 'Warnings') }}</p>
+                            <div class="alert alert-danger">
+                                {!! highlightWarnings(clean($drugData['warnings'][0], 'Warnings')) !!}
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -111,42 +137,78 @@
             @endif
         </div>
 
-        <!-- Pharmacy Info Tab -->
-        <!-- Pharmacy Info Tab -->
-<div class="tab-pane fade" id="pharmacy" role="tabpanel">
-    <div class="row">
-        <!-- Available Products -->
-        <div class="col-md-6">
-            <h5>🛍 Available Medications</h5>
-            <ul class="list-group mb-4">
-                @foreach(['Paracetamol', 'Ibuprofen', 'Amoxicillin'] as $product)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ $product }}
-                        <form method="POST" action="{{ route('pharmacy.purchase') }}">
-                            @csrf
-                            <input type="hidden" name="product" value="{{ $product }}">
-                            <button class="btn btn-sm btn-success">Buy</button>
-                        </form>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+        <!-- Pharmacy Tab -->
+        <div class="tab-pane fade" id="pharmacy" role="tabpanel">
+            <h4 class="mb-3">🛍 Available Medications</h4>
 
-        <!-- Shipped Orders -->
-        <div class="col-md-6">
-            <h5>🚚 Shipped Medications</h5>
-            <ul class="list-group">
-                @foreach(session('shipped') ?? [] as $shipped)
-                    <li class="list-group-item">
-                        {{ $shipped }} – <span class="text-success">Shipped</span>
-                    </li>
-                @endforeach
-                @if(empty(session('shipped')))
-                    <li class="list-group-item text-muted">No orders yet.</li>
-                @endif
-            </ul>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @elseif(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+
+            <form action="{{ url('/pharmacy/purchase') }}" method="POST">
+                @csrf
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>In Stock</th>
+                            <th>Quantity</th>
+                            <th>🛒 Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($products as $product)
+                            <tr>
+                                <td>{{ $product->name }}</td>
+                                <td>{{ $product->stock }}</td>
+                                <td>
+                                    <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="form-control" style="width: 80px;">
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary">Buy</button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </form>
+
+            <hr>
+            <h4 class="mt-4">🚚 Your Orders</h4>
+            @if($orders->count())
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Ordered At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($orders as $order)
+                            <tr>
+                                <td>{{ $order->product->name }}</td>
+                                <td>{{ $order->quantity }}</td>
+                                <td>
+                                    @if($order->status === 'Shipped')
+                                        <span class="badge bg-success">Shipped</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">Ordered</span>
+                                    @endif
+                                </td>
+                                <td>{{ $order->created_at->format('d M Y H:i') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p>No orders yet.</p>
+            @endif
         </div>
     </div>
 </div>
-
 @endsection
