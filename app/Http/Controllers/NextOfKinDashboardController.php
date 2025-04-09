@@ -25,6 +25,13 @@ class NextOfKinDashboardController extends Controller
     if (!$nextOfKin) {
         return redirect()->route('nextofkin.login')->with('error', 'Please log in first.');
     }
+    
+    $data = [
+        'steps' => 7321,
+        'calories' => 2100,
+        'sedentary' => 670,
+    ];
+
 
     // Debugging: Print next of kin info
     \Log::info('Logged-in NextOfKin:', ['id' => $nextOfKin->id, 'residentid' => $nextOfKin->residentid]);
@@ -53,7 +60,7 @@ class NextOfKinDashboardController extends Controller
         $photoGallery = Photo::orderBy('created_at', 'desc')->get();
         $bulletinBoard = Bulletin::orderBy('date', 'asc')->get();
 
-    return view('nextofkins.dashboard', compact('resident', 'nextOfKin', 'newsUpdates', 'photoGallery', 'bulletinBoard', 'receivedMessages'));
+    return view('nextofkins.dashboard', compact('resident', 'nextOfKin', 'newsUpdates', 'photoGallery', 'bulletinBoard', 'receivedMessages', 'data'));
 }
 
 public function profile()
@@ -113,7 +120,7 @@ public function updateProfile(Request $request)
     $photoGallery = Photo::orderBy('created_at', 'desc')->get();
     $bulletinBoard = Bulletin::orderBy('date', 'asc')->get();
 
-    return view('dashboard', compact('newsUpdates', 'photoGallery', 'bulletinBoard'));
+    return view('dashboard', compact('newsUpdates', 'photoGallery', 'bulletinBoard',));
 }
 
 

@@ -35,6 +35,18 @@ return [
     'secret' => env('NEXMO_SECRET'),
     'sms_from' => env('NEXMO_SMS_FROM'),
 ],
+    'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT_URI'),
+],
+    'fitbit' => [
+    'client_id' => env('FITBIT_CLIENT_ID'),
+    'client_secret' => env('FITBIT_CLIENT_SECRET'),
+    'redirect' => env('FITBIT_REDIRECT_URI'),
+],
+
+
 
 
 ];

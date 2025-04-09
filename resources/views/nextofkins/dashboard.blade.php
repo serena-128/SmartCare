@@ -600,6 +600,70 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
     </div>
   </div>
 
+<!-- Fitbit Summary -->
+<div class="card shadow-lg mb-4" id="fitbit-summary-card">
+  <div class="card-header bg-info text-white">
+    <h3><i class="fas fa-walking"></i> Fitbit Health Summary</h3>
+  </div>
+  <div class="card-body" id="fitbit-summary-content">
+    <p>Loading Fitbit data...</p>
+  </div>
+</div>
+
+<div class="card shadow-lg mb-4">
+  <div class="card-header bg-purple text-white">
+    <h4><i class="fas fa-shoe-prints"></i> Activity Insights</h4>
+  </div>
+  <div class="card-body">
+    {{-- Activity Status Badge --}}
+    @if($data['steps'] > 10000)
+        <span class="badge bg-success">Very Active</span>
+    @elseif($data['steps'] > 5000)
+        <span class="badge bg-warning">Moderately Active</span>
+    @else
+        <span class="badge bg-danger">Low Activity</span>
+    @endif
+
+    {{-- Encouragement Message --}}
+    <div class="mt-2">
+      @if($data['sedentary'] > 600)
+          <p class="text-warning">Might need more movement today!</p>
+      @elseif($data['steps'] > 8000)
+          <p class="text-success">Great activity levels!</p>
+      @else
+          <p class="text-info">Average day – balanced!</p>
+      @endif
+    </div>
+
+    {{-- Daily vs Average --}}
+    @php $avgSteps = 6000; @endphp
+    <p><strong>Today:</strong> {{ $data['steps'] }} steps</p>
+    <p><strong>Avg:</strong> {{ $avgSteps }} steps</p>
+
+    @if($data['steps'] > $avgSteps)
+        <p class="text-success">Above average today!</p>
+    @else
+        <p class="text-muted">A bit below normal – could be a rest day.</p>
+    @endif
+
+    {{-- Goal Achieved --}}
+    @if($data['steps'] >= 10000)
+        <div class="alert alert-success mt-3">
+            🎉 Your loved one reached their step goal today!
+        </div>
+    @endif
+
+    {{-- Mood Suggestion --}}
+    <div class="mt-2">
+      @if($data['steps'] > 8000)
+          <p>They’re probably feeling energetic today! 🌞</p>
+      @elseif($data['sedentary'] > 600)
+          <p>Maybe a bit tired or relaxed. ☕</p>
+      @endif
+    </div>
+  </div>
+</div>
+
   <!-- Additional Information Section -->
   <div class="row">
     <div class="col-md-12">
@@ -1169,6 +1233,32 @@ function fetchWeather() {
 
 document.addEventListener('DOMContentLoaded', fetchWeather);
 
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  fetch('/fitbit/data')
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById('fitbit-summary-content');
+
+      if (data.error) {
+        container.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <p><strong>Steps:</strong> ${data.steps}</p>
+        <p><strong>Calories Burned:</strong> ${data.calories}</p>
+        <p><strong>Sedentary Minutes:</strong> ${data.sedentary}</p>
+      `;
+    })
+    .catch(err => {
+      document.getElementById('fitbit-summary-content').innerHTML = '<p class="text-danger">Error loading Fitbit data.</p>';
+      console.error(err);
+    });
+});
 </script>
 
 </body>

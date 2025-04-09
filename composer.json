@@ -16,6 +16,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.2",
+        "league/oauth2-client": "^2.8",
         "plivo/plivo-php": "^4.66",
         "twilio/sdk": "^8.5",
         "vonage/client": "^4.0"

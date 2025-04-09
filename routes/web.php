@@ -32,7 +32,8 @@ use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PhotoGalleryController;
 use App\Http\Controllers\NotificationController;
-
+use App\Http\Controllers\GoogleFitController;
+use App\Http\Controllers\FitbitController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -212,3 +213,15 @@ Route::post('/staff/reply/{messageId}', [StaffMemberController::class, 'reply'])
 Route::get('/staff/messages/{messageId?}', [StaffMemberController::class, 'viewMessages'])->name('staff.messages');
 
 Route::middleware('auth:nextofkin')->get('/received-messages', [NextOfKinController::class, 'showReceivedMessages'])->name('nextofkin.receivedMessages');
+
+Route::get('/google-fit/connect', [GoogleFitController::class, 'connect'])->name('googlefit.connect');
+Route::get('/google-fit/callback', [GoogleFitController::class, 'callback'])->name('googlefit.callback');
+Route::get('/google-fit/data', [GoogleFitController::class, 'getData'])->name('googlefit.data');
+
+Route::get('/fitbit/connect', [App\Http\Controllers\FitbitController::class, 'redirectToFitbit'])->name('fitbit.connect');
+Route::get('/fitbit/callback', [App\Http\Controllers\FitbitController::class, 'handleCallback']);
+Route::get('/fitbit/data', [App\Http\Controllers\FitbitController::class, 'fetchFitbitData'])->name('fitbit.data');
+
+Route::get('/nextofkin/fitbit-summary', [FitbitController::class, 'showFitbitSummary'])->name('fitbit.summary');
+Route::get('/fitbit/summary', [FitbitController::class, 'summary']);
+Route::get('/fitbit/callback', [FitbitController::class, 'handleCallback']);
