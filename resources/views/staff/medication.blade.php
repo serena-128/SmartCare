@@ -1,23 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    use Illuminate\Support\Str;
+    $activeTab = request()->has('drugName') ? 'lookup' : 'residents';
+@endphp
+
 <div class="container">
     <h2 class="mb-4">💊 Medication Center</h2>
 
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="medTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="residents-tab" data-bs-toggle="tab" data-bs-target="#residents" type="button" role="tab">
+            <button class="nav-link {{ $activeTab === 'residents' ? 'active' : '' }}" id="residents-tab"
+                data-bs-toggle="tab" data-bs-target="#residents" type="button" role="tab">
                 🧑‍⚕️ Resident Medications
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="lookup-tab" data-bs-toggle="tab" data-bs-target="#lookup" type="button" role="tab">
+            <button class="nav-link {{ $activeTab === 'lookup' ? 'active' : '' }}" id="lookup-tab"
+                data-bs-toggle="tab" data-bs-target="#lookup" type="button" role="tab">
                 🔍 Medication Lookup
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pharmacy-tab" data-bs-toggle="tab" data-bs-target="#pharmacy" type="button" role="tab">
+            <button class="nav-link" id="pharmacy-tab"
+                data-bs-toggle="tab" data-bs-target="#pharmacy" type="button" role="tab">
                 🏪 Pharmacy Info
             </button>
         </li>
@@ -25,7 +33,7 @@
 
     <div class="tab-content mt-4" id="medTabContent">
         <!-- Resident Medications Tab -->
-        <div class="tab-pane fade show active" id="residents" role="tabpanel">
+        <div class="tab-pane fade {{ $activeTab === 'residents' ? 'show active' : '' }}" id="residents" role="tabpanel">
             @if($residents->count())
                 <table class="table table-bordered">
                     <thead>
@@ -51,10 +59,11 @@
         </div>
 
         <!-- Medication Lookup Tab -->
-        <div class="tab-pane fade" id="lookup" role="tabpanel">
+        <div class="tab-pane fade {{ $activeTab === 'lookup' ? 'show active' : '' }}" id="lookup" role="tabpanel">
             <form method="GET" action="{{ url('/staff/medication-search') }}" class="mb-3">
                 <div class="input-group">
-                    <input type="text" name="drugName" class="form-control" placeholder="Enter medication name..." value="{{ old('drugName', $drugName ?? '') }}">
+                    <input type="text" name="drugName" class="form-control"
+                        placeholder="Enter medication name..." value="{{ old('drugName', $drugName ?? '') }}">
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </form>
@@ -82,7 +91,9 @@
                             <p><strong>Dosage:</strong></p>
                             <ul>
                                 @foreach(preg_split('/\r\n|\n|\r/', clean($drugData['dosage_and_administration'][0], 'Directions')) as $line)
-                                    <li>{{ $line }}</li>
+                                    @if(Str::length(trim($line)) > 0)
+                                        <li>{{ $line }}</li>
+                                    @endif
                                 @endforeach
                             </ul>
                         @endif
