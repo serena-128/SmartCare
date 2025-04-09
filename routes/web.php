@@ -36,6 +36,7 @@ use App\Http\Controllers\GoogleFitController;
 use App\Http\Controllers\FitbitController;
 use App\Http\Controllers\OpenFDAController;
 use App\Http\Controllers\StaffDashboardController;
+use App\Http\Controllers\PharmacyController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -235,4 +236,9 @@ Route::get('/staff/medication-search', [StaffDashboardController::class, 'showMe
 Route::get('/staff/medications', [StaffDashboardController::class, 'showMedicationPage'])->name('staff.medications');
 
 Route::post('/pharmacy/purchase', [App\Http\Controllers\PharmacyController::class, 'purchase'])->name('pharmacy.purchase');
+
+Route::get('/pharmacy', [PharmacyController::class, 'index'])->name('pharmacy.index');
+Route::post('/pharmacy/purchase', [PharmacyController::class, 'placeOrder'])->name('pharmacy.purchase');
+Route::post('/pharmacy/ship/{order}', [PharmacyController::class, 'markShipped'])->name('pharmacy.ship');
+
 
