@@ -238,4 +238,5 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 Route::get('/resident-hub', function () {
     return view('residentHub');
 })->name('resident.hub');
-Route::get('/residents/search', [App\Http\Controllers\ResidentController::class, 'search'])->name('residents.search');
+Route::get('/residents/search', [ResidentController::class, 'searchPage'])->name('residents.search');
+Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');

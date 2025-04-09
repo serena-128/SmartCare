@@ -184,4 +184,22 @@ class residentController extends AppBaseController
 
         return view('resident.dashboard', compact('resident'));
     }
+    public function searchPage()
+{
+    return view('residents.search');
+}
+
+public function searchResults(Request $request)
+{
+    $query = $request->input('query');
+
+    $results = Resident::where('firstname', 'LIKE', "%$query%")
+                ->orWhere('lastname', 'LIKE', "%$query%")
+                ->orWhere('roomnumber', 'LIKE', "%$query%")
+                ->orWhere('date_of_birth', 'LIKE', "%$query%")
+                ->get();
+
+    return view('residents.search', compact('results'));
+}
+
 }
