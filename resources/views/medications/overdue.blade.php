@@ -18,14 +18,14 @@
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-striped align-middle">
+                <table class="table table-bordered table-striped align-middle shadow-sm">
                     <thead class="table-dark">
                         <tr>
-                            <th>👤 Resident</th>
-                            <th>💊 Medication</th>
-                            <th>⏰ Scheduled</th>
-                            <th>✅ Taken</th>
-                            <th>⚙️ Action</th>
+                            <th scope="col">👤 Resident</th>
+                            <th scope="col">💊 Medication</th>
+                            <th scope="col">⏰ Scheduled</th>
+                            <th scope="col">✅ Taken</th>
+                            <th scope="col">⚙️ Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,12 +48,12 @@
                                         <form method="POST" action="{{ route('medications.markTaken', $med->id) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-success">
+                                            <button type="submit" class="btn btn-success btn-sm">
                                                 ✔ Mark as Taken
                                             </button>
                                         </form>
                                     @else
-                                        <span class="text-success">✔ Already Taken</span>
+                                        <span class="text-muted">✔ Already Taken</span>
                                     @endif
                                 </td>
                             </tr>
