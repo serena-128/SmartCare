@@ -257,13 +257,18 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Toggle cart sidebar
+    const sidebar = document.getElementById('cartSidebar');
+    const closeBtn = document.getElementById('closeCart');
+
     document.getElementById('toggleCart').addEventListener('click', function () {
-        const sidebar = document.getElementById('cartSidebar');
-        sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+        sidebar.classList.toggle('show');
     });
 
-    // Intercept all add-to-cart forms
+    closeBtn.addEventListener('click', function () {
+        sidebar.classList.remove('show');
+    });
+
+    // ✅ Intercept Add-to-Cart forms inside DOMContentLoaded
     document.querySelectorAll('form[action="{{ route('pharmacy.addToCart') }}"]').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -299,8 +304,22 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-<div id="cartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; display: none; z-index: 1050;">
+<style>
+    #cartSidebar {
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(100%); /* Hide off-screen */
+    }
+
+    #cartSidebar.show {
+        transform: translateX(0); /* Slide in */
+    }
+</style>
+
+<div id="cartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; z-index: 1050;">
+
+    <button class="btn-close position-absolute top-0 end-0 m-2" id="closeCart" aria-label="Close"></button>
     <h5 class="mb-3">🛒 Cart Items</h5>
+
     <form method="POST" action="{{ route('pharmacy.checkout') }}">
         @csrf
         <div id="cartContent">
@@ -322,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
             @endif
         </div>
     </form>
-</div>
+</div> <!-- ✅ close the cartSidebar here! -->
+
 
 @endsection
