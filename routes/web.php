@@ -55,8 +55,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-// Resource Routes for Other Entities
-Route::resource('residents', ResidentController::class);
+
 
 Route::resource('standardtasks', StandardTaskController::class);
 
@@ -235,8 +234,15 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 
     return redirect()->route('my.profile')->with('success', 'Profile updated!');
 })->name('my.profile.update');
+
+
+Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');
+
 Route::get('/resident-hub', function () {
     return view('residentHub');
 })->name('resident.hub');
+
 Route::get('/residents/search', [ResidentController::class, 'searchPage'])->name('residents.search');
 Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');
+
+Route::resource('residents', ResidentController::class); // <-- Leave this below

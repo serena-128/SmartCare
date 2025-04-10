@@ -61,14 +61,16 @@
                 <a href="{{ route('residents.create') }}" class="btn btn-outline-success">Add</a>
             </div>
         </div>
-        <div class="col-md-4 d-flex">
-            <div class="feature-card w-100">
-                <img src="{{ asset('pictures/search_resident.png') }}" alt="Search Resident">
-                <h5>Search Resident</h5>
-                <p>Quickly find residents by name, room, or DOB.</p>
-                <a href="{{ route('residents.search') }}" class="btn btn-outline-info">Search</a>
-            </div>
-        </div>
+        <div class="col-md-4">
+        <div class="feature-card">
+        <img src="{{ asset('pictures/search_resident.png') }}" alt="Search Resident">
+        <h5>Search Resident</h5>
+        <p>Quickly find residents by name, room, or DOB.</p>
+        <a href="{{ route('residents.search') }}" class="btn btn-outline-info">Search</a>
+
+    </div>
+</div>
+
     </div>
 </div>
 @endsection
