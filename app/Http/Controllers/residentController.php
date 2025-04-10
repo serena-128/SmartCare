@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateresidentRequest;
 use App\Repositories\residentRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Flash;
 use Response;
 use App\Models\Resident;
@@ -201,5 +202,17 @@ public function searchResults(Request $request)
 
     return view('residents.search', compact('results'));
 }
+
+
+
+public function showResidentHub()
+{
+    $totalResidents = Resident::count();
+    $newThisWeek = Resident::where('admissiondate', '>=', Carbon::now()->subDays(7))->count();
+    $discharged = Resident::where('status', 'discharged')->count();
+
+    return view('residentHub', compact('totalResidents', 'newThisWeek', 'discharged'));
+}
+
 
 }
