@@ -51,25 +51,17 @@
 
 <!-- Tabs -->
 <ul class="nav nav-tabs" id="medTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link {{ $activeTab === 'residents' ? 'active' : '' }}" id="residents-tab"
-            data-bs-toggle="tab" data-bs-target="#residents" type="button" role="tab">
-            🧑‍⚕️ Resident Medications
-        </button>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#residents" role="tab">🧑‍⚕️ Resident Medications</a>
     </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link {{ $activeTab === 'lookup' ? 'active' : '' }}" id="lookup-tab"
-            data-bs-toggle="tab" data-bs-target="#lookup" type="button" role="tab">
-            🔍 Medication Lookup
-        </button>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#lookup" role="tab">🔍 Medication Lookup</a>
     </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pharmacy-tab"
-            data-bs-toggle="tab" data-bs-target="#pharmacy" type="button" role="tab">
-            🏪 Pharmacy Info
-        </button>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#pharmacy" role="tab">🏪 Pharmacy Info</a>
     </li>
 </ul>
+
 
 <div class="tab-content mt-4" id="medTabContent">
     <!-- Resident Medications Tab -->
@@ -162,7 +154,6 @@
                     <th>In Stock</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>🛒 Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -197,7 +188,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($orders as $order)
+                    @foreach($orders->sortByDesc('created_at')->take(5) as $order)
                         <tr>
                             <td>{{ $order->product->name }}</td>
                             <td>{{ $order->quantity }}</td>
