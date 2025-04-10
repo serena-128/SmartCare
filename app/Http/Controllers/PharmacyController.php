@@ -109,4 +109,10 @@ public function checkout()
     return back()->with('success', 'Order placed successfully!');
 }
 
+    public function clearCart()
+{
+    session()->forget('cart');
+    return redirect()->back()->with('success', 'Cart has been cleared.');
+}
+
 }

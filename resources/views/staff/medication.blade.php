@@ -348,6 +348,14 @@ document.addEventListener('DOMContentLoaded', function () {
             @endif
         </div>
     </form>
+    
+     @if(session('cart'))
+        <form method="POST" action="{{ route('pharmacy.clearCart') }}">
+            @csrf
+            <button class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
+        </form>
+    @endif
+</div>
 </div>
 
 @endsection
