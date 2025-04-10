@@ -54,7 +54,6 @@ public function addToCart(Request $request)
     $quantity = (int) $request->input('quantity');
 
     $cart = session()->get('cart', []);
-
     $product = Product::findOrFail($productId);
 
     if (isset($cart[$productId])) {
@@ -69,14 +68,16 @@ public function addToCart(Request $request)
 
     session()->put('cart', $cart);
 
-    // Render partial view
+    // ✅ Renders the sidebar cart content from partial view
     $html = view('partials.cartContent', ['cart' => $cart])->render();
 
     return response()->json([
-        'count' => count($cart),
-        'html' => $html
+        'count' => count($cart), // ✅ Needed by JS
+        'html' => $html           // ✅ Needed by JS
     ]);
 }
+
+
 
 
 // Checkout cart

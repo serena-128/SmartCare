@@ -280,20 +280,25 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(res => res.json())
             .then(data => {
-                // Update cart count
-                document.getElementById('cartCount').innerText = data.count;
-
-                // Optionally reload sidebar content (fancy version)
-                document.getElementById('cartContent').innerHTML = data.html;
-
-                // Optional feedback
-                alert('Added to cart!');
+                if (data.count !== undefined && data.html !== undefined) {
+                    document.getElementById('cartCount').innerText = data.count;
+                    document.getElementById('cartContent').innerHTML = data.html;
+                    alert('Added to cart!');
+                } else {
+                    console.error('Invalid JSON response:', data);
+                    alert('Something went wrong! Check console.');
+                }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error('Fetch error:', err);
+                alert('An error occurred while adding to cart.');
+            });
         });
     });
 });
 </script>
+
+
 <div id="cartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; display: none; z-index: 1050;">
     <h5 class="mb-3">🛒 Cart Items</h5>
     <form method="POST" action="{{ route('pharmacy.checkout') }}">
