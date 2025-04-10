@@ -45,7 +45,7 @@
                     </a>
                     <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
-                    <li><a class="dropdown-item" href="{{ route('careplans.hub') }}">📝 Care Plan Hub</a></li> <!-- ✅ Added this -->
+                    <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li> <!-- ✅ Added this -->
                     </ul>
                 </li>
 

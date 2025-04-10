@@ -243,10 +243,11 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 Route::get('/careplan-hub', function () {
     $totalCarePlans = CarePlan::count();
     $activePlans = CarePlan::where('status', 'active')->count();
-    $completedPlans = CarePlan::where('status', 'completed')->count(); // Optional
+    $completedPlans = CarePlan::where('status', 'completed')->count();
+    $recentCarePlans = CarePlan::latest('updated_at')->take(5)->get();
 
-    return view('careplanHub', compact('totalCarePlans', 'activePlans', 'completedPlans'));
-})->name('careplans.hub');
+    return view('careplanHub', compact('totalCarePlans', 'activePlans', 'completedPlans', 'recentCarePlans'));
+})->name('careplan.hub');
 
 
 
