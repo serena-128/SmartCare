@@ -4,28 +4,26 @@
     <div class="container mt-4">
         <h2 class="mb-4">📋 Overdue Medications</h2>
 
-        {{-- ✅ Success message --}}
         @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
 
-        {{-- ✅ Info message if empty --}}
         @if ($medications->isEmpty())
             <div class="alert alert-info">
                 No overdue medications found.
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-striped align-middle shadow-sm">
+                <table class="table table-bordered table-striped">
                     <thead class="table-dark">
                         <tr>
-                            <th scope="col">👤 Resident</th>
-                            <th scope="col">💊 Medication</th>
-                            <th scope="col">⏰ Scheduled</th>
-                            <th scope="col">✅ Taken</th>
-                            <th scope="col">⚙️ Action</th>
+                            <th>👤 Resident</th>
+                            <th>💊 Medication</th>
+                            <th>⏰ Scheduled</th>
+                            <th>✅ Taken</th>
+                            <th>⚙️ Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,11 +35,7 @@
                                     {{ \Carbon\Carbon::parse($med->scheduled_time)->diffForHumans() }}
                                 </td>
                                 <td>
-                                    @if ($med->taken)
-                                        <span class="badge bg-success">Yes</span>
-                                    @else
-                                        <span class="badge bg-danger">No</span>
-                                    @endif
+                                    {!! $med->taken ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-danger">No</span>' !!}
                                 </td>
                                 <td>
                                     @if (!$med->taken)
@@ -49,7 +43,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="btn btn-success btn-sm">
-                                                ✔ Mark as Taken
+                                                Mark as Taken
                                             </button>
                                         </form>
                                     @else
