@@ -11,14 +11,15 @@
             </div>
         @endif
 
+        {{-- ✅ Info message if empty --}}
         @if ($medications->isEmpty())
             <div class="alert alert-info">
                 No overdue medications found.
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="thead-dark">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-dark">
                         <tr>
                             <th>👤 Resident</th>
                             <th>💊 Medication</th>
@@ -36,15 +37,19 @@
                                     {{ \Carbon\Carbon::parse($med->scheduled_time)->diffForHumans() }}
                                 </td>
                                 <td>
-                                    {!! $med->taken ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-danger">No</span>' !!}
+                                    @if ($med->taken)
+                                        <span class="badge bg-success">Yes</span>
+                                    @else
+                                        <span class="badge bg-danger">No</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @if (!$med->taken)
                                         <form method="POST" action="{{ route('medications.markTaken', $med->id) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-success btn-sm">
-                                                Mark as Taken
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                ✔ Mark as Taken
                                             </button>
                                         </form>
                                     @else
