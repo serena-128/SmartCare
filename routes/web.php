@@ -27,6 +27,7 @@ use App\Http\Controllers\NextOfKinProfileController;
 use App\Http\Controllers\EventAppointmentController;
 use App\Http\Controllers\NextOfKinDashboardController;
 use App\Http\Controllers\StaffScheduleController;
+use App\Models\Resident;
 use App\Http\Controllers\staffProfilesController;
 
 
@@ -222,6 +223,8 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 
     // Update phone number
     $staff->contactnumber = $request->contactnumber;
+    //update address
+    $staff->address = $request->address;
 
 
     // Upload profile image
@@ -236,11 +239,20 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 })->name('my.profile.update');
 
 
-Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');
+
+
+
 
 Route::get('/resident-hub', function () {
-    return view('residentHub');
+    $totalResidents = Resident::count();
+    $newThisWeek = Resident::where('created_at', '>=', now()->subWeek())->count();
+
+    // Check if 'status' column exists in your database before using it
+    $discharged = Resident::where('status', 'discharged')->count(); 
+
+    return view('residentHub', compact('totalResidents', 'newThisWeek', 'discharged'));
 })->name('resident.hub');
+
 
 Route::get('/residents/search', [ResidentController::class, 'searchPage'])->name('residents.search');
 Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');

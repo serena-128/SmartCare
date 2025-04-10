@@ -43,6 +43,33 @@
 
 <div class="container resident-hub">
     <h2>Resident Management Hub</h2>
+    <div class="row mb-4 text-center">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-left-primary">
+            <div class="card-body">
+                <h6 class="text-muted">Total Residents</h6>
+                <h4 class="text-purple">{{ $totalResidents }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-left-success">
+            <div class="card-body">
+                <h6 class="text-muted">New This Week</h6>
+                <h4 class="text-success">{{ $newThisWeek }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-left-danger">
+            <div class="card-body">
+                <h6 class="text-muted">Discharged</h6>
+                <h4 class="text-danger">{{ $discharged }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <div class="row justify-content-center">
         <div class="col-md-4 d-flex">
