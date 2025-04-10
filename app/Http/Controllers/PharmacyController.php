@@ -51,14 +51,15 @@ class PharmacyController extends Controller
 public function addToCart(Request $request)
 {
     $productId = $request->input('product_id');
-    $quantity = $request->input('quantity');
+    $quantity = (int) $request->input('quantity');
 
     $cart = session()->get('cart', []);
+
+    $product = Product::findOrFail($productId);
 
     if (isset($cart[$productId])) {
         $cart[$productId]['quantity'] += $quantity;
     } else {
-        $product = Product::findOrFail($productId);
         $cart[$productId] = [
             'name' => $product->name,
             'price' => $product->price,
@@ -68,8 +69,15 @@ public function addToCart(Request $request)
 
     session()->put('cart', $cart);
 
-    return back()->with('success', 'Added to cart!');
+    // Render partial view
+    $html = view('partials.cartContent', ['cart' => $cart])->render();
+
+    return response()->json([
+        'count' => count($cart),
+        'html' => $html
+    ]);
 }
+
 
 // Checkout cart
 public function checkout()

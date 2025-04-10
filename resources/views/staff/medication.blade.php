@@ -38,7 +38,15 @@
     }
 @endphp
 
-<div class="container">
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-outline-dark position-relative" id="toggleCart">
+        🛒 Cart
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">
+            {{ session('cart') ? count(session('cart')) : 0 }}
+        </span>
+    </button>
+</div>
+
     <h2 class="mb-4">💊 Medication Center</h2>
 
     <!-- Tabs -->
@@ -247,4 +255,68 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle cart sidebar
+    document.getElementById('toggleCart').addEventListener('click', function () {
+        const sidebar = document.getElementById('cartSidebar');
+        sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Intercept all add-to-cart forms
+    document.querySelectorAll('form[action="{{ route('pharmacy.addToCart') }}"]').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Update cart count
+                document.getElementById('cartCount').innerText = data.count;
+
+                // Optionally reload sidebar content (fancy version)
+                document.getElementById('cartContent').innerHTML = data.html;
+
+                // Optional feedback
+                alert('Added to cart!');
+            })
+            .catch(err => console.error(err));
+        });
+    });
+});
+</script>
+<div id="cartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; display: none; z-index: 1050;">
+    <h5 class="mb-3">🛒 Cart Items</h5>
+    <form method="POST" action="{{ route('pharmacy.checkout') }}">
+        @csrf
+        <div id="cartContent">
+            @if(session('cart'))
+                <ul class="list-group">
+                    @php $total = 0; @endphp
+                    @foreach(session('cart') as $item)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ $item['name'] }} x {{ $item['quantity'] }}
+                            <span>€{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+                        </li>
+                        @php $total += $item['price'] * $item['quantity']; @endphp
+                    @endforeach
+                    <li class="list-group-item text-end"><strong>Total: €{{ number_format($total, 2) }}</strong></li>
+                </ul>
+                <button class="btn btn-success mt-3 w-100">✔️ Checkout</button>
+            @else
+                <p>Your cart is empty.</p>
+            @endif
+        </div>
+    </form>
+</div>
+
 @endsection
