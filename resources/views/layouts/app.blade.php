@@ -44,7 +44,7 @@
                         🏥 Residents
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-link" href="{{ route('resident.hub') }}"> Resident Management</a></li>
+                    <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
                         <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li> <!-- ✅ Added this -->
                     </ul>
                 </li>
