@@ -145,4 +145,6 @@ Route::get('/resident-care-dashboard', [ResidentCareDashboardController::class, 
 Route::get('/medications/overdue', [MedicationController::class, 'showOverdue'])->name('medications.overdue');
 Route::patch('/medications/{id}/mark-taken', [MedicationController::class, 'markTaken'])->name('medications.markTaken');
 
+Route::get('/medications/missed-history', [MedicationController::class, 'missedHistory'])->name('medications.missedHistory');
+
 

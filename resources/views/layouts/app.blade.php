@@ -1,4 +1,3 @@
-{{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +23,7 @@
         .logo { max-height: 50px; margin-right: 10px; }
     </style>
 
-    @stack('styles') {{-- for page-specific CSS if needed --}}
+    @stack('styles') {{-- Optional: inject custom styles --}}
 </head>
 <body>
 
@@ -32,7 +31,8 @@
     <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('staffDashboard') }}">
-                <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
+                <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
+                Staff Dashboard
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -41,7 +41,7 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <!-- Residents Dropdown -->
+                    <!-- Residents -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">🏥 Residents</a>
                         <ul class="dropdown-menu">
@@ -50,12 +50,21 @@
                         </ul>
                     </li>
 
-                    <!-- Medical Info Dropdown -->
+                    <!-- Medical Info -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">🩺 Medical Info</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
                             <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Medications -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">💊 Medications</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('medications.overdue') }}">⏰ Overdue Medications</a></li>
+                            <li><a class="dropdown-item" href="{{ route('medications.missedHistory') }}">📉 Missed Dosages History</a></li>
                         </ul>
                     </li>
 
@@ -104,7 +113,7 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Page Content -->
     <main class="py-4">
         <div class="container">
             @yield('content')
@@ -113,7 +122,7 @@
 
     @include('layouts.footer')
 
-    <!-- FullCalendar JS -->
+    <!-- FullCalendar -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -146,6 +155,6 @@
         });
     </script>
 
-    @stack('scripts') {{-- for page-specific JS if needed --}}
+    @stack('scripts') {{-- Optional: inject custom scripts --}}
 </body>
 </html>

@@ -33,4 +33,15 @@ class MedicationController extends Controller
 
         return redirect()->back()->with('success', 'Medication marked as taken.');
     }
+
+    public function missedHistory()
+    {
+        $missed = Medication::with('resident')
+            ->where('taken', false)
+            ->where('scheduled_time', '<', now()->subDays(2))
+            ->get()
+            ->groupBy('resident_id');
+
+        return view('medications.missed-history', compact('missed'));
+    }
 }
