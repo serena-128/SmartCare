@@ -50,17 +50,19 @@
 <h2 class="mb-4">💊 Medication Center</h2>
 
 <!-- Tabs -->
+<!-- Tabs -->
 <ul class="nav nav-tabs" id="medTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#residents" role="tab">🧑‍⚕️ Resident Medications</a>
+        <a class="nav-link {{ $activeTab === 'residents' ? 'active' : '' }}" data-bs-toggle="tab" href="#residents" role="tab">🧑‍⚕️ Resident Medications</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#lookup" role="tab">🔍 Medication Lookup</a>
+        <a class="nav-link {{ $activeTab === 'lookup' ? 'active' : '' }}" data-bs-toggle="tab" href="#lookup" role="tab">🔍 Medication Lookup</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#pharmacy" role="tab">🏪 Pharmacy Info</a>
+        <a class="nav-link {{ $activeTab === 'pharmacy' ? 'active' : '' }}" data-bs-toggle="tab" href="#pharmacy" role="tab">🏪 Pharmacy Info</a>
     </li>
 </ul>
+
 
 
 <div class="tab-content mt-4" id="medTabContent">
