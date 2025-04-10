@@ -53,7 +53,7 @@
                                 <td>{{ $resident->firstname }}</td>
                                 <td>{{ $resident->lastname }}</td>
                                 <td>{{ $resident->roomnumber }}</td>
-                                <td>{{ $resident->dateofbirth }}</td>
+                                <td>{{ \Carbon\Carbon::parse($resident->dateofbirth)->format('d M Y') }}</td>
                                 <td><a href="{{ route('residents.show', $resident->id) }}" class="btn btn-info btn-sm">View</a></td>
                             </tr>
                         @endforeach
