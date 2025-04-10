@@ -251,6 +251,11 @@ Route::get('/careplan-hub', function () {
 
 
 
+Route::get('/emergency-alerts-hub', [EmergencyAlertController::class, 'hub'])->name('emergencyalerts.hub');
+
+
+
+
 Route::get('/resident-hub', function () {
     $totalResidents = Resident::count();
     $newThisWeek = Resident::where('created_at', '>=', now()->subWeek())->count();

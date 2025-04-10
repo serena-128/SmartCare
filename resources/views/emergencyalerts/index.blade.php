@@ -20,8 +20,6 @@
                 <th>Alert Time</th>
                 <th>Status</th>
                 <th>Resolved By</th>
-                <th>Created At</th>
-                <th>Updated At</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -36,8 +34,6 @@
                     <td>{{ $alert->alerttimestamp }}</td>
                     <td>{{ $alert->resolved == 1 ? 'Resolved' : 'Pending' }}</td>
                     <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }}</td>
-                    <td>{{ $alert->created_at }}</td>
-                    <td>{{ $alert->updated_at }}</td>
                     <td>
                         <a href="{{ route('emergencyalerts.edit', $alert->id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('emergencyalerts.destroy', $alert->id) }}" method="POST" style="display:inline;">
