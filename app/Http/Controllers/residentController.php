@@ -196,7 +196,7 @@ public function searchResults(Request $request)
     $results = Resident::where('firstname', 'LIKE', "%$query%")
                 ->orWhere('lastname', 'LIKE', "%$query%")
                 ->orWhere('roomnumber', 'LIKE', "%$query%")
-                ->orWhere('date_of_birth', 'LIKE', "%$query%")
+                ->orWhere('dateofbirth', 'LIKE', "%$query%")
                 ->get();
 
     return view('residents.search', compact('results'));
