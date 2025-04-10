@@ -149,6 +149,7 @@ Route::get('/medications/missed-history', [MedicationController::class, 'missedH
 
 Route::get('/missed-medications/export', [MedicationController::class, 'exportMissedHistory'])
     ->name('medications.export');
+Route::get('/medications/missed-history/export', [MedicationController::class, 'exportMissedHistory'])->name('medications.export');
 
 
 
