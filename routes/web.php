@@ -28,6 +28,7 @@ use App\Http\Controllers\EventAppointmentController;
 use App\Http\Controllers\NextOfKinDashboardController;
 use App\Http\Controllers\StaffScheduleController;
 use App\Models\Resident;
+use App\Models\CarePlan;
 use App\Http\Controllers\staffProfilesController;
 
 
@@ -239,7 +240,13 @@ Route::post('/my-profile/update', function (Illuminate\Http\Request $request) {
 })->name('my.profile.update');
 
 
+Route::get('/careplan-hub', function () {
+    $totalCarePlans = CarePlan::count();
+    $activePlans = CarePlan::where('status', 'active')->count();
+    $completedPlans = CarePlan::where('status', 'completed')->count(); // Optional
 
+    return view('careplanHub', compact('totalCarePlans', 'activePlans', 'completedPlans'));
+})->name('careplans.hub');
 
 
 
