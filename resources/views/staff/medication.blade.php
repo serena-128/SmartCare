@@ -341,7 +341,8 @@ document.addEventListener('DOMContentLoaded', function () {
     <button class="btn-close position-absolute top-0 end-0 m-2" id="closeCart" aria-label="Close"></button>
     <h5 class="mb-3">🛒 Cart Items</h5>
 
-    <form method="POST" action="{{ route('pharmacy.checkout') }}">
+    <form method="POST" action="{{ route('pharmacy.checkout') }}" class="ajax-checkout-form">
+
         @csrf
         <div id="cartContent">
             @if(session('cart'))
@@ -364,17 +365,98 @@ document.addEventListener('DOMContentLoaded', function () {
 {{-- Cart Sidebar Bottom Section --}}
 </form>
 
-{{-- Clear Cart Button Area --}}
 <div id="clearCartWrapper">
     @if(session('cart'))
-        <form method="POST" action="{{ route('pharmacy.clearCart') }}">
+        <form method="POST" action="{{ route('pharmacy.clearCart') }}" class="ajax-clear-cart-form">
             @csrf
-            <button class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
+            <button type="submit" class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
         </form>
     @endif
 </div>
 
+
 </div> <!-- End of #cartSidebar -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Clear Cart
+    document.body.addEventListener('submit', function (e) {
+        if (e.target.classList.contains('ajax-clear-cart-form')) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Clear cart?',
+                text: 'This will remove all items.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, clear it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = e.target;
+                    const url = form.action;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json'
+                        },
+                        body: new FormData(form)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('cartContent').innerHTML = `<p>Your cart is empty.</p>`;
+                        document.getElementById('cartCount').innerText = 0;
+                        document.getElementById('clearCartWrapper').innerHTML = '';
+
+                        Swal.fire('Cart Cleared!', '', 'success');
+                    })
+                    .catch(() => Swal.fire('Error', 'Could not clear cart.', 'error'));
+                }
+            });
+        }
+    });
+
+    // Checkout
+    document.body.addEventListener('submit', function (e) {
+        if (e.target.classList.contains('ajax-checkout-form')) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Confirm Order?',
+                text: 'Do you want to checkout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, checkout!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = e.target;
+                    const url = form.action;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json'
+                        },
+                        body: new FormData(form)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('cartContent').innerHTML = `<p>Your cart is empty.</p>`;
+                        document.getElementById('cartCount').innerText = 0;
+                        document.getElementById('clearCartWrapper').innerHTML = '';
+
+                        Swal.fire('Order Confirmed!', 'Thank you for your purchase.', 'success');
+                    })
+                    .catch(() => Swal.fire('Error', 'Could not complete checkout.', 'error'));
+                }
+            });
+        }
+    });
+});
+</script>
 
 
 @endsection

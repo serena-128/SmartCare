@@ -106,13 +106,22 @@ public function checkout()
     }
 
     session()->forget('cart');
-    return back()->with('success', 'Order placed successfully!');
+    return response()->json(['status' => 'success']);
+
 }
 
-    public function clearCart()
+  public function clearCart(Request $request)
 {
     session()->forget('cart');
-    return redirect()->back()->with('success', 'Cart has been cleared.');
+
+    // If it's an AJAX request, return JSON
+    if ($request->expectsJson()) {
+        return response()->json(['status' => 'cleared']);
+    }
+
+    // Fallback if JavaScript is disabled
+    return redirect()->back()->with('success', 'Cart cleared.');
 }
+
 
 }
