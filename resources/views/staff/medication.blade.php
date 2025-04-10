@@ -158,10 +158,20 @@
         <h4 class="mb-3">🛍 Available Medications</h4>
 
         @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @elseif(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
+    <script>
+        Swal.fire({
+            title: 'Order Placed!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonColor: '#28a745'
+        }).then(() => {
+            // Optional: reload page after confirming
+            location.href = window.location.pathname + "#pharmacy";
+            location.reload();
+        });
+    </script>
+@endif
+
 
         <table class="table table-bordered">
             <thead>
@@ -258,7 +268,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.count !== undefined && data.html !== undefined) {
                     document.getElementById('cartCount').innerText = data.count;
                     document.getElementById('cartContent').innerHTML = data.html;
-                    alert('Added to cart!');
+                    Swal.fire({
+                    title: 'Added to Cart!',
+                    text: 'The item was successfully added to your cart.',
+                    icon: 'success',
+                    confirmButtonColor: '#28a745'
+                });
+
                 } else {
                     console.error('Invalid JSON response:', data);
                     alert('Something went wrong! Check console.');
