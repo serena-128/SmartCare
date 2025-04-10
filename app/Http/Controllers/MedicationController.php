@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Medication;
 use App\Models\Resident;
 use Illuminate\Http\Request;
+use App\Exports\MissedMedicationsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MedicationController extends Controller
 {
@@ -14,7 +16,6 @@ class MedicationController extends Controller
             ->where('taken', false)
             ->with('resident');
 
-        // Filter by resident if selected
         if ($request->filled('resident_id')) {
             $query->where('resident_id', $request->resident_id);
         }
@@ -34,14 +35,27 @@ class MedicationController extends Controller
         return redirect()->back()->with('success', 'Medication marked as taken.');
     }
 
-    public function missedHistory()
+    public function missedHistory(Request $request)
     {
-        $missed = Medication::with('resident')
+        $query = Medication::with('resident')
             ->where('taken', false)
-            ->where('scheduled_time', '<', now()->subDays(2))
-            ->get()
-            ->groupBy('resident_id');
+            ->where('scheduled_time', '<', now()->subDays(2));
 
-        return view('medications.missed-history', compact('missed'));
+        if ($request->filled('resident_id')) {
+            $query->where('resident_id', $request->resident_id);
+        }
+
+        $missed = $query->get()->groupBy('resident_id');
+        $allResidents = Resident::orderBy('lastname')->get();
+
+        return view('medications.missed-history', compact('missed', 'allResidents'));
+    }
+
+    public function exportMissedHistory(Request $request)
+    {
+        return Excel::download(
+            new MissedMedicationsExport($request->resident_id),
+            'missed_medications_report.xlsx'
+        );
     }
 }

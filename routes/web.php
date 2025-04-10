@@ -147,4 +147,8 @@ Route::patch('/medications/{id}/mark-taken', [MedicationController::class, 'mark
 
 Route::get('/medications/missed-history', [MedicationController::class, 'missedHistory'])->name('medications.missedHistory');
 
+Route::get('/missed-medications/export', [MedicationController::class, 'exportMissedHistory'])
+    ->name('medications.export');
+
+
 
