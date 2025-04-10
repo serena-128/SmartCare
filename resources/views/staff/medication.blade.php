@@ -242,15 +242,19 @@
 document.addEventListener('DOMContentLoaded', function () {
     const sidebar = document.getElementById('cartSidebar');
     const closeBtn = document.getElementById('closeCart');
+    const toggleCartBtn = document.getElementById('toggleCart');
 
-    document.getElementById('toggleCart').addEventListener('click', function () {
-        sidebar.classList.toggle('show');
-    });
+    if (toggleCartBtn && sidebar && closeBtn) {
+        toggleCartBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('show');
+        });
 
-    closeBtn.addEventListener('click', function () {
-        sidebar.classList.remove('show');
-    });
+        closeBtn.addEventListener('click', function () {
+            sidebar.classList.remove('show');
+        });
+    }
 
+    // Handle Add to Cart with AJAX
     document.querySelectorAll('form[action="{{ route('pharmacy.addToCart') }}"]').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -270,13 +274,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.count !== undefined && data.html !== undefined) {
                     document.getElementById('cartCount').innerText = data.count;
                     document.getElementById('cartContent').innerHTML = data.html;
-                    Swal.fire({
-                    title: 'Added to Cart!',
-                    text: 'The item was successfully added to your cart.',
-                    icon: 'success',
-                    confirmButtonColor: '#28a745'
-                });
 
+                    // Show the clear cart button without page reload
+                    const csrfToken = document.querySelector('input[name="_token"]').value;
+                    document.getElementById('clearCartWrapper').innerHTML = `
+                        <form method="POST" action="{{ route('pharmacy.clearCart') }}">
+                            <input type="hidden" name="_token" value="${csrfToken}">
+                            <button class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
+                        </form>
+                    `;
+
+                    Swal.fire({
+                        title: 'Added to Cart!',
+                        text: 'The item was successfully added to your cart.',
+                        icon: 'success',
+                        confirmButtonColor: '#28a745'
+                    });
                 } else {
                     console.error('Invalid JSON response:', data);
                     alert('Something went wrong! Check console.');
@@ -290,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.querySelectorAll('.medication-update-form').forEach(form => {
@@ -347,15 +361,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 <p>Your cart is empty.</p>
             @endif
         </div>
-    </form>
-    
-     @if(session('cart'))
+{{-- Cart Sidebar Bottom Section --}}
+</form>
+
+{{-- Clear Cart Button Area --}}
+<div id="clearCartWrapper">
+    @if(session('cart'))
         <form method="POST" action="{{ route('pharmacy.clearCart') }}">
             @csrf
             <button class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
         </form>
     @endif
 </div>
-</div>
+
+</div> <!-- End of #cartSidebar -->
+
 
 @endsection
