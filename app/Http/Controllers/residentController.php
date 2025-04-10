@@ -184,4 +184,18 @@ class residentController extends AppBaseController
 
         return view('resident.dashboard', compact('resident'));
     }
+    
+    public function updateMedications(Request $request, $id)
+{
+    $request->validate([
+        'medications' => 'nullable|string|max:255'
+    ]);
+
+    $resident = \App\Models\Resident::findOrFail($id);
+    $resident->medications = $request->medications;
+    $resident->save();
+
+    return back()->with('success', 'Medications updated!');
+}
+
 }

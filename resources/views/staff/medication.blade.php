@@ -80,7 +80,17 @@
                         <tr>
                             <td>{{ $resident->firstname }} {{ $resident->lastname }}</td>
                             <td>{{ $resident->allergies ?? 'None' }}</td>
-                            <td>{{ $resident->medications ?? 'Not listed' }}</td>
+                            <td>
+                            <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}">
+                                @csrf
+                                @method('PUT')
+                                <div class="input-group">
+                                    <input type="text" name="medications" value="{{ $resident->medications }}" class="form-control form-control-sm">
+                                    <button type="submit" class="btn btn-sm btn-success">💾</button>
+                                </div>
+                            </form>
+                        </td>
+
                         </tr>
                     @endforeach
                 </tbody>

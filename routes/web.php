@@ -249,3 +249,6 @@ Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.c
 Route::get('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
 Route::post('/pharmacy/add-to-cart', [PharmacyController::class, 'addToCart'])->name('pharmacy.addToCart');
 Route::post('/pharmacy/checkout', [PharmacyController::class, 'checkout'])->name('pharmacy.checkout');
+
+Route::put('/residents/{id}/update-medications', [\App\Http\Controllers\ResidentController::class, 'updateMedications'])->name('residents.updateMedications');
+
