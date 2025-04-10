@@ -71,25 +71,31 @@
                 <thead>
                     <tr>
                         <th>Resident Name</th>
-                        <th>Allergies</th>
-                        <th>Current Medications</th>
+                        <th colspan="2">Medications & Allergies </th>
+
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($residents as $resident)
                         <tr>
                             <td>{{ $resident->firstname }} {{ $resident->lastname }}</td>
-                            <td>{{ $resident->allergies ?? 'None' }}</td>
-                            <td>
-                            <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}">
-                                @csrf
-                                @method('PUT')
-                                <div class="input-group">
-                                    <input type="text" name="medications" value="{{ $resident->medications }}" class="form-control form-control-sm">
-                                    <button type="submit" class="btn btn-sm btn-success">💾</button>
-                                </div>
-                            </form>
-                        </td>
+                            <td colspan="2">
+    <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}" class="medication-update-form">
+        @csrf
+        @method('PUT')
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <input type="text" name="medications" class="form-control form-control-sm" placeholder="Medications" value="{{ $resident->medications }}">
+            </div>
+            <div class="col">
+                <input type="text" name="allergies" class="form-control form-control-sm" placeholder="Allergies" value="{{ $resident->allergies }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-outline-success">💾</button>
+            </div>
+        </div>
+    </form>
+</td>
 
                         </tr>
                     @endforeach
@@ -265,6 +271,27 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll('.medication-update-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to save the changes to this resident?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
 </script>
 
 <style>

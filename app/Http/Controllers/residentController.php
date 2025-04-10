@@ -188,14 +188,17 @@ class residentController extends AppBaseController
     public function updateMedications(Request $request, $id)
 {
     $request->validate([
-        'medications' => 'nullable|string|max:255'
+        'medications' => 'nullable|string|max:255',
+        'allergies' => 'nullable|string|max:255',
     ]);
 
     $resident = \App\Models\Resident::findOrFail($id);
     $resident->medications = $request->medications;
+    $resident->allergies = $request->allergies;
     $resident->save();
 
-    return back()->with('success', 'Medications updated!');
+    return back()->with('success', 'Resident details updated!');
 }
+
 
 }
