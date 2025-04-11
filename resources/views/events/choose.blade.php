@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Add Event / Appointment</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
+@extends('layouts.app')
+
+@section('title', 'Add Event / Appointment')
+
+@section('content')
+<style>
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f3f3f3;
     }
     .container {
       max-width: 800px;
-      margin-top: 50px;
+      margin-top: 0px;
     }
     .card {
       background-color: #fff;
@@ -39,25 +36,24 @@
     .btn-success:hover {
       background-color: #218838;
     }
-  </style>
-</head>
-<body>
+</style>
+
 <div class="container">
   <div class="card">
     <div class="card-header">
       <h3>Add Event / Appointment</h3>
     </div>
     <div class="card-body">
-        @if(session('success'))
-    <div class="alert alert-success mt-3">
-            {{ session('success') }}
+      @if(session('success'))
+        <div class="alert alert-success mt-3">
+          {{ session('success') }}
         </div>
-    @endif
+      @endif
 
       <form action="{{ route('eventAppointment.store') }}" method="POST">
         @csrf
 
-        <!-- Dropdown to select type -->
+        <!-- Type Dropdown -->
         <div class="mb-3">
           <label for="type" class="form-label">Select Type</label>
           <select name="type" id="type" class="form-control" required>
@@ -134,16 +130,20 @@
     </div>
   </div>
 </div>
-  
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@endsection
+
+@push('scripts')
 <script>
-  // Toggle fields based on selection
-  document.getElementById('type').addEventListener('change', function(){
-      var value = this.value;
-      document.getElementById('event-fields').style.display = (value === 'event') ? 'block' : 'none';
-      document.getElementById('appointment-fields').style.display = (value === 'appointment') ? 'block' : 'none';
+  document.addEventListener('DOMContentLoaded', function () {
+    const typeSelect = document.getElementById('type');
+    const eventFields = document.getElementById('event-fields');
+    const appointmentFields = document.getElementById('appointment-fields');
+
+    typeSelect.addEventListener('change', function () {
+      const value = this.value;
+      eventFields.style.display = value === 'event' ? 'block' : 'none';
+      appointmentFields.style.display = value === 'appointment' ? 'block' : 'none';
+    });
   });
 </script>
-</body>
-</html>
+@endpush

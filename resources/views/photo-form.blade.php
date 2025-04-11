@@ -64,6 +64,12 @@
         max-width: 140px;
         margin: 20px 0;
     }
+    .container {
+  max-width: 800px;
+  margin-top: 0px;
+}
+
+    }
 
     .card {
         border-radius: 15px;
