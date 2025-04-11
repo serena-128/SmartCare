@@ -606,10 +606,16 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
     <h3><i class="fas fa-walking"></i> Fitbit Health Summary</h3>
   </div>
   <div class="card-body" id="fitbit-summary-content">
-    <p>Loading Fitbit data...</p>
+    <!-- Data will be loaded here -->
+    <div id="fitbit-summary-data">
+      <p>Loading Fitbit data...</p>
+    </div>
+    <!-- Chart will be appended here -->
+    <div id="fitbit-summary-chart"></div>
   </div>
 </div>
 
+<hr>
 <div class="card shadow-lg mb-4">
   <div class="card-header bg-purple text-black">
     <h4><i class="fas fa-shoe-prints"></i> Activity Insights</h4>
@@ -1222,25 +1228,106 @@ document.addEventListener('DOMContentLoaded', function () {
   fetch('/fitbit/data')
     .then(response => response.json())
     .then(data => {
-      const container = document.getElementById('fitbit-summary-content');
-
+      const dataContainer = document.getElementById('fitbit-summary-data');
       if (data.error) {
-        container.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        dataContainer.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
         return;
       }
-
-      container.innerHTML = `
+      dataContainer.innerHTML = `
         <p><strong>Steps:</strong> ${data.steps}</p>
         <p><strong>Calories Burned:</strong> ${data.calories}</p>
         <p><strong>Sedentary Minutes:</strong> ${data.sedentary}</p>
       `;
     })
     .catch(err => {
-      document.getElementById('fitbit-summary-content').innerHTML = '<p class="text-danger">Error loading Fitbit data.</p>';
+      document.getElementById('fitbit-summary-data').innerHTML = '<p class="text-danger">Error loading Fitbit data.</p>';
       console.error(err);
     });
 });
 </script>
+
+<!-- Include Chart.js from CDN in your <head> or before the closing </body> -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Dummy Fitbit data for the last 7 days (for the chart)
+  const dummyFitbitData = [
+    { date: "2025-04-05", steps: 1200 },
+    { date: "2025-04-06", steps: 1500 },
+    { date: "2025-04-07", steps: 1000 },
+    { date: "2025-04-08", steps: 1300 },
+    { date: "2025-04-09", steps: 1700 },
+    { date: "2025-04-10", steps: 1600 },
+    { date: "2025-04-11", steps: 1900 }
+  ];
+
+  // Select the dedicated chart container.
+  const chartParent = document.getElementById('fitbit-summary-chart');
+
+  // Create a container for the small chart with fixed size.
+  const smallChartContainer = document.createElement('div');
+  smallChartContainer.style.width = "300px";
+  smallChartContainer.style.height = "200px";
+  smallChartContainer.style.marginTop = "20px"; // Add spacing
+
+  // Create and append the canvas for the chart.
+  const smallChartCanvas = document.createElement('canvas');
+  smallChartCanvas.id = "small-fitbit-chart";
+  smallChartContainer.appendChild(smallChartCanvas);
+  chartParent.appendChild(smallChartContainer);
+
+  // Prepare data for the chart.
+  const labels = dummyFitbitData.map(item => item.date);
+  const stepsData = dummyFitbitData.map(item => item.steps);
+
+  // Initialize the Chart.js line chart.
+  const ctx = document.getElementById("small-fitbit-chart").getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Steps',
+        data: stepsData,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.2,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,  // Use the container's dimensions
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Date'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Steps'
+          },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+});
+</script>
+
+
 
 </body>
 </html>
