@@ -4,6 +4,13 @@
     <div class="container mt-4">
         <h2 class="mb-4">📋 Overdue Medications</h2>
 
+        {{-- 🔍 Sort by Urgency --}}
+        <div class="mb-3 text-end">
+            <button class="btn btn-warning" onclick="sortTableByUrgency()">
+                🔥 Sort by Urgency
+            </button>
+        </div>
+
         {{-- ✅ Filter by Resident --}}
         <form method="GET" action="{{ route('medications.overdue') }}" class="mb-4">
             <div class="row">
@@ -20,7 +27,7 @@
             </div>
         </form>
 
-        {{-- ✅ Flash message --}}
+        {{-- ✅ Flash Message --}}
         @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -34,7 +41,7 @@
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="medicationsTable">
                     <thead class="table-dark">
                         <tr>
                             <th>👤 Resident</th>
@@ -60,9 +67,7 @@
                                         <form method="POST" action="{{ route('medications.markTaken', $med->id) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-success btn-sm">
-                                                Mark as Taken
-                                            </button>
+                                            <button type="submit" class="btn btn-success btn-sm">Mark as Taken</button>
                                         </form>
                                     @else
                                         <span class="text-muted">✔ Already Taken</span>
@@ -76,3 +81,29 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    function sortTableByUrgency() {
+        const table = document.getElementById("medicationsTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+            const timeA = parseTimeAgo(a.cells[2].textContent.trim());
+            const timeB = parseTimeAgo(b.cells[2].textContent.trim());
+            return timeB - timeA; // Most urgent (largest time) first
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function parseTimeAgo(text) {
+        if (text.includes("minute")) return parseInt(text) * 60;
+        if (text.includes("hour")) return parseInt(text) * 3600;
+        if (text.includes("day")) return parseInt(text) * 86400;
+        if (text.includes("second")) return parseInt(text);
+        return 0; // fallback
+    }
+</script>
+@endpush
