@@ -137,25 +137,20 @@ Route::get('/diagnoses/search', function () {
 
 
 use App\Http\Controllers\ResidentCareDashboardController;
-use App\Http\Controllers\MedicationController;
 
 Route::get('/resident-care-dashboard', [ResidentCareDashboardController::class, 'index'])
     ->name('resident_care_dashboard');
+
+use App\Http\Controllers\MedicationController;
 
 Route::get('/medications/overdue', [MedicationController::class, 'showOverdue'])->name('medications.overdue');
 Route::patch('/medications/{id}/mark-taken', [MedicationController::class, 'markTaken'])->name('medications.markTaken');
 
 Route::get('/medications/missed-history', [MedicationController::class, 'missedHistory'])->name('medications.missedHistory');
-
-Route::get('/missed-medications/export', [MedicationController::class, 'exportMissedHistory'])
-    ->name('medications.export');
 Route::get('/medications/missed-history/export', [MedicationController::class, 'exportMissedHistory'])->name('medications.export');
 
+// ✅ Calendar routes
 Route::get('/medications/calendar', [MedicationController::class, 'calendarView'])->name('medications.calendar');
 Route::get('/medications/calendar/json', [MedicationController::class, 'calendarEvents'])->name('medications.calendar.events');
-
-Route::get('/staff/calendar', [MedicationController::class, 'calendarView'])->name('medications.calendar');
-Route::get('/staff/calendar/events', [MedicationController::class, 'calendarEvents']);
-
 
 

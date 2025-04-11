@@ -61,7 +61,7 @@ class MedicationController extends Controller
 
     public function calendarView()
     {
-        return view('medications.calendar'); // View should be in resources/views/medications/calendar.blade.php
+        return view('medications.calendar'); // 👈 Make sure this view exists
     }
 
     public function calendarEvents()
