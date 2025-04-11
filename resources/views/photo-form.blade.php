@@ -1,101 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Upload Photo - SmartCare</title>
+@extends('layouts.app')
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+@section('content')
+<div class="container">
+    <div class="card mt-4">
+        <div class="card-header purple-bg text-white">
+            <i class="fas fa-camera"></i> Upload Photo to Gallery
+        </div>
 
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f3f3f3;
+        @if(session('success'))
+            <div class="alert alert-success text-center mt-4">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <img src="{{ asset('pictures/carehome_logo.png') }}" alt="SmartCare Logo" class="upload-logo" style="width: 200px; height: auto; margin: 40px 0;">
+            </div>
+
+            <form action="{{ route('photo.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4">
+                    <label for="photo" class="form-label">Choose a Photo</label>
+                    <input type="file" class="form-control" id="photo" name="photo" required>
+                </div>
+
+                <!-- ✅ Image Preview Section -->
+                <div class="text-center mb-4">
+                    <img id="preview-image" src="#" alt="Image Preview" style="max-width: 200px; display: none; border-radius: 10px; border: 2px dashed #800080;" />
+                </div>
+
+                <button type="submit" class="btn btn-purple w-100">
+                    <i class="fas fa-upload"></i> Upload Photo
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+    .purple-bg {
+        background-color: #800080;
+        border-radius: 15px 15px 0 0;
     }
 
-    .container {
-      max-width: 600px;
-      margin-top: 80px;
+    .btn-purple {
+        background-color: #800080;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        padding: 12px;
+    }
+
+    .btn-purple:hover {
+        background-color: #6a006a;
+        color: white;
+    }
+
+    .upload-logo {
+        max-width: 140px;
+        margin: 20px 0;
     }
 
     .card {
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
+</style>
+@endpush
 
-    .card-header {
-      background-color: #800080;
-      color: white;
-      font-size: 1.4rem;
-      text-align: center;
-      padding: 20px;
-      border-radius: 15px 15px 0 0;
-    }
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('photo');
+        const preview = document.getElementById('preview-image');
 
-    .btn-primary {
-      background-color: #800080;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-    }
+        input.addEventListener('change', function (event) {
+            const file = event.target.files[0];
 
-    .btn-primary:hover {
-      background-color: #6a006a;
-    }
-
-    .form-control {
-      border-radius: 10px;
-    }
-
-    .logo {
-      display: block;
-      margin: 20px auto;
-      max-width: 140px;
-    }
-
-    .alert-success {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <div class="card">
-      <div class="card-header">
-        <i class="fas fa-camera"></i> Upload Photo to Gallery
-      </div>
-
-      @if(session('success'))
-        <div class="alert alert-success text-center">
-          {{ session('success') }}
-        </div>
-      @endif
-
-      <img src="{{ asset('pictures/carehome_logo.png') }}" alt="SmartCare Logo" class="logo">
-
-      <div class="card-body">
-        <form action="{{ route('photo.store') }}" method="POST" enctype="multipart/form-data">
-          @csrf
-
-          <!-- File Upload Only -->
-          <div class="mb-4">
-            <label for="photo" class="form-label">Choose a Photo</label>
-            <input type="file" class="form-control" id="photo" name="photo" required>
-          </div>
-
-          <!-- Submit -->
-          <button type="submit" class="btn btn-primary w-100">
-            <i class="fas fa-upload"></i> Upload Photo
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        });
+    });
+</script>
+@endpush

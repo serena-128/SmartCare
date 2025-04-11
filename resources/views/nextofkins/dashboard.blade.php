@@ -611,14 +611,14 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
 </div>
 
 <div class="card shadow-lg mb-4">
-  <div class="card-header bg-purple text-white">
+  <div class="card-header bg-purple text-black">
     <h4><i class="fas fa-shoe-prints"></i> Activity Insights</h4>
   </div>
   <div class="card-body">
     {{-- Activity Status Badge --}}
-    @if($data['steps'] > 10000)
-        <span class="badge bg-success">Very Active</span>
-    @elseif($data['steps'] > 5000)
+    @if($data['steps'] > 1500)
+        <span class="badge bg-success">Active</span>
+    @elseif($data['steps'] > 800)
         <span class="badge bg-warning">Moderately Active</span>
     @else
         <span class="badge bg-danger">Low Activity</span>
@@ -627,63 +627,44 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
     {{-- Encouragement Message --}}
     <div class="mt-2">
       @if($data['sedentary'] > 600)
-          <p class="text-warning">Might need more movement today!</p>
-      @elseif($data['steps'] > 8000)
-          <p class="text-success">Great activity levels!</p>
+          <p class="text-warning">They’ve been sitting a lot — maybe encourage some gentle movement!</p>
+      @elseif($data['steps'] > 1000)
+          <p class="text-success">More active than usual — that's great!</p>
       @else
-          <p class="text-info">Average day – balanced!</p>
+          <p class="text-info">A calm day so far – might just be a rest day.</p>
       @endif
     </div>
 
     {{-- Daily vs Average --}}
-    @php $avgSteps = 6000; @endphp
+    @php $avgSteps = 600; @endphp
     <p><strong>Today:</strong> {{ $data['steps'] }} steps</p>
     <p><strong>Avg:</strong> {{ $avgSteps }} steps</p>
 
     @if($data['steps'] > $avgSteps)
-        <p class="text-success">Above average today!</p>
+        <p class="text-success">They’ve gone above their usual activity today!</p>
     @else
-        <p class="text-muted">A bit below normal – could be a rest day.</p>
+        <p class="text-muted">Below average – could just be taking it easy.</p>
     @endif
 
     {{-- Goal Achieved --}}
-    @if($data['steps'] >= 10000)
+    @if($data['steps'] >= 1500)
         <div class="alert alert-success mt-3">
-            🎉 Your loved one reached their step goal today!
+            🎉 They reached their step goal today!
         </div>
     @endif
 
     {{-- Mood Suggestion --}}
     <div class="mt-2">
-      @if($data['steps'] > 8000)
-          <p>They’re probably feeling energetic today! 🌞</p>
+      @if($data['steps'] > 1000)
+          <p>They might be feeling energized! 🌞</p>
       @elseif($data['sedentary'] > 600)
-          <p>Maybe a bit tired or relaxed. ☕</p>
+          <p>Probably resting more today — maybe a relaxed mood. ☕</p>
       @endif
     </div>
   </div>
 </div>
 
-  <!-- Additional Information Section -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card shadow-lg mb-4">
-        <div class="card-header bg-warning text-white">
-          <h3>Additional Information</h3>
-        </div>
-        <div class="card-body">
-          <h5>Family History</h5>
-          <p>{{ $resident->family_history ?? 'N/A' }}</p>
 
-          <h5>Preferred Activities</h5>
-          <p>{{ $resident->preferred_activities ?? 'Daily walk' }}</p>
-
-          <h5>Notes from Caregivers</h5>
-          <p>{{ $resident->caregiver_notes ?? 'No notes available' }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </div>
 

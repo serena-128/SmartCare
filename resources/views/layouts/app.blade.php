@@ -62,8 +62,13 @@
                             <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
                             <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
                             <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 Show my appointments</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('photo.create') }}">🖼️ Add Photos</a></li>
+                            <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">➕ Add Event/Appointment</a>
+</li>
                         </ul>
                     </li>
+
 
                     <!-- Alerts, Schedule, Profile -->
                     <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.index') }}">🚨 Emergency Alerts</a></li>
@@ -167,5 +172,10 @@
             margin-right: 10px;
         }
     </style>
+    <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    @stack('scripts')
+
 </body>
 </html>
