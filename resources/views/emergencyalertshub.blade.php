@@ -25,25 +25,31 @@
     }
 </style>
 
-<div class="container mt-5">
-    <h2 class="text-center hub-title mb-4">🚨 Emergency Alerts Management Hub</h2>
+<div class="container py-5"> {{-- Added padding for spacing --}}
+    <!-- Title -->
+    <div class="text-center mb-5">
+        <h2 class="hub-title d-flex align-items-center justify-content-center gap-2" style="font-size: 2rem;">
+            <span>🚨</span>
+            <span>Emergency Alerts Management Hub</span>
+        </h2>
+    </div>
 
     <!-- KPI Cards -->
     <div class="row text-center mb-5">
-        <div class="col-md-4">
-            <div class="kpi-card border-left-danger">
+        <div class="col-md-4 mb-3">
+            <div class="kpi-card">
                 <h6 class="text-muted">Total Alerts</h6>
                 <h3 class="text-danger">{{ $totalAlerts }}</h3>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="kpi-card border-left-warning">
+        <div class="col-md-4 mb-3">
+            <div class="kpi-card">
                 <h6 class="text-muted">Active Alerts</h6>
                 <h3 class="text-warning">{{ $activeCount }}</h3>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="kpi-card border-left-success">
+        <div class="col-md-4 mb-3">
+            <div class="kpi-card">
                 <h6 class="text-muted">Resolved Alerts</h6>
                 <h3 class="text-success">{{ $resolvedCount }}</h3>
             </div>
@@ -53,13 +59,19 @@
     <!-- Action Buttons -->
     <div class="row text-center hub-buttons">
         <div class="col-md-4">
-            <a href="{{ route('emergencyalerts.index') }}" class="btn btn-outline-primary btn-lg w-100 mb-3">📋 View All Alerts</a>
+            <a href="{{ route('emergencyalerts.index') }}" class="btn btn-outline-primary btn-lg w-100 mb-3">
+                📋 View All Alerts
+            </a>
         </div>
         <div class="col-md-4">
-            <a href="{{ route('emergencyalerts.create') }}" class="btn btn-outline-success btn-lg w-100 mb-3">➕ Trigger New Alert</a>
+            <a href="{{ route('emergencyalerts.create') }}" class="btn btn-outline-success btn-lg w-100 mb-3">
+                ➕ Trigger New Alert
+            </a>
         </div>
         <div class="col-md-4">
-            <a href="#" class="btn btn-outline-info btn-lg w-100 mb-3 disabled" title="Coming Soon">🔔 Live Notifications (Coming Soon)</a>
+            <a href="#" class="btn btn-outline-info btn-lg w-100 mb-3 disabled" title="Coming Soon">
+                🔔 Live Notifications (Coming Soon)
+            </a>
         </div>
     </div>
 </div>
