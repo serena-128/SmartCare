@@ -59,14 +59,21 @@ class MedicationController extends Controller
         );
     }
 
-    public function calendarView()
+    public function calendarView(Request $request)
     {
-        return view('medications.calendar'); // 👈 Make sure this view exists
+        $allResidents = Resident::orderBy('lastname')->get();
+        return view('medications.calendar', compact('allResidents'));
     }
 
-    public function calendarEvents()
+    public function calendarEvents(Request $request)
     {
-        $medications = Medication::with('resident')->get();
+        $query = Medication::with('resident');
+
+        if ($request->filled('resident_id')) {
+            $query->where('resident_id', $request->resident_id);
+        }
+
+        $medications = $query->get();
 
         $events = [];
 
