@@ -175,33 +175,38 @@
 @endif
 
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>In Stock</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($products as $product)
-                <tr>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->stock }}</td>
-                    <td>€{{ number_format($product->price, 2) }}</td>
-                    <td>
-                        <form method="POST" action="{{ route('pharmacy.addToCart') }}">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="form-control mb-1" style="width: 80px;">
-                            <button class="btn btn-sm btn-primary">Add to Cart</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>In Stock</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($products as $product)
+        <tr>
+            <td>{{ $product->name }}</td>
+            <td>{{ $product->stock }}</td>
+            <td>€{{ number_format($product->price, 2) }}</td>
+            <td>
+                @if($product->stock > 0)
+                    <form method="POST" action="{{ route('pharmacy.addToCart') }}">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="form-control mb-1" style="width: 80px;">
+                        <button class="btn btn-sm btn-primary">Add to Cart</button>
+                    </form>
+                @else
+                    <button class="btn btn-sm btn-secondary" disabled>Out of Stock</button>
+                @endif
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
 
         <hr>
         <h4 class="mt-4">🚚 Your Orders</h4>
