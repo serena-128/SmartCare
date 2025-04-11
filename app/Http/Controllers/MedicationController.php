@@ -58,4 +58,26 @@ class MedicationController extends Controller
             'missed_medications_report.xlsx'
         );
     }
+
+    public function calendarView()
+    {
+        return view('medications.calendar'); // View should be in resources/views/medications/calendar.blade.php
+    }
+
+    public function calendarEvents()
+    {
+        $medications = Medication::with('resident')->get();
+
+        $events = [];
+
+        foreach ($medications as $med) {
+            $events[] = [
+                'title' => $med->resident->full_name . ' - ' . $med->medication_name,
+                'start' => $med->scheduled_time,
+                'color' => $med->taken ? '#28a745' : '#dc3545',
+            ];
+        }
+
+        return response()->json($events);
+    }
 }

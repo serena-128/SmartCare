@@ -151,5 +151,11 @@ Route::get('/missed-medications/export', [MedicationController::class, 'exportMi
     ->name('medications.export');
 Route::get('/medications/missed-history/export', [MedicationController::class, 'exportMissedHistory'])->name('medications.export');
 
+Route::get('/medications/calendar', [MedicationController::class, 'calendarView'])->name('medications.calendar');
+Route::get('/medications/calendar/json', [MedicationController::class, 'calendarEvents'])->name('medications.calendar.events');
+
+Route::get('/staff/calendar', [MedicationController::class, 'calendarView'])->name('medications.calendar');
+Route::get('/staff/calendar/events', [MedicationController::class, 'calendarEvents']);
+
 
 
