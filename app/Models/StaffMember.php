@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * Class StaffMember
@@ -177,4 +178,13 @@ class StaffMember extends Model
     {
         return $this->hasMany(\App\Models\Standardtask::class, 'completedby');
     }
+
+
+
+class StaffMember extends Model
+{
+    use Notifiable;
+    // ...
+}
+
 }

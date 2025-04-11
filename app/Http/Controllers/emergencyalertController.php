@@ -8,6 +8,9 @@ use App\Repositories\emergencyalertRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\emergencyalert;
+use App\Models\StaffMember;
+use App\Notifications\EmergencyAlertNotification;
+use Illuminate\Support\Facades\Notification;
 
 use Flash;
 use Response;
@@ -55,16 +58,26 @@ public function index()
      *
      * @return Response
      */
+    
     public function store(CreateemergencyalertRequest $request)
     {
-        $input = $request->all();
-
+        // Step 1: Retrieve validated input
+        $input = $request->validated(); // safer than $request->all()
+    
+        // Step 2: Create the emergency alert using the repository
         $emergencyalert = $this->emergencyalertRepository->create($input);
-
-        Flash::success('Emergencyalert saved successfully.');
-
+    
+        // Step 3: Notify all staff members
+        $staff = StaffMember::all();
+        Notification::send($staff, new EmergencyAlertNotification($emergencyalert));
+    
+        // Step 4: Feedback to user
+        Flash::success('Emergency Alert created and notifications sent to staff.');
+    
+        // Step 5: Redirect to index
         return redirect(route('emergencyalerts.index'));
     }
+    
 
     /**
      * Display the specified emergencyalert.
