@@ -31,11 +31,11 @@ class EmergencyAlertNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['database']; // switch from mail to database
+        return ['database']; // store in notifications table
     }
 
     /**
-     * Get the array representation of the notification.
+     * Store alert details in database.
      *
      * @param mixed $notifiable
      * @return array
@@ -49,6 +49,7 @@ class EmergencyAlertNotification extends Notification
             'urgency'      => $this->alert->urgency,
             'details'      => $this->alert->details,
             'timestamp'    => $this->alert->alerttimestamp,
+            'triggered_by' => optional($this->alert->triggeredBy)->firstname,
         ];
     }
 }

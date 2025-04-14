@@ -29,6 +29,7 @@ use App\Http\Controllers\NextOfKinDashboardController;
 use App\Http\Controllers\StaffScheduleController;
 use App\Models\Resident;
 use App\Models\CarePlan;
+use App\Http\Controllers\StaffNotificationController;
 use App\Models\EmergencyAlert;
 use App\Http\Controllers\staffProfilesController;
 
@@ -262,6 +263,10 @@ Route::get('/emergency-alerts-hub', function () {
     return view('emergencyalertshub', compact('totalAlerts', 'activeCount', 'resolvedCount'));
 })->name('emergencyalerts.hub');
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/staff/notifications', [StaffNotificationController::class, 'index'])->name('staff.notifications');
+});
 
 
 Route::get('/resident-hub', function () {

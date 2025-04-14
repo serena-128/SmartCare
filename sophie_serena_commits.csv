@@ -1,48 +1,124 @@
-f00d963,Komal,B00139870@mytudublin.ie,2025-04-11,notifications created
-cbfc9b5,Komal,B00139870@mytudublin.ie,2025-04-11,notifications created
-c87af72,Komal,B00139870@mytudublin.ie,2025-04-11,notifications created
-a17aeb3,Komal,B00139870@mytudublin.ie,2025-04-11,emergency alerts fixed
-e961bb6,Komal,B00139870@mytudublin.ie,2025-04-11,emergency alerts hub route created
-2e46bea,Komal,B00139870@mytudublin.ie,2025-04-11,emergency alerts fixed
-472b72b,Komal,B00139870@mytudublin.ie,2025-04-10,careplan hub route added
-6cd7f51,Komal,B00139870@mytudublin.ie,2025-04-10,careplan hub created
-071cbaf,Komal,B00139870@mytudublin.ie,2025-04-10,careplan hub route added
-8ee810a,Komal,B00139870@mytudublin.ie,2025-04-10,KPIs added to resident page
-154c8d3,Komal,B00139870@mytudublin.ie,2025-04-10,KPI added to residentcontroller
-1f510ab,Komal,B00139870@mytudublin.ie,2025-04-10,resdient search footer fixed
-7b02542,Komal,B00139870@mytudublin.ie,2025-04-10,resident management layout fixed
-466518a,Komal,B00139870@mytudublin.ie,2025-04-10,resident hub search dataofbirth format fixed
-7b1dacf,Komal,B00139870@mytudublin.ie,2025-04-10,resdient search date_of_birth fixed
-0299852,Komal,B00139870@mytudublin.ie,2025-04-10,resident hub search works
-4a78ff7,Komal,B00139870@mytudublin.ie,2025-04-09,resident hub created
-08d212c,Komal,B00139870@mytudublin.ie,2025-04-09,resdient search added
-7426453,Komal,B00139870@mytudublin.ie,2025-04-09,resident hub created
-bc0c08d,Komal,B00139870@mytudublin.ie,2025-04-09,hub is working
-a17791c,Komal,B00139870@mytudublin.ie,2025-04-09,resident hub created
-ae9bdc8,Komal,B00139870@mytudublin.ie,2025-04-08,chatbot works
-c487f9f,Komal,B00139870@mytudublin.ie,2025-04-08,chatbot created
-97b52c1,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile added to dashboard
-1b832cb,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile made
-6f501b8,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile made
-37ed68e,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile made
-3e79b0b,Komal,B00139870@mytudublin.ie,2025-04-08,staff address added
-24ebae6,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile made
-be8a12c,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile made
-a3c575a,Komal,B00139870@mytudublin.ie,2025-04-08,staff profile made
-b640838,Komal,B00139870@mytudublin.ie,2025-04-08,staff_profile user.php updated
-dffa7d3,Komal,B00139870@mytudublin.ie,2025-04-07,staff_profile user.php updated
-54119f0,Komal,B00139870@mytudublin.ie,2025-04-07,staff_profile user id added
-5d8c6f2,Komal,B00139870@mytudublin.ie,2025-04-07,staff_profile user.php updated
-c2b98a6,Komal,B00139870@mytudublin.ie,2025-04-07,staff_profile fix
-9a19f92,Komal,B00139870@mytudublin.ie,2025-04-07,staff_profile added
-37fe4d4,Komal,B00139870@mytudublin.ie,2025-04-05,medication reminder added
+91d8baf,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-11, fixed photo
+e252f34,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-11,excel download works
+3e0b691,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-11,download excel button
+258c9fe,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,updated the nav bar with missed dosages
+9ea98b2,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,added filter by name for each resident
+9c73a7d,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,updated the layout
+bb9e12e,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10, medication works
+e66f0dd,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,got nav bar on the page
+ab9545f,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,cleared cart
+06d5e62,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,added messages
+5630d04,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,fixed error in overdue file
+f4944a5,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,clear cart
+7a4c5e0,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,medication
+5cd4a0b,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,made overdue medication layout nicer
+21418ff,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-10,medication marked as taken appears
+f3c5831,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,added to cart
+893d6e2,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,works
+5b5c385,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,added medication
+328d797,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,added last 5 orders only
+537a257,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,removed your cart tab
+a3891d8,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,slide in effect
+6097ee3,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,products
+83de4b1,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,products
+acc9a87,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,medication shopping cart
+5b393f6,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-10,medication shopping cart
+8ef6b53,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09, medications
+a4b227e,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09, medications
+4e78ab4,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09, medications
+d7978c9,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,pharamacy
+3b88bab,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,medications
+63c0b41,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,medications
+bef5ef1,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,medications
+c50a5fb,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,medications
+7c334bd,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,fitbit
+fc0288c,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,MESSAGES
+78227b3,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-09,added recieved messages
+b7d74b5,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,scheduled time
+47d9fe8,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,added recieved messages
+85fa516,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,medication marked taken button works
+e7acac7,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,overdue button
+7d78cc3,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,MESSAGES
+e80ed1d,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,medication marked taken button works
+9145958,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,medication marked
+bf4e231,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,medication overdue works
+4f05a5c,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-08,medication controller updated
+e076dbf,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,added recieved messages
+295e4d1,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,fixed home page
+bd8f95d,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,fixed home page
+7c71071,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,sends email
+53c00a3,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,messages singular
+86741ab,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,messages
+a884590,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,messages
+c497ca5,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,messages
+eb00ca3,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-08,messages
+524ed1a,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-07,medications over due works
+4194c19,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-07,medication reminder made
+ccde6f7,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-07,started tracking .env
+fb1e5e5,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-07,care logs made
+9ed631c,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-04-07,care logs made
+37ab622,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-07,event
+f77a2f5,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-07,appt
+3c7bbbd,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-07,appt
+468280e,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-07,appt calendar
+bb0da80,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-07,Committing changes to feature-branch
+c77b68f,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,works
+37c269b,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,fixed back to dashboard on profile
+0f61b05,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,fixed rsvp event back to dashboard
+eea901d,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,merged
+603a8d8,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,merged
+d5ac124,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,merges
+4f5eb50,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,merges
+5769d08,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-03,changed files
+87cb0ee,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-02,email layout
+20d9333,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-02,email gets sent
+cd60c78,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-02,notification preferences check boxes wrork
+6a46bf6,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-02,added notif preference table
+0ed74ca,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-02,weather api
+f1b07ec,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-02,weather api
+69fa2ee,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-01,schedule
+4ec5507,b00145951,124595240+b00145951@users.noreply.github.com,2025-04-01,staff schedule
+e7b2692,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-28,photo form
 8c2914c,Komal,B00139870@mytudublin.ie,2025-03-28,care plan notes added
+d47fdde,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-28,appointment rsvp works
 0e4b68b,Komal,B00139870@mytudublin.ie,2025-03-28,show appointments added
 27a6b3f,Komal,B00139870@mytudublin.ie,2025-03-28,upcoming appointments added
+b2419b5,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-28,calendar is fixed
+0b98184,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-28,everything works well
+b3a48aa,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-28,notifications fixed
 ee0f336,Komal,B00139870@mytudublin.ie,2025-03-28,upcoming appointments added
+708f475,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-28,notifications works proper
 41d1ff9,Komal,B00139870@mytudublin.ie,2025-03-27,upcoming appointments calender
+5f304db,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,notification for photos works
+7b40ecc,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,bulletin notification works
+f6e4281,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27, news notification works
+5b0fce0,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,appointments show on the notification
+81797cd,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,notifications works for event
+89b38c6,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27, password update stays on same page for now
 5777626,Komal,B00139870@mytudublin.ie,2025-03-27,upcoming appointments added
+bc218d8,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27, password change error message is there
+0bf674e,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,changing password
+b41a06e,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,fixed settings
+2779f17,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,settings page is back
 43a0b8e,Komal,B00139870@mytudublin.ie,2025-03-27,upcoming appointments added
+a91ec3b,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,photos show up on news
+9fd396a,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,file name does not show under photo uploaded anymore
+be7e532,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,the photo shows on the news gallerys
+5eaab2a,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,ALL FORMS ADD INTO DATABASE
+d858580,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,fixed route error
+27dd189,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,bulletin form works
+acd99fe,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,edited photo controller
+9cf5146,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,added bulletin controller
+234fe4b,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,edited news controller
+b848809,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,created photo controller
+be12ecd,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,created bulletin controller
+b65050b,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,created news controller
+ff65d8d,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,updated routes
+10163e7,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,added photo form
+fd47174,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,added bulletin form
+e57f24b,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,Added form for news insertion
+319a415,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-27,news and bulletin photo gallery page
+50a5356,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-03-27,fixed dashboard
 c9c457c,Komal,B00139870@mytudublin.ie,2025-03-27,appointments epic  fixed
 92d95b5,Komal,B00139870@mytudublin.ie,2025-03-27,appointments epic  fixed
 a257ba9,Komal,B00139870@mytudublin.ie,2025-03-27,appointments epic  fixed
@@ -54,8 +130,23 @@ e943ba1,Komal,B00139870@mytudublin.ie,2025-03-25,resident show fixed
 d953b24,Komal,B00139870@mytudublin.ie,2025-03-25,many to many relationship added
 4972b34,Komal,B00139870@mytudublin.ie,2025-03-25,navbar added staffboard
 a82ac58,Komal,B00139870@mytudublin.ie,2025-03-25,fixing up staffboard
+5dcd886,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-24,directs to view more photo gallery
+e8fb333,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-24,photo gallery html page created
+a26a9ac,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-24,photo gallery controller
+55884a9,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-24,photo gallery route
+0efbf62,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-23,appointmet route
+9472b1b,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-22,added event search button
+d167e67,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-22,added apt search bar
+3ff3459,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-21,notif dropdown is not covered by containers or buttons on page anymore
+77b3e72,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-21,notif styling
+571d6e1,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-21,unread notification number
+910ff89,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-21,notif styling colour and dropdown
 46457e9,Komal,B00139870@mytudublin.ie,2025-03-21,main page redirect page nextofkin fixed
 59bd8ef,Komal,B00139870@mytudublin.ie,2025-03-21,fixed staffdashboard redirect
+53784d2,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-20,notif java script dropdown
+56211c0,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-20,added notification button
+8151de7,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-20,notif styling
+aec89d1,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-20,adding notification
 89f8876,Komal,B00139870@mytudublin.ie,2025-03-19,add changes from sophie branch
 975f2b6,Komal,B00139870@mytudublin.ie,2025-03-19,staff_dashboard current fix
 e97ce36,b00145951,124595240+b00145951@users.noreply.github.com,2025-03-18,staff dashboard css
@@ -229,6 +320,8 @@ e0fd7bd,b00145951,124595240+b00145951@users.noreply.github.com,2025-02-14,web.ph
 69135f8,b00145951,124595240+b00145951@users.noreply.github.com,2025-02-13,created a dietary form
 7c5bc9a,b00145951,124595240+b00145951@users.noreply.github.com,2025-02-13,Resolved merge conflict in web.php
 4d991c1,b00145951,124595240+b00145951@users.noreply.github.com,2025-02-13,Resolved merge conflict in web.php
+4c5da2b,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-02-13,Saving my changes before pulling
 efdb38d,Komal,B00139870@mytudublin.ie,2025-02-13,Main page created - SmartCare Laravel Project
 16cc8ad,b00145951,124595240+b00145951@users.noreply.github.com,2025-02-12,tables are scaffolded
+4b65716,B00141403 Serena Emedeke,b00141403@mytudublin.ie,2025-02-12,scaffolded the role table
 801c975,b00145951,124595240+b00145951@users.noreply.github.com,2025-02-11,inital commit

@@ -48,8 +48,10 @@ public function index()
      */
     public function create()
     {
-        return view('emergencyalerts.create');
+        $residents = \App\Models\Resident::pluck('firstname', 'id');
+        return view('emergencyalerts.create', compact('residents'));
     }
+    
 
     /**
      * Store a newly created emergencyalert in storage.
@@ -59,24 +61,30 @@ public function index()
      * @return Response
      */
     
-    public function store(CreateemergencyalertRequest $request)
-    {
-        // Step 1: Retrieve validated input
-        $input = $request->validated(); // safer than $request->all()
-    
-        // Step 2: Create the emergency alert using the repository
-        $emergencyalert = $this->emergencyalertRepository->create($input);
-    
-        // Step 3: Notify all staff members
-        $staff = StaffMember::all();
-        Notification::send($staff, new EmergencyAlertNotification($emergencyalert));
-    
-        // Step 4: Feedback to user
-        Flash::success('Emergency Alert created and notifications sent to staff.');
-    
-        // Step 5: Redirect to index
-        return redirect(route('emergencyalerts.index'));
-    }
+     public function store(CreateemergencyalertRequest $request)
+     {
+         // Step 1: Get validated data
+         $input = $request->validated();
+     
+         // Step 2: Set required system fields
+         $input['triggeredbyid'] = session('staff_id'); // current logged-in staff
+         $input['alerttimestamp'] = now();
+         $input['status'] = 'Pending'; // default status
+     
+         // Step 3: Create the emergency alert
+         $emergencyalert = $this->emergencyalertRepository->create($input);
+     
+         // Step 4: Notify all staff
+         $staff = \App\Models\StaffMember::all();
+         \Illuminate\Support\Facades\Notification::send($staff, new \App\Notifications\EmergencyAlertNotification($emergencyalert));
+     
+         // Step 5: Feedback
+         \Flash::success('Emergency Alert created and notifications sent to staff.');
+     
+         // Step 6: Redirect
+         return redirect(route('emergencyalerts.index'));
+     }
+     
     
 
     /**

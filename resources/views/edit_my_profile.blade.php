@@ -23,6 +23,10 @@
         color: #6c757d;
         font-weight: 500;
     }
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        border: none;
+    }
 </style>
 
 <div class="container bootstrap snippets bootdeys mt-4">
@@ -46,6 +50,23 @@
 
                 <h4 class="mb-3">Edit Profile</h4>
 
+                <!-- READ-ONLY INFO -->
+                <div class="form-group mb-3">
+                    <label>Full Name</label>
+                    <input type="text" value="{{ $staff->firstname }} {{ $staff->lastname }}" class="form-control" readonly>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Email</label>
+                    <input type="text" value="{{ $staff->email }}" class="form-control" readonly>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Role</label>
+                    <input type="text" value="{{ $staff->staff_role }}" class="form-control" readonly>
+                </div>
+
+                <!-- EDITABLE FIELDS -->
                 <div class="form-group mb-3">
                     <label for="contactnumber">Phone Number</label>
                     <input type="text" name="contactnumber" value="{{ $staff->contactnumber }}" class="form-control">
