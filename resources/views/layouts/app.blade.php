@@ -40,9 +40,9 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" data-bs-toggle="dropdown">🏥 Residents</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
+                            <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 Resident Hub</a></li>
                             <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}">💊 Medications</a></li>
-                            <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li>
+                            <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plan Hub</a></li>
                         </ul>
                     </li>
 
@@ -172,8 +172,7 @@
             margin-right: 10px;
         }
     </style>
-    <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     @stack('scripts')
 
