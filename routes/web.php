@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\DiagnosisController;
 use App\Http\Controllers\EmergencyAlertController;
@@ -38,10 +39,18 @@ use App\Http\Controllers\OpenFDAController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\StaffNotificationController; // added from komal_2
+use App\Models\Resident; // added from komal_2
+use App\Models\CarePlan; // added from komal_2
+use App\Http\Controllers\staffProfilesController; // added from komal_2
+use App\Models\EmergencyAlert; // added from komal_2
+use App\Models\StaffMember;
+
+
 /*
-|--------------------------------------------------------------------------
+|---------------------------------------------------------------------- 
 | Web Routes
-|--------------------------------------------------------------------------
+|---------------------------------------------------------------------- 
 |
 | Here is where you can register web routes for your application.
 |
@@ -62,6 +71,9 @@ Route::middleware(['auth'])->group(function () {
 
 // Resource Routes for Other Entities
 Route::resource('residents', ResidentController::class);
+Route::resource('staffProfiles', App\Http\Controllers\StaffProfilesController::class);
+// <-- Ensure this is the last Route
+
 Route::resource('standardtasks', StandardTaskController::class);
 Route::resource('doses', DoseController::class);
 Route::resource('appointments', AppointmentController::class);
@@ -71,7 +83,6 @@ Route::resource('roles', RoleController::class);
 Route::resource('dietaryrestrictions', DietaryRestrictionController::class);
 Route::resource('stafftasks', StaffTaskController::class);
 Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
-Route::get('/', [DashboardController::class, 'index']);
 Route::resource('emergencyalerts', EmergencyAlertController::class);
 
 // Emergency Alert Actions
@@ -117,7 +128,7 @@ Route::resource('schedules', ScheduleController::class);
 
 Route::post('/shift-change', [ScheduleController::class, 'store'])->name('shiftChange.store');
 
-Route::resource('careplans', App\Http\Controllers\careplanController::class);
+Route::resource('careplans', CarePlanController::class);
 Route::get('/careplans/{id}/edit', [CarePlanController::class, 'edit'])->name('careplans.edit');
 Route::put('/careplans/{id}', [CarePlanController::class, 'update'])->name('careplans.update');
 
@@ -176,7 +187,6 @@ Route::get('/staff/calendar', function () {
 Route::get('/staff/appointments/json', [App\Http\Controllers\appointmentController::class, 'fetchStaffAppointments'])->name('appointments.json');
 
 // Combine both sections from the conflict:
-// Routes from HEAD:
 Route::get('/search-appointments', [AppointmentController::class, 'searchAppointments']);
 Route::get('/photogallery', [PhotoGalleryController::class, 'index'])->name('photogallery');
 Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
@@ -191,6 +201,7 @@ Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->na
 Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
 Route::get('staff/schedule', [StaffScheduleController::class, 'showSchedule'])->name('staffmembers.schedule');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
 // And the route from the other branch:
 Route::get('/staff/birthdays', function () {
     return view('staff.birthdays');
@@ -203,7 +214,7 @@ Route::get('/signed-out', function () {
 
 Route::post('appointments/rsvp', [AppointmentController::class, 'handleRSVP'])->name('appointments.rsvp');
 
-Route::post('/events/rsvp', [\App\Http\Controllers\EventController::class, 'handleRSVP'])->name('events.rsvp');
+Route::post('/events/rsvp', [EventController::class, 'handleRSVP'])->name('events.rsvp');
 
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
@@ -222,26 +233,25 @@ Route::get('/google-fit/connect', [GoogleFitController::class, 'connect'])->name
 Route::get('/google-fit/callback', [GoogleFitController::class, 'callback'])->name('googlefit.callback');
 Route::get('/google-fit/data', [GoogleFitController::class, 'getData'])->name('googlefit.data');
 
-Route::get('/fitbit/connect', [App\Http\Controllers\FitbitController::class, 'redirectToFitbit'])->name('fitbit.connect');
-Route::get('/fitbit/callback', [App\Http\Controllers\FitbitController::class, 'handleCallback']);
-Route::get('/fitbit/data', [App\Http\Controllers\FitbitController::class, 'fetchFitbitData'])->name('fitbit.data');
+Route::get('/fitbit/connect', [FitbitController::class, 'redirectToFitbit'])->name('fitbit.connect');
+Route::get('/fitbit/callback', [FitbitController::class, 'handleCallback']);
+Route::get('/fitbit/data', [FitbitController::class, 'fetchFitbitData'])->name('fitbit.data');
 
 Route::get('/nextofkin/fitbit-summary', [FitbitController::class, 'showFitbitSummary'])->name('fitbit.summary');
 Route::get('/fitbit/summary', [FitbitController::class, 'summary']);
 Route::get('/fitbit/callback', [FitbitController::class, 'handleCallback']);
 
-Route::get('/staff/drug-info/{name}', [\App\Http\Controllers\OpenFDAController::class, 'fetchDrugInfo'])->name('staff.drug.info');
+Route::get('/staff/drug-info/{name}', [OpenFDAController::class, 'fetchDrugInfo'])->name('staff.drug.info');
 Route::get('/staff/medication/{drugName}', [StaffDashboardController::class, 'showMedicationInfo'])->name('staff.medication');
 
 Route::get('/staff/medication-search', [StaffDashboardController::class, 'showMedicationInfo'])->name('staff.medication');
 Route::get('/staff/medications', [StaffDashboardController::class, 'showMedicationPage'])->name('staff.medications');
 
-Route::post('/pharmacy/purchase', [App\Http\Controllers\PharmacyController::class, 'purchase'])->name('pharmacy.purchase');
+Route::post('/pharmacy/purchase', [PharmacyController::class, 'purchase'])->name('pharmacy.purchase');
 
 Route::get('/pharmacy', [PharmacyController::class, 'index'])->name('pharmacy.index');
 Route::post('/pharmacy/purchase', [PharmacyController::class, 'placeOrder'])->name('pharmacy.purchase');
 Route::post('/pharmacy/ship/{order}', [PharmacyController::class, 'markShipped'])->name('pharmacy.ship');
-
 
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
@@ -250,7 +260,59 @@ Route::get('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('ca
 Route::post('/pharmacy/add-to-cart', [PharmacyController::class, 'addToCart'])->name('pharmacy.addToCart');
 Route::post('/pharmacy/checkout', [PharmacyController::class, 'checkout'])->name('pharmacy.checkout');
 
-Route::put('/residents/{id}/update-medications', [\App\Http\Controllers\ResidentController::class, 'updateMedications'])->name('residents.updateMedications');
+Route::put('/residents/{id}/update-medications', [ResidentController::class, 'updateMedications'])->name('residents.updateMedications');
 
 Route::post('/pharmacy/clear-cart', [PharmacyController::class, 'clearCart'])->name('pharmacy.clearCart');
 
+// Add this to your routes/web.php file
+Route::get('/careplan-hub', [CarePlanController::class, 'showCarePlanHub'])->name('careplan.hub');
+
+// Add this route to your routes/web.php
+Route::get('/emergency-alerts-hub', [EmergencyAlertController::class, 'showEmergencyAlertsHub'])->name('emergencyalerts.hub');
+// In routes/web.php
+Route::get('/my-profile', [StaffProfilesController::class, 'myProfile'])->name('my.profile');
+// In routes/web.php
+Route::get('/emergency-alerts-hub', [EmergencyAlertController::class, 'showEmergencyAlertsHub'])->name('emergencyalerts.hub');
+
+Route::get('/resident-hub', function () {
+    $totalResidents = Resident::count();
+    $newThisWeek = Resident::where('created_at', '>=', now()->subWeek())->count();
+
+    // Check if 'status' column exists in your database before using it
+    $discharged = Resident::where('status', 'discharged')->count(); 
+
+    return view('residentHub', compact('totalResidents', 'newThisWeek', 'discharged'));
+})->name('resident.hub');
+
+Route::get('/residents/search', [ResidentController::class, 'searchPage'])->name('residents.search');
+Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');
+
+Route::resource('residents', ResidentController::class);
+Route::get('/my-profile/edit', function () {
+    if (!Session::has('staff_id')) {
+        return redirect('/login');
+    }
+
+    $staff = StaffMember::find(Session::get('staff_id'));
+    return view('edit_my_profile', compact('staff'));
+})->name('my.profile.edit');
+
+Route::post('/my-profile/update', function (Request $request) {
+    if (!Session::has('staff_id')) {
+        return redirect('/login');
+    }
+
+    $staff = StaffMember::find(Session::get('staff_id'));
+
+    $staff->contactnumber = $request->contactnumber;
+    $staff->address = $request->address;
+
+    if ($request->hasFile('profile_picture')) {
+        $path = $request->file('profile_picture')->store('staff_images', 'public');
+        $staff->profile_picture = $path;
+    }
+
+    $staff->save();
+
+    return redirect()->route('my.profile')->with('success', 'Profile updated!');
+})->name('my.profile.update');

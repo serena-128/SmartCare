@@ -115,4 +115,17 @@ public function update(Request $request, $id)
 
         return redirect(route('careplans.index'));
     }
+        // Add the showCarePlanHub method
+    public function showCarePlanHub()
+    {
+        // Fetch the required data from the CarePlan model
+        $totalCarePlans = CarePlan::count();
+        $activePlans = CarePlan::where('status', 'active')->count();
+        $completedPlans = CarePlan::where('status', 'completed')->count();
+        $recentCarePlans = CarePlan::latest('updated_at')->take(5)->get();
+
+        // Return the view with the data
+        return view('careplanHub', compact('totalCarePlans', 'activePlans', 'completedPlans', 'recentCarePlans'));
+    }
+
 }

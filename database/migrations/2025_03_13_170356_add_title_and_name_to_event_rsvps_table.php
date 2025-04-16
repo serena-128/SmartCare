@@ -9,8 +9,8 @@ class AddTitleAndNameToEventRsvpsTable extends Migration
     public function up()
     {
         Schema::table('event_rsvps', function (Blueprint $table) {
-            $table->string('event_title')->nullable()->after('nextofkin_id');
-            $table->string('nextofkin_name')->nullable()->after('event_title');
+            //$table->string('event_title')->nullable()->after('nextofkin_id');
+            //$table->string('nextofkin_name')->nullable()->after('event_title');
         });
     }
 

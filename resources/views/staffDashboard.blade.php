@@ -35,9 +35,10 @@
                         🏥 Residents
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 View Residents</a></li>
+                        <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
                         <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}">💊 Medications</a></li>
-                        <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plans</a></li> <!-- ✅ Added this -->
+                        <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li> <!-- ✅ Added this -->
+
                     </ul>
                 </li>
 
@@ -68,7 +69,7 @@
 
                 <!-- Emergency Alerts -->
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="{{ route('emergencyalerts.index') }}">🚨 Emergency Alerts</a>
+                    <a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Emergency Alerts</a>
                 </li>
                 <li class="nav-item">
     <a class="nav-link" href="{{ route('staffmembers.schedule') }}">📅 My Schedule</a>
@@ -85,7 +86,9 @@
                         👤 {{ session('staff_name') }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ route('staff.profile') }}">⚙️ Settings</a></li>
+                    <a href="{{ route('my.profile') }}" class="nav-link">👤 My Profile</a>
+
+
 
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
@@ -248,5 +251,171 @@
     .border-danger { border-left: 5px solid #dc3545 !important; }
     .border-info { border-left: 5px solid #17a2b8 !important; }
 </style>
+<!-- FAQ Chatbot 💬 -->
+<div id="faq-chatbot">
+    <div id="chat-icon" onclick="toggleChat()">
+        💬
+    </div>
+    <div id="chat-box">
+        <div id="chat-header">SmartCare Assistant</div>
+        <div id="chat-body">
+            <div class="chat-message bot">Hi! I’m your assistant. How can I help?</div>
+        </div>
+        <input type="text" id="chat-input" placeholder="Type your question..." onkeydown="handleChatKey(event)">
+    </div>
+</div>
+
+<style>
+    #faq-chatbot {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+    #chat-icon {
+        background: #6a1b9a;
+        color: #fff;
+        padding: 12px 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    #chat-box {
+        display: none;
+        width: 300px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #chat-header {
+        background: #6a1b9a;
+        color: #fff;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+    }
+    #chat-body {
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 10px;
+        font-size: 14px;
+    }
+    #chat-input {
+        border: none;
+        border-top: 1px solid #ddd;
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+    }
+    .chat-message {
+        margin-bottom: 10px;
+    }
+    .chat-message.user {
+        text-align: right;
+        color: #333;
+    }
+    .chat-message.bot {
+        color: #6a1b9a;
+    }
+</style>
+<script>
+    const addResidentUrl = "{{ route('residents.create') }}";
+</script>
+
+
+<script>
+    function toggleChat() {
+        const box = document.getElementById("chat-box");
+        box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    function handleChatKey(e) {
+        if (e.key === "Enter") {
+            const input = document.getElementById("chat-input");
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage("user", message);
+            input.value = "";
+
+            const response = getBotReply(message.toLowerCase());
+            setTimeout(() => addMessage("bot", response), 500);
+        }
+    }
+
+    function addMessage(type, text) {
+    const body = document.getElementById("chat-body");
+    const msg = document.createElement("div");
+    msg.className = `chat-message ${type}`;
+    msg.innerHTML = text; // ✅ Use innerHTML to allow clickable links
+    body.appendChild(msg);
+    body.scrollTop = body.scrollHeight;
+}
+
+
+function getBotReply(question) {
+    if (question.includes("visiting")) {
+        return "Visiting hours are from 9am to 7pm daily.";
+    }
+
+    if (question.includes("emergency")) {
+        return "In case of an emergency, go to the Emergency Alerts tab immediately.";
+    }
+
+    if (question.includes("profile")) {
+        return "You can view and edit your profile under '👤 My Profile' in the top right menu.";
+    }
+
+    if (question.includes("appointment") || question.includes("schedule")) {
+        return "To schedule an appointment, go to '📅 Tasks & Appointments' and click 'Schedule Appointment'.";
+    }
+
+    // ✅ Keep this BEFORE the general 'resident' check
+    if (question.includes("add") && question.includes("resident")) {
+        return `Doctors can add a new resident from the Residents tab. ➕ <a href="${addResidentUrl}" target="_blank">Click here to add</a>.`;
+    }
+
+    if (question.includes("resident")) {
+        return "You can view resident information under '🏥 Residents' > View Residents.";
+    }
+
+    if (question.includes("care plan")) {
+        return "Care plans can be found under '🏥 Residents' > Care Plans.";
+    }
+
+    if (question.includes("medication")) {
+        return "Medication alerts and records can be found in the Medical Info or MAR section.";
+    }
+
+    if (question.includes("on duty") || question.includes("staff")) {
+        return "The 'Staff On-Duty Now' section shows who's currently working.";
+    }
+
+    if (question.includes("tasks")) {
+        return "You can assign or view tasks in the '📅 Tasks & Appointments' dropdown.";
+    }
+
+    if (question.includes("calendar")) {
+        return "Your schedule and upcoming tasks are available in the '📅 My Schedule' section.";
+    }
+
+    if (question.includes("logout")) {
+        return "Click on your name in the top right and select 'Logout'.";
+    }
+
+    if (question.includes("chat") || question.includes("message")) {
+        return "Currently, you can use this chatbot for quick help. Messaging between staff is coming soon!";
+    }
+
+    return "I'm not sure about that. Please check the documentation or ask a supervisor.";
+}
+
+
+
+</script>
+
 
 @endsection

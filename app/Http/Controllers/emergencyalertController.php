@@ -8,6 +8,9 @@ use App\Repositories\emergencyalertRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\emergencyalert;
+use App\Models\StaffMember;
+use App\Notifications\EmergencyAlertNotification;
+use Illuminate\Support\Facades\Notification;
 
 use Flash;
 use Response;
@@ -45,8 +48,10 @@ public function index()
      */
     public function create()
     {
-        return view('emergencyalerts.create');
+        $residents = \App\Models\Resident::pluck('firstname', 'id');
+        return view('emergencyalerts.create', compact('residents'));
     }
+    
 
     /**
      * Store a newly created emergencyalert in storage.
@@ -55,16 +60,32 @@ public function index()
      *
      * @return Response
      */
-    public function store(CreateemergencyalertRequest $request)
-    {
-        $input = $request->all();
-
-        $emergencyalert = $this->emergencyalertRepository->create($input);
-
-        Flash::success('Emergencyalert saved successfully.');
-
-        return redirect(route('emergencyalerts.index'));
-    }
+    
+     public function store(CreateemergencyalertRequest $request)
+     {
+         // Step 1: Get validated data
+         $input = $request->validated();
+     
+         // Step 2: Set required system fields
+         $input['triggeredbyid'] = session('staff_id'); // current logged-in staff
+         $input['alerttimestamp'] = now();
+         $input['status'] = 'Pending'; // default status
+     
+         // Step 3: Create the emergency alert
+         $emergencyalert = $this->emergencyalertRepository->create($input);
+     
+         // Step 4: Notify all staff
+         $staff = \App\Models\StaffMember::all();
+         \Illuminate\Support\Facades\Notification::send($staff, new \App\Notifications\EmergencyAlertNotification($emergencyalert));
+     
+         // Step 5: Feedback
+         \Flash::success('Emergency Alert created and notifications sent to staff.');
+     
+         // Step 6: Redirect
+         return redirect(route('emergencyalerts.index'));
+     }
+     
+    
 
     /**
      * Display the specified emergencyalert.
@@ -156,9 +177,15 @@ public function index()
 
         return redirect(route('emergencyalerts.index'));
     }
-        public function index()
-    {
-        return view('emergencyalerts.index'); // Ensure this view exists
-    }
+public function showEmergencyAlertsHub()
+{
+    $totalAlerts = EmergencyAlert::count();
+    $activeAlerts = EmergencyAlert::where('status', 'active')->count();
+    $resolvedAlerts = EmergencyAlert::where('status', 'resolved')->count(); // Ensure this is calculated and passed
+
+    return view('emergencyalertshub', compact('totalAlerts', 'activeAlerts', 'resolvedAlerts'));
+}
+
+
 
 }

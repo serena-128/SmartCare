@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up()
-    {
+{
+    if (!Schema::hasTable('schedule')) {
         Schema::create('schedule', function (Blueprint $table) {
             $table->id();
             $table->foreignId('roleid')->nullable()->constrained('role')->onDelete('set null');
@@ -23,6 +24,8 @@ return new class extends Migration {
             $table->softDeletes();
         });
     }
+}
+
 
     public function down()
     {

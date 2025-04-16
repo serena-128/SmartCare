@@ -76,14 +76,15 @@ class careplan extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
+// CarePlan.php
 public function resident()
 {
     return $this->belongsTo(Resident::class, 'residentid');
 }
 
-public function staffMember()
+public function staffmember()
 {
-    return $this->belongsTo(StaffMember::class, 'staffmemberid');
+    return $this->belongsTo(\App\Models\StaffMember::class, 'staffmemberid'); // assuming you renamed roleid to staffmemberid
 }
 
 }

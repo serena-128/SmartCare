@@ -10,7 +10,8 @@ class CreateNextofkinsTable extends Migration
     {
         Schema::create('nextofkins', function (Blueprint $table) {
             $table->id('nextofkinid'); // Primary key
-            $table->foreignId('residentid')->constrained('residents')->onDelete('cascade'); // Foreign key linking to the residents table
+            $table->foreignId('residentid')->constrained('residents', 'residentid')->onDelete('cascade');
+ // Foreign key linking to the residents table
             $table->string('firstname', 50); // First name of the next of kin
             $table->string('lastname', 50); // Last name of the next of kin
             $table->string('relationshiptoresident', 100); // Relationship to the resident

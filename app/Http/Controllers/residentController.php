@@ -7,13 +7,14 @@ use App\Http\Requests\UpdateresidentRequest;
 use App\Repositories\residentRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Flash;
 use Response;
 use App\Models\Resident;
 
 class residentController extends AppBaseController
 {
-    /** @var residentRepository $residentRepository*/
+    /** @var residentRepository $residentRepository */
     private $residentRepository;
 
     public function __construct(residentRepository $residentRepo)
@@ -184,21 +185,71 @@ class residentController extends AppBaseController
 
         return view('resident.dashboard', compact('resident'));
     }
-    
+
+    /**
+     * Update the medications and allergies of a resident.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
     public function updateMedications(Request $request, $id)
-{
-    $request->validate([
-        'medications' => 'nullable|string|max:255',
-        'allergies' => 'nullable|string|max:255',
-    ]);
+    {
+        $request->validate([
+            'medications' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string|max:255',
+        ]);
 
-    $resident = \App\Models\Resident::findOrFail($id);
-    $resident->medications = $request->medications;
-    $resident->allergies = $request->allergies;
-    $resident->save();
+        $resident = Resident::findOrFail($id);
+        $resident->medications = $request->medications;
+        $resident->allergies = $request->allergies;
+        $resident->save();
 
-    return back()->with('success', 'Resident details updated!');
-}
+        return back()->with('success', 'Resident details updated!');
+    }
 
+    /**
+     * Show the resident search page.
+     *
+     * @return Response
+     */
+    public function searchPage()
+    {
+        return view('residents.search');
+    }
 
+    /**
+     * Show the search results for residents.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function searchResults(Request $request)
+    {
+        $query = $request->input('query');
+
+        $results = Resident::where('firstname', 'LIKE', "%$query%")
+                    ->orWhere('lastname', 'LIKE', "%$query%")
+                    ->orWhere('roomnumber', 'LIKE', "%$query%")
+                    ->orWhere('dateofbirth', 'LIKE', "%$query%")
+                    ->get();
+
+        return view('residents.search', compact('results'));
+    }
+
+    /**
+     * Show the Resident Hub with statistics.
+     *
+     * @return Response
+     */
+    public function showResidentHub()
+    {
+        $totalResidents = Resident::count();
+        $newThisWeek = Resident::where('admissiondate', '>=', Carbon::now()->subDays(7))->count();
+        $discharged = Resident::where('status', 'discharged')->count();
+
+        return view('residentHub', compact('totalResidents', 'newThisWeek', 'discharged'));
+    }
+    
+    
 }

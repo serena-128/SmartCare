@@ -5,8 +5,7 @@
     <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- FullCalendar CSS -->
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
-
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -38,11 +37,12 @@
                 <ul class="navbar-nav ms-auto">
                     <!-- Residents Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" data-bs-toggle="dropdown">🏥 Residents</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">
+                            🏥 Residents
+                        </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('residents.index') }}">📋 Resident Hub</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}">💊 Medications</a></li>
-                            <li><a class="dropdown-item" href="{{ route('careplans.index') }}">📖 Care Plan Hub</a></li>
+                            <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
+                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li> <!-- ✅ Added this -->
                         </ul>
                     </li>
 
@@ -64,20 +64,12 @@
                             <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 Show my appointments</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('photo.create') }}">🖼️ Add Photos</a></li>
-                            <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">➕ Add Event/Appointment</a>
-</li>
+                            <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">➕ Add Event/Appointment</a></li>
                         </ul>
                     </li>
 
-
                     <!-- Alerts, Schedule, Profile -->
-                    <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.index') }}">🚨 Emergency Alerts</a></li>
-                    <!-- Add Message Tab -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('staffMessages') }}">
-                        <i class="fas fa-comment-alt"></i> Messages
-                    </a>
-                </li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Emergency Alerts</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a></li>
 
                     <!-- Profile -->
@@ -86,7 +78,7 @@
                             👤 {{ session('staff_name') }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('staff.profile') }}">⚙️ Settings</a></li>
+                            <a href="{{ route('my.profile') }}" class="nav-link">👤 My Profile</a>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
@@ -111,59 +103,56 @@
     <!-- ✅ FOOTER -->
     @include('layouts.footer')
 
-<!-- FullCalendar JS -->
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <!-- FullCalendar JS -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
 
-        if (calendarEl) {
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: '/staff/appointments/json',
+            if (calendarEl) {
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: '/staff/appointments/json',
 
-                eventTimeFormat: {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true // set to false if you want 24-hour format
-                },
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true // set to false if you want 24-hour format
+                    },
 
-                eventContent: function(info) {
-                    return {
-                        html: `
-                            <div style="font-size: 0.75rem; white-space: normal;">
-                                <strong>${info.timeText}</strong><br>
-                                ${info.event.title}
-                            </div>
-                        `
-                    };
-                },
+                    eventContent: function(info) {
+                        return {
+                            html: `
+                                <div style="font-size: 0.75rem; white-space: normal;">
+                                    <strong>${info.timeText}</strong><br>
+                                    ${info.event.title}
+                                </div>
+                            `
+                        };
+                    },
 
-                eventDidMount: function(info) {
-                    if (info.event.extendedProps.description) {
-                        new bootstrap.Tooltip(info.el, {
-                            title: info.event.extendedProps.description,
-                            placement: 'top',
-                            trigger: 'hover',
-                            container: 'body'
-                        });
-                    }
-                },
-            });
+                    eventDidMount: function(info) {
+                        if (info.event.extendedProps.description) {
+                            new bootstrap.Tooltip(info.el, {
+                                title: info.event.extendedProps.description,
+                                placement: 'top',
+                                trigger: 'hover',
+                                container: 'body'
+                            });
+                        }
+                    },
+                });
 
-            calendar.render();
-        }
-    });
-</script>
-
-
-
+                calendar.render();
+            }
+        });
+    </script>
 
     <!-- ✅ Optional logo styling (if not in dashboard.css) -->
     <style>
@@ -172,7 +161,6 @@
             margin-right: 10px;
         }
     </style>
-
 
     @stack('scripts')
 

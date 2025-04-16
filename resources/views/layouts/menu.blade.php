@@ -103,3 +103,11 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('staffProfiles.index') }}"
+       class="nav-link {{ Request::is('staffProfiles*') ? 'active' : '' }}">
+        <p>Staff Profiles</p>
+    </a>
+</li>
+
+
