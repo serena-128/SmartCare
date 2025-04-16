@@ -39,7 +39,7 @@
                     <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="profile-avatar" alt="Default Avatar">
                 @endif
                 <h4 class="mt-2">{{ $staff->firstname }} {{ $staff->lastname }}</h4>
-                <p class="text-muted">{{ $staff->staff_role }}</p>
+                <p class="text-muted">{{ $staff->role }}</p>
                 <p class="text-muted">{{ $staff->email }}</p>
             </div>
         </div>
@@ -63,7 +63,7 @@
 
                 <div class="form-group mb-3">
                     <label>Role</label>
-                    <input type="text" value="{{ $staff->staff_role }}" class="form-control" readonly>
+                    <input type="text" value="{{ $staff->role }}" class="form-control" readonly>
                 </div>
 
                 <!-- EDITABLE FIELDS -->
