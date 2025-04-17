@@ -45,7 +45,8 @@ use App\Models\CarePlan; // added from komal_2
 use App\Http\Controllers\staffProfilesController; // added from komal_2
 use App\Models\EmergencyAlert; // added from komal_2
 use App\Models\StaffMember;
-
+use App\Http\Controllers\ResidentMedicationOrderController;
+use App\Http\Controllers\ResidentPharmacyController;
 
 /*
 |---------------------------------------------------------------------- 
@@ -317,3 +318,12 @@ Route::post('/my-profile/update', function (Request $request) {
 
     return redirect()->route('my.profile')->with('success', 'Profile updated!');
 })->name('my.profile.update');
+
+// web.php
+Route::get('/resident-pharmacy', [ResidentPharmacyController::class, 'index'])->name('resident.pharmacy');
+Route::post('/resident-pharmacy/order', [ResidentPharmacyController::class, 'placeOrder'])->name('resident.pharmacy.order');
+
+Route::get('/staff/resident-pharmacy', [ResidentPharmacyController::class, 'index'])->name('resident.pharmacy');
+Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'placeOrder'])->name('resident.pharmacy.order');
+
+Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');

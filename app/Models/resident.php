@@ -98,5 +98,10 @@ public function nextOfKin()
     return $this->hasMany(\App\Models\NextOfKin::class, 'residentid', 'id');
 }
 
+    public function medicationOrders()
+{
+    return $this->hasMany(ResidentMedicationOrder::class);
+}
+
 
 }

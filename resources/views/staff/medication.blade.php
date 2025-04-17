@@ -59,7 +59,10 @@
         <a class="nav-link {{ $activeTab === 'lookup' ? 'active' : '' }}" data-bs-toggle="tab" href="#lookup" role="tab">🔍 Medication Lookup</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ $activeTab === 'pharmacy' ? 'active' : '' }}" data-bs-toggle="tab" href="#pharmacy" role="tab">🏪 Pharmacy Info</a>
+        <a class="nav-link {{ $activeTab === 'pharmacy' ? 'active' : '' }}" data-bs-toggle="tab" href="#pharmacy" role="tab">🏪 General Pharmacy</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="resident-tab" data-bs-toggle="tab" href="#residentPharmacy">🧑‍⚕️ Resident Pharmacy</a>
     </li>
 </ul>
 
@@ -316,6 +319,65 @@
             <p>No orders yet.</p>
         @endif
     </div>
+{{-- Resident Pharmacy Tab --}}
+<div class="tab-pane fade" id="residentPharmacy" role="tabpanel">
+    <h4 class="mb-4">🧑‍⚕️ Resident Pharmacy</h4>
+
+    {{-- Resident Selector --}}
+    <form method="POST" action="{{ route('residentPharmacy.order') }}">
+        @csrf
+
+        <div class="mb-3">
+            <label for="resident_id" class="form-label">Select Resident:</label>
+            <select name="resident_id" id="resident_id" class="form-select" required>
+                <option value="" disabled selected>Choose resident</option>
+                @foreach($residents as $resident)
+                    <option value="{{ $resident->id }}">
+                        {{ $resident->firstname }} {{ $resident->lastname }} 
+                        (Balance: €{{ number_format($resident->medication_account_balance, 2) }})
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Medication</th>
+                    <th>In Stock</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Order</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($products as $product)
+                    <tr>
+                        <td>{{ $product->name }}</td>
+                        <td>{{ $product->stock }}</td>
+                        <td>€{{ number_format($product->price, 2) }}</td>
+                        <td>
+                            @if($product->stock > 0)
+                                <input type="number" name="quantities[{{ $product->id }}]" min="1" max="{{ $product->stock }}" value="1" class="form-control" style="width: 80px;">
+                            @else
+                                <span class="text-muted">Out of Stock</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($product->stock > 0)
+                                <input type="checkbox" name="order_products[]" value="{{ $product->id }}">
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">💊 Place Order for Resident</button>
+        </div>
+    </form>
+</div>
 </div>
 
 <script>
