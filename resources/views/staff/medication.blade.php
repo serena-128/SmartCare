@@ -140,7 +140,11 @@
                             <label class="form-label">Medications:</label>
                             <div class="med-fields">
                                 @forelse($meds as $med)
-                                    <input type="text" name="medications[]" class="form-control mb-2" value="{{ $med }}">
+                                    <div class="input-group mb-2 med-entry">
+                                    <input type="text" name="medications[]" class="form-control" value="{{ $med }}">
+                                    <button type="button" class="btn btn-outline-danger remove-med"><i class="fas fa-times"></i></button>
+                                </div>
+
                                 @empty
                                     <input type="text" name="medications[]" class="form-control mb-2" placeholder="Enter medication">
                                 @endforelse
@@ -152,7 +156,11 @@
                             <label class="form-label mt-2">Allergies:</label>
                             <div class="allergy-fields">
                                 @forelse($allergies as $allergy)
-                                    <input type="text" name="allergies[]" class="form-control mb-2" value="{{ $allergy }}">
+                                    <div class="input-group mb-2 allergy-entry">
+                                    <input type="text" name="allergies[]" class="form-control" value="{{ $allergy }}">
+                                    <button type="button" class="btn btn-outline-danger remove-allergy"><i class="fas fa-times"></i></button>
+                                </div>
+
                                 @empty
                                     <input type="text" name="allergies[]" class="form-control mb-2" placeholder="Enter allergy">
                                 @endforelse
@@ -556,29 +564,54 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.add-med').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const container = btn.closest('.med-fields');
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = 'medications[]';
-                input.className = 'form-control mb-2';
-                container.insertBefore(input, btn);
-            });
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    // Remove medication field
+    document.body.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-med')) {
+            e.target.closest('.med-entry').remove();
+        }
+    });
 
-        document.querySelectorAll('.add-allergy').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const container = btn.closest('.allergy-fields');
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = 'allergies[]';
-                input.className = 'form-control mb-2';
-                container.insertBefore(input, btn);
-            });
+    // Remove allergy field
+    document.body.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-allergy')) {
+            e.target.closest('.allergy-entry').remove();
+        }
+    });
+
+    // Add Medication field
+    document.querySelectorAll('.add-med').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const container = btn.closest('.med-fields');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-group mb-2 med-entry';
+
+            wrapper.innerHTML = `
+                <input type="text" name="medications[]" class="form-control" placeholder="New medication">
+                <button type="button" class="btn btn-outline-danger remove-med"><i class="fas fa-times"></i></button>
+            `;
+
+            container.insertBefore(wrapper, btn);
         });
     });
+
+    // Add Allergy field
+    document.querySelectorAll('.add-allergy').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const container = btn.closest('.allergy-fields');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-group mb-2 allergy-entry';
+
+            wrapper.innerHTML = `
+                <input type="text" name="allergies[]" class="form-control" placeholder="New allergy">
+                <button type="button" class="btn btn-outline-danger remove-allergy"><i class="fas fa-times"></i></button>
+            `;
+
+            container.insertBefore(wrapper, btn);
+        });
+    });
+});
+
 </script>
 
 
