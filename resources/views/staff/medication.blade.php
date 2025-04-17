@@ -38,14 +38,7 @@
     }
 @endphp
 
-<div class="d-flex justify-content-end mb-3">
-    <button class="btn btn-outline-dark position-relative" id="toggleCart">
-        🛒 Cart
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">
-            {{ session('cart') ? count(session('cart')) : 0 }}
-        </span>
-    </button>
-</div>
+
 
 <h2 class="mb-4">💊 Medication Center</h2>
 
@@ -236,8 +229,17 @@
     <!-- Pharmacy Tab -->
     <div class="tab-pane fade" id="pharmacy" role="tabpanel">
         <h4 class="mb-3">🛍 Available Medications</h4>
+        
+   <div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-outline-dark position-relative" id="toggleCart">
+        🛒 Cart
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">
+            {{ session('cart') ? count(session('cart')) : 0 }}
+        </span>
+    </button>
+</div>
+@if(session('success'))
 
-        @if(session('success'))
     <script>
         Swal.fire({
             title: 'Order Placed!',
