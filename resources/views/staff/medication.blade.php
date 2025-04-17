@@ -378,12 +378,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.medication-update-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
+
             Swal.fire({
                 title: 'Are you sure?',
-                text: "Do you want to save the changes to this resident?",
+                text: "Save medication and allergy changes?",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#28a745',
@@ -391,12 +393,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 confirmButtonText: 'Yes, save it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    const formData = new FormData(form);
+                    const url = form.action;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        Swal.fire('Saved!', data.message || 'Resident updated.', 'success').then(() => {
+                            // Refresh tab content or reload with tab anchor
+                            window.location.href = window.location.pathname + '?tab=residents';
+                        });
+                    })
+                    .catch(err => {
+                        Swal.fire('Error', 'Something went wrong saving the resident.', 'error');
+                        console.error(err);
+                    });
                 }
             });
         });
     });
+});
 </script>
+
 
 <style>
     #cartSidebar {

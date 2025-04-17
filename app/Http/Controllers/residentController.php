@@ -203,8 +203,12 @@ class residentController extends AppBaseController
     $resident->medications = implode(', ', $medications);
     $resident->allergies = implode(', ', $allergies);
     $resident->save();
+if ($request->ajax()) {
+    return response()->json(['message' => 'Medications and allergies updated successfully.']);
+}
 
-    return redirect()->back()->with('success', 'Medications and allergies updated successfully.');
+return redirect()->back()->with('success', 'Medications and allergies updated successfully.');
+
 }
 
 
