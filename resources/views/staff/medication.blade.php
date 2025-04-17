@@ -46,7 +46,7 @@
 <!-- Tabs -->
 <ul class="nav nav-tabs" id="medTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link {{ $activeTab === 'residents' ? 'active' : '' }}" data-bs-toggle="tab" href="#residents" role="tab">🧑‍⚕️ Resident Medications</a>
+        <a class="nav-link {{ $activeTab === 'residents' ? 'active' : '' }}" data-bs-toggle="tab" href="#residents" role="tab">💊Resident Medications</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {{ $activeTab === 'lookup' ? 'active' : '' }}" data-bs-toggle="tab" href="#lookup" role="tab">🔍 Medication Lookup</a>
@@ -367,9 +367,7 @@
                     <td colspan="5" class="text-muted">Select a resident to view medications.</td>
                 </tr>
             </tbody>
-<div class="d-flex justify-content-end mb-3">
-    <button type="button" class="btn btn-outline-dark" onclick="document.getElementById('residentCartSidebar').classList.add('show')">🧑‍⚕️ View Cart</button>
-</div>
+
 
 
         </table>
@@ -519,6 +517,17 @@ document.addEventListener('DOMContentLoaded', function () {
 #residentCartSidebar.show {
     transform: translateX(0);
 }
+    #residentCartSidebar {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    display: none; /* 👈 ADD THIS LINE */
+}
+
+#residentCartSidebar.show {
+    transform: translateX(0);
+    display: block !important; /* 👈 Force visibility when shown */
+}
+
 
 </style>
 
@@ -558,12 +567,11 @@ document.addEventListener('DOMContentLoaded', function () {
         </form>
     @endif
 </div>
-<div id="residentCartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; z-index: 1050;">
-    <button class="btn-close position-absolute top-0 end-0 m-2" id="closeResidentCart" aria-label="Close"></button>
-    <h5 class="mb-3">🧑‍⚕️ Resident Cart</h5>
 
-    <form method="POST" action="{{ route('residentPharmacy.checkout') }}">
-        @csrf
+
+    <form method="POST" action="{{ route('residentPharmacy.checkout') }}" class="ajax-checkout-form">
+    @csrf
+    <input type="hidden" name="resident_id" id="selectedResidentId" value="">
         <div id="residentCartContent">
             @if(session('resident_cart'))
                 <ul class="list-group">
@@ -732,50 +740,55 @@ document.addEventListener('DOMContentLoaded', function () {
     let residentCart = [];
 
     document.getElementById('resident_id').addEventListener('change', function () {
-        const selectedOption = this.options[this.selectedIndex];
-        const medString = selectedOption.getAttribute('data-medications') || '';
-        const medList = medString.split(',').map(m => m.trim().toLowerCase());
+    const selectedId = this.value;
+    document.getElementById('selectedResidentId').value = selectedId;
 
-        const tableBody = document.getElementById('residentMedTableBody');
-        tableBody.innerHTML = '';
+    // your existing code to update the resident medication table
+    const selectedOption = this.options[this.selectedIndex];
+    const medString = selectedOption.getAttribute('data-medications') || '';
+    const medList = medString.split(',').map(m => m.trim().toLowerCase());
 
-        const filtered = allProducts.filter(product =>
-            medList.some(med => med.includes(product.name.toLowerCase()))
-        );
+    const tableBody = document.getElementById('residentMedTableBody');
+    tableBody.innerHTML = '';
 
-        if (filtered.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-muted">No medications found for this resident.</td></tr>`;
-            return;
-        }
+    const filtered = allProducts.filter(product =>
+        medList.some(med => med.includes(product.name.toLowerCase()))
+    );
 
-        filtered.forEach(product => {
-            const stock = product.stock;
-            const price = parseFloat(product.price).toFixed(2);
+    if (filtered.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="text-muted">No medications found for this resident.</td></tr>`;
+        return;
+    }
 
-            tableBody.innerHTML += `
-                <tr>
-                    <td>${product.name}</td>
-                    <td>${stock}</td>
-                    <td>€${price}</td>
-                    <td>
-                        ${stock > 0 ? `
-                            <input type="number" class="form-control quantity-input" value="1" min="1" max="${stock}" data-product-id="${product.id}" style="width: 80px;">
-                        ` : '<span class="text-muted">Out of Stock</span>'}
-                    </td>
-                    <td>
-                        ${stock > 0 ? `
-                            <button type="button" class="btn btn-sm btn-success add-to-resident-cart"
-                                data-product-id="${product.id}"
-                                data-name="${product.name}"
-                                data-price="${product.price}">
-                                ➕ Add to Cart
-                            </button>
-                        ` : ''}
-                    </td>
-                </tr>
-            `;
-        });
+    filtered.forEach(product => {
+        const stock = product.stock;
+        const price = parseFloat(product.price).toFixed(2);
+
+        tableBody.innerHTML += `
+            <tr>
+                <td>${product.name}</td>
+                <td>${stock}</td>
+                <td>€${price}</td>
+                <td>
+                    ${stock > 0 ? `
+                        <input type="number" class="form-control quantity-input" value="1" min="1" max="${stock}" data-product-id="${product.id}" style="width: 80px;">
+                    ` : '<span class="text-muted">Out of Stock</span>'}
+                </td>
+                <td>
+                    ${stock > 0 ? `
+                        <button type="button" class="btn btn-sm btn-success add-to-resident-cart"
+                            data-product-id="${product.id}"
+                            data-name="${product.name}"
+                            data-price="${product.price}">
+                            ➕ Add to Cart
+                        </button>
+                    ` : ''}
+                </td>
+            </tr>
+        `;
     });
+});
+
 
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('add-to-resident-cart')) {

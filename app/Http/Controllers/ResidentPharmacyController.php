@@ -109,5 +109,52 @@ public function store(Request $request)
 
     return back()->with('success', 'Resident order placed successfully!');
 }
+    public function checkout(Request $request)
+{
+    $residentId = $request->input('resident_id');
+    $cart = session('resident_cart', []);
+
+    if (!$residentId || empty($cart)) {
+        return back()->with('error', 'Please select a resident and add medications.');
+    }
+
+    $resident = Resident::findOrFail($residentId);
+    $totalCost = 0;
+
+    foreach ($cart as $item) {
+        $product = Product::find($item['id']);
+        if ($product && $product->stock >= $item['quantity']) {
+            $lineCost = $product->price * $item['quantity'];
+            $totalCost += $lineCost;
+
+            // Save the order
+            ResidentOrder::create([
+                'resident_id' => $resident->id,
+                'product_id' => $product->id,
+                'quantity' => $item['quantity'],
+                'status' => 'Ordered',
+            ]);
+
+            // Deduct stock
+            $product->stock -= $item['quantity'];
+            $product->save();
+        } else {
+            return back()->with('error', 'Not enough stock for ' . $item['name']);
+        }
+    }
+
+    // Deduct balance
+    if ($resident->medication_account_balance >= $totalCost) {
+        $resident->medication_account_balance -= $totalCost;
+        $resident->save();
+    } else {
+        return back()->with('error', 'Insufficient balance in resident account.');
+    }
+
+    // Clear cart
+    Session::forget('resident_cart');
+
+    return back()->with('success', 'Resident medication order placed successfully!');
+}
 
 }
