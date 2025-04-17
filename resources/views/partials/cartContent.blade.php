@@ -1,4 +1,4 @@
-@if($cart)
+@if(isset($cart) && count($cart))
     <ul class="list-group">
         @php $total = 0; @endphp
         @foreach($cart as $item)

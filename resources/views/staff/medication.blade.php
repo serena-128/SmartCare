@@ -342,14 +342,17 @@
                     </option>
                 @endforeach
             </select>
+            <input type="hidden" id="selectedResidentId" name="selected_resident_id" value="">
+
         </div>
 <div class="d-flex justify-content-end mb-3">
-    <button class="btn btn-outline-primary position-relative" id="toggleResidentCart">
-        🛒 Resident Cart
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="residentCartCount">
-            {{ session('resident_cart') ? count(session('resident_cart')) : 0 }}
-        </span>
-    </button>
+    <button type="button" class="btn btn-outline-primary position-relative" id="toggleResidentCart">
+    🛒 Resident Cart
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="residentCartCount">
+        {{ session('resident_cart') ? count(session('resident_cart')) : 0 }}
+    </span>
+</button>
+
 </div>
 
         <table class="table table-bordered" id="residentMedTable">
@@ -379,12 +382,47 @@
 </div>
 
 <div id="residentCartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; z-index: 1051;">
-    <button class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.classList.remove('show')"></button>
+    <button class="btn-close position-absolute top-0 end-0 m-2" id="closeResidentCart" aria-label="Close"></button>
     <h5 class="mb-3">🧑‍⚕️ Resident Cart</h5>
-    <div id="residentCartContent"><p>Your cart is empty.</p></div>
-    <button class="btn btn-danger mt-2 w-100" onclick="clearResidentCart()">🗑 Clear Cart</button>
-    <button class="btn btn-success mt-2 w-100" onclick="checkoutResidentCart()">✔️ Checkout</button>
+    <div id="residentCartContent">
+        @if(session('resident_cart'))
+            <ul class="list-group">
+                @php $resTotal = 0; @endphp
+                @foreach(session('resident_cart') as $item)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $item['name'] }} x {{ $item['quantity'] }}
+                        <span>€{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+                    </li>
+                    @php $resTotal += $item['price'] * $item['quantity']; @endphp
+                @endforeach
+                <li class="list-group-item text-end"><strong>Total: €{{ number_format($resTotal, 2) }}</strong></li>
+                
+            </ul>
+        @else
+            <p>Your cart is empty.</p>
+        @endif
+    </div>
+<!-- Resident Cart Action Buttons (Initially Hidden) -->
+<div id="residentCartActions" class="mt-3" style="display: none;">
+    <button class="btn btn-success w-100 mb-2" onclick="checkoutResidentCart()">✔️ Checkout</button>
+    <button class="btn btn-danger w-100" onclick="clearResidentCart()">🗑 Clear Cart</button>
 </div>
+
+    @if(session('resident_cart') && count(session('resident_cart')))
+    <form method="POST" action="{{ route('residentPharmacy.checkout') }}" class="ajax-checkout-form mt-2">
+        @csrf
+        <input type="hidden" name="resident_id" id="selectedResidentIdSidebar" value="">
+        <button type="submit" class="btn btn-success w-100 mb-2">✔️ Checkout</button>
+    </form>
+
+    <form method="POST" action="{{ route('residentPharmacy.clearCart') }}" class="ajax-clear-cart-form">
+        @csrf
+        <button type="submit" class="btn btn-danger w-100">🗑 Clear Cart</button>
+    </form>
+@endif
+
+</div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -509,23 +547,15 @@ document.addEventListener('DOMContentLoaded', function () {
     #cartSidebar.show {
         transform: translateX(0);
     }
-    #residentCartSidebar {
+#residentCartSidebar {
     transition: transform 0.3s ease-in-out;
     transform: translateX(100%);
+    display: none; /* hide it by default */
 }
 
 #residentCartSidebar.show {
     transform: translateX(0);
-}
-    #residentCartSidebar {
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    display: none; /* 👈 ADD THIS LINE */
-}
-
-#residentCartSidebar.show {
-    transform: translateX(0);
-    display: block !important; /* 👈 Force visibility when shown */
+    display: block; /* show when active */
 }
 
 
@@ -552,8 +582,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <li class="list-group-item text-end"><strong>Total: €{{ number_format($total, 2) }}</strong></li>
                 </ul>
                 <button class="btn btn-success mt-3 w-100">✔️ Checkout</button>
-            @else
-                <p>Your cart is empty.</p>
+           
             @endif
         </div>
 {{-- Cart Sidebar Bottom Section --}}
@@ -569,28 +598,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 
-    <form method="POST" action="{{ route('residentPharmacy.checkout') }}" class="ajax-checkout-form">
-    @csrf
-    <input type="hidden" name="resident_id" id="selectedResidentId" value="">
-        <div id="residentCartContent">
-            @if(session('resident_cart'))
-                <ul class="list-group">
-                    @php $resTotal = 0; @endphp
-                    @foreach(session('resident_cart') as $item)
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ $item['name'] }} x {{ $item['quantity'] }}
-                            <span>€{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
-                        </li>
-                        @php $resTotal += $item['price'] * $item['quantity']; @endphp
-                    @endforeach
-                    <li class="list-group-item text-end"><strong>Total: €{{ number_format($resTotal, 2) }}</strong></li>
-                </ul>
-                <button class="btn btn-success mt-3 w-100">✔️ Checkout</button>
-            @else
-                <p>Your cart is empty.</p>
-            @endif
-        </div>
-    </form>
+
 
     <div id="clearResidentCartWrapper">
         @if(session('resident_cart'))
@@ -633,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                     .then(res => res.json())
                     .then(data => {
-                        document.getElementById('cartContent').innerHTML = `<p>Your cart is empty.</p>`;
+                        
                         document.getElementById('cartCount').innerText = 0;
                         document.getElementById('clearCartWrapper').innerHTML = '';
 
@@ -751,9 +759,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableBody = document.getElementById('residentMedTableBody');
     tableBody.innerHTML = '';
 
-    const filtered = allProducts.filter(product =>
-        medList.some(med => med.includes(product.name.toLowerCase()))
-    );
+const filtered = allProducts.filter(product =>
+    medList.some(med => med && product.name.toLowerCase().includes(med))
+);
+
+
 
     if (filtered.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="5" class="text-muted">No medications found for this resident.</td></tr>`;
@@ -832,6 +842,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         content.innerHTML = html;
+        document.getElementById('residentCartCount').innerText = residentCart.length;
     }
 
     function clearResidentCart() {
@@ -865,6 +876,110 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
 </script>
 
+<script>
+function updateResidentCartSidebar() {
+    const content = document.getElementById('residentCartContent');
+    const actions = document.getElementById('residentCartActions');
+    let html = '';
+    let total = 0;
+
+    if (residentCart.length) {
+        html += '<ul class="list-group">';
+        residentCart.forEach(item => {
+            const lineTotal = item.price * item.quantity;
+            total += lineTotal;
+            html += `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${item.name} x ${item.quantity}
+                    <span>€${lineTotal.toFixed(2)}</span>
+                </li>`;
+        });
+        html += `<li class="list-group-item text-end"><strong>Total: €${total.toFixed(2)}</strong></li>`;
+        html += '</ul>';
+        if (actions) actions.style.display = 'block';
+    } else {
+        html = '<p>Your cart is empty.</p>';
+        if (actions) actions.style.display = 'none';
+    }
+
+    content.innerHTML = html;
+    document.getElementById('residentCartCount').innerText = residentCart.length;
+}
+
+
+</script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const select    = document.getElementById('resident_id');
+      const tableBody = document.getElementById('residentMedTableBody');
+      const allProds  = @json($products);
+
+      select.addEventListener('change', () => {
+        const raw = select.selectedOptions[0].dataset.medications || '';
+        const meds = raw
+          .split(',')
+          .map(item => {
+            const m = item.trim().match(/^([A-Za-z\s\-]+?)(?=\s*\d|$)/);
+            return m ? m[1].toLowerCase() : null;
+          })
+          .filter(Boolean);
+
+        if (!meds.length) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-muted">
+                No medications listed for this resident.
+              </td>
+            </tr>`;
+          return;
+        }
+
+        const filtered = allProds.filter(p =>
+          meds.includes(p.name.toLowerCase())
+        );
+
+        if (!filtered.length) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-muted">
+                No matching products found.
+              </td>
+            </tr>`;
+          return;
+        }
+
+        tableBody.innerHTML = filtered.map(p => `
+          <tr>
+            <td>${p.name}</td>
+            <td>${p.stock}</td>
+            <td>€${parseFloat(p.price).toFixed(2)}</td>
+            <td>
+              <input
+                type="number"
+                class="form-control quantity-input"
+                value="1" min="1" max="${p.stock}"
+                data-product-id="${p.id}"
+                style="width:80px;">
+            </td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-sm btn-success add-to-resident-cart"
+                data-product-id="${p.id}"
+                data-name="${p.name}"
+                data-price="${p.price}">
+                ➕ Add to Cart
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      });
+
+      // auto‑trigger on page load if there’s already a selection
+      if (select.value) select.dispatchEvent(new Event('change'));
+    });
+    </script>
 @endsection

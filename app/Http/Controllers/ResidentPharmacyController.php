@@ -157,4 +157,5 @@ public function store(Request $request)
     return back()->with('success', 'Resident medication order placed successfully!');
 }
 
+
 }
