@@ -197,9 +197,11 @@ class residentController extends AppBaseController
 {
     $resident = Resident::findOrFail($id);
 
-    $resident->medications = trim($request->input('medications'));  // it's a string now
-    $resident->allergies = trim($request->input('allergies'));      // also a string
+    $medications = array_filter(array_map('trim', $request->input('medications', [])));
+    $allergies = array_filter(array_map('trim', $request->input('allergies', [])));
 
+    $resident->medications = implode(', ', $medications);
+    $resident->allergies = implode(', ', $allergies);
     $resident->save();
 
     return redirect()->back()->with('success', 'Medications and allergies updated successfully.');

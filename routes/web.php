@@ -262,6 +262,7 @@ Route::post('/pharmacy/checkout', [PharmacyController::class, 'checkout'])->name
 
 Route::put('/residents/{id}/update-medications', [ResidentController::class, 'updateMedications'])->name('residents.updateMedications');
 
+
 Route::post('/pharmacy/clear-cart', [PharmacyController::class, 'clearCart'])->name('pharmacy.clearCart');
 
 // Add this to your routes/web.php file

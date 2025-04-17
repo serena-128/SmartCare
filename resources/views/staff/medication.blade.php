@@ -116,40 +116,64 @@
                             <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $resident->id }}">Edit</button>
                         </td>
                     </tr>
-
-                    {{-- Modal for editing meds/allergies --}}
-                    <div class="modal fade" id="editModal{{ $resident->id }}" tabindex="-1" aria-labelledby="editLabel{{ $resident->id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-content">
-                                    <div class="modal-header bg-info text-white">
-                                        <h5 class="modal-title" id="editLabel{{ $resident->id }}">Edit {{ $resident->firstname }}'s Info</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <label class="form-label">Medications (comma-separated):</label>
-                                        <input type="text" name="medications" class="form-control mb-3" value="{{ $resident->medications }}">
-
-                                        <label class="form-label">Allergies (comma-separated):</label>
-                                        <input type="text" name="allergies" class="form-control" value="{{ $resident->allergies }}">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-success">Save</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>
+
+        {{-- Modals for each resident --}}
+        @foreach($residents as $resident)
+        @php
+            $meds = array_filter(array_map('trim', explode(',', $resident->medications)));
+            $allergies = array_filter(array_map('trim', explode(',', $resident->allergies)));
+        @endphp
+        <div class="modal fade" id="editModal{{ $resident->id }}" tabindex="-1" aria-labelledby="editLabel{{ $resident->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}" class="medication-update-form">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title" id="editLabel{{ $resident->id }}">Edit {{ $resident->firstname }}'s Info</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label class="form-label">Medications:</label>
+                            <div class="med-fields">
+                                @forelse($meds as $med)
+                                    <input type="text" name="medications[]" class="form-control mb-2" value="{{ $med }}">
+                                @empty
+                                    <input type="text" name="medications[]" class="form-control mb-2" placeholder="Enter medication">
+                                @endforelse
+                                <button type="button" class="btn btn-sm btn-outline-secondary add-med">➕ Add Medication</button>
+                            </div>
+
+                            <hr>
+
+                            <label class="form-label mt-2">Allergies:</label>
+                            <div class="allergy-fields">
+                                @forelse($allergies as $allergy)
+                                    <input type="text" name="allergies[]" class="form-control mb-2" value="{{ $allergy }}">
+                                @empty
+                                    <input type="text" name="allergies[]" class="form-control mb-2" placeholder="Enter allergy">
+                                @endforelse
+                                <button type="button" class="btn btn-sm btn-outline-secondary add-allergy">➕ Add Allergy</button>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">💾 Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @endforeach
+
     @else
         <p class="text-muted">No resident data available.</p>
     @endif
 </div>
+
 
     <!-- Medication Lookup Tab -->
     <div class="tab-pane fade {{ $activeTab === 'lookup' ? 'show active' : '' }}" id="lookup" role="tabpanel">
@@ -504,6 +528,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.add-med').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const container = btn.closest('.med-fields');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'medications[]';
+                input.className = 'form-control mb-2';
+                container.insertBefore(input, btn);
+            });
+        });
+
+        document.querySelectorAll('.add-allergy').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const container = btn.closest('.allergy-fields');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'allergies[]';
+                input.className = 'form-control mb-2';
+                container.insertBefore(input, btn);
+            });
+        });
+    });
 </script>
 
 
