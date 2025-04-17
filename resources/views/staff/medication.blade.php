@@ -321,6 +321,7 @@
             <p>No orders yet.</p>
         @endif
     </div>
+
 {{-- Resident Pharmacy Tab --}}
 <div class="tab-pane fade" id="residentPharmacy" role="tabpanel">
     <h4 class="mb-4">🧑‍⚕️ Resident Pharmacy</h4>
@@ -334,7 +335,8 @@
             <select name="resident_id" id="resident_id" class="form-select" required>
                 <option value="" disabled selected>Choose resident</option>
                 @foreach($residents as $resident)
-                    <option value="{{ $resident->id }}">
+                    <option value="{{ $resident->id }}"
+                        data-medications="{{ strtolower($resident->medications) }}">
                         {{ $resident->firstname }} {{ $resident->lastname }} 
                         (Balance: €{{ number_format($resident->medication_account_balance, 2) }})
                     </option>
@@ -342,7 +344,7 @@
             </select>
         </div>
 
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="residentMedTable">
             <thead>
                 <tr>
                     <th>Medication</th>
@@ -353,34 +355,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($products as $product)
-                    <tr>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->stock }}</td>
-                        <td>€{{ number_format($product->price, 2) }}</td>
-                        <td>
-                            @if($product->stock > 0)
-                                <input type="number" name="quantities[{{ $product->id }}]" min="1" max="{{ $product->stock }}" value="1" class="form-control" style="width: 80px;">
-                            @else
-                                <span class="text-muted">Out of Stock</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($product->stock > 0)
-                                <input type="checkbox" name="order_products[]" value="{{ $product->id }}">
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
+                <tr>
+                    <td colspan="5" class="text-muted">Select a resident to view available medications.</td>
+                </tr>
             </tbody>
         </table>
 
-        <div class="text-end">
+        <div class="text-end mt-3">
             <button type="submit" class="btn btn-primary">💊 Place Order for Resident</button>
         </div>
     </form>
 </div>
-</div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -677,6 +663,50 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+<script>
+    const allProducts = @json($products);
+
+    document.getElementById('resident_id').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const medString = selectedOption.getAttribute('data-medications') || '';
+        const medList = medString.split(',').map(m => m.trim().toLowerCase());
+
+        const tableBody = document.querySelector('#residentMedTable tbody');
+        tableBody.innerHTML = '';
+
+        const filtered = allProducts.filter(product =>
+            medList.some(med => med.includes(product.name.toLowerCase()))
+        );
+
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-muted">No medications found for this resident.</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(product => {
+            const stock = product.stock;
+            const price = parseFloat(product.price).toFixed(2);
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>${stock}</td>
+                    <td>€${price}</td>
+                    <td>
+                        ${stock > 0 ? `
+                            <input type="number" name="quantities[${product.id}]" min="1" max="${stock}" value="1" class="form-control" style="width: 80px;">
+                        ` : '<span class="text-muted">Out of Stock</span>'}
+                    </td>
+                    <td>
+                        ${stock > 0 ? `
+                            <input type="checkbox" name="order_products[]" value="${product.id}">
+                        ` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+    });
+</script>
+
 
 
 @endsection

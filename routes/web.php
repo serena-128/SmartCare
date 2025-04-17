@@ -327,3 +327,4 @@ Route::get('/staff/resident-pharmacy', [ResidentPharmacyController::class, 'inde
 Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'placeOrder'])->name('resident.pharmacy.order');
 
 Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');
+Route::post('/staff/resident-pharmacy/order', [App\Http\Controllers\ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');

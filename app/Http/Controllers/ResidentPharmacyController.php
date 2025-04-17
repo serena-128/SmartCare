@@ -7,6 +7,7 @@ use App\Models\Resident;
 use App\Models\Product;
 use App\Models\ResidentMedicationOrder;
 use Illuminate\Support\Facades\DB;
+use App\Models\ResidentOrder;
 
 class ResidentPharmacyController extends Controller
 {
@@ -59,4 +60,54 @@ class ResidentPharmacyController extends Controller
 
         return back()->with('success', 'Order placed and charged to resident account.');
     }
+    
+    public function showResidentPharmacy()
+{
+    $residents = Resident::all();
+    $products = Product::all();
+
+    return view('staff.medication', compact('residents', 'products'));
+}
+public function store(Request $request)
+{
+    $residentId = $request->input('resident_id');
+    $orderProducts = $request->input('order_products', []);
+    $quantities = $request->input('quantities', []);
+
+    $resident = Resident::findOrFail($residentId);
+    $totalCost = 0;
+
+    foreach ($orderProducts as $productId) {
+        $quantity = $quantities[$productId] ?? 1;
+        $product = Product::findOrFail($productId);
+        $cost = $product->price * $quantity;
+
+        // Skip if not enough stock or insufficient balance
+        if ($product->stock < $quantity || $resident->medication_account_balance < $cost) {
+            continue;
+        }
+
+        // Create order
+        ResidentOrder::create([
+            'resident_id' => $residentId,
+            'product_id' => $productId,
+            'quantity' => $quantity,
+            'status' => 'Ordered',
+        ]);
+
+        // Deduct stock
+        $product->stock -= $quantity;
+        $product->save();
+
+        // Accumulate total cost
+        $totalCost += $cost;
+    }
+
+    // Deduct total cost from resident balance
+    $resident->medication_account_balance -= $totalCost;
+    $resident->save();
+
+    return back()->with('success', 'Resident order placed successfully!');
+}
+
 }
