@@ -343,6 +343,14 @@
                 @endforeach
             </select>
         </div>
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-outline-primary position-relative" id="toggleResidentCart">
+        🛒 Resident Cart
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="residentCartCount">
+            {{ session('resident_cart') ? count(session('resident_cart')) : 0 }}
+        </span>
+    </button>
+</div>
 
         <table class="table table-bordered" id="residentMedTable">
             <thead>
@@ -354,11 +362,16 @@
                     <th>Order</th>
                 </tr>
             </thead>
-            <tbody>
+                        <tbody id="residentMedTableBody">
                 <tr>
-                    <td colspan="5" class="text-muted">Select a resident to view available medications.</td>
+                    <td colspan="5" class="text-muted">Select a resident to view medications.</td>
                 </tr>
             </tbody>
+<div class="d-flex justify-content-end mb-3">
+    <button type="button" class="btn btn-outline-dark" onclick="document.getElementById('residentCartSidebar').classList.add('show')">🧑‍⚕️ View Cart</button>
+</div>
+
+
         </table>
 
         <div class="text-end mt-3">
@@ -367,6 +380,13 @@
     </form>
 </div>
 
+<div id="residentCartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; z-index: 1051;">
+    <button class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.classList.remove('show')"></button>
+    <h5 class="mb-3">🧑‍⚕️ Resident Cart</h5>
+    <div id="residentCartContent"><p>Your cart is empty.</p></div>
+    <button class="btn btn-danger mt-2 w-100" onclick="clearResidentCart()">🗑 Clear Cart</button>
+    <button class="btn btn-success mt-2 w-100" onclick="checkoutResidentCart()">✔️ Checkout</button>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -491,6 +511,15 @@ document.addEventListener('DOMContentLoaded', function () {
     #cartSidebar.show {
         transform: translateX(0);
     }
+    #residentCartSidebar {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
+}
+
+#residentCartSidebar.show {
+    transform: translateX(0);
+}
+
 </style>
 
 <div id="cartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; z-index: 1050;">
@@ -528,6 +557,41 @@ document.addEventListener('DOMContentLoaded', function () {
             <button type="submit" class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
         </form>
     @endif
+</div>
+<div id="residentCartSidebar" class="position-fixed top-0 end-0 bg-light border shadow p-3" style="width: 300px; height: 100vh; z-index: 1050;">
+    <button class="btn-close position-absolute top-0 end-0 m-2" id="closeResidentCart" aria-label="Close"></button>
+    <h5 class="mb-3">🧑‍⚕️ Resident Cart</h5>
+
+    <form method="POST" action="{{ route('residentPharmacy.checkout') }}">
+        @csrf
+        <div id="residentCartContent">
+            @if(session('resident_cart'))
+                <ul class="list-group">
+                    @php $resTotal = 0; @endphp
+                    @foreach(session('resident_cart') as $item)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ $item['name'] }} x {{ $item['quantity'] }}
+                            <span>€{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+                        </li>
+                        @php $resTotal += $item['price'] * $item['quantity']; @endphp
+                    @endforeach
+                    <li class="list-group-item text-end"><strong>Total: €{{ number_format($resTotal, 2) }}</strong></li>
+                </ul>
+                <button class="btn btn-success mt-3 w-100">✔️ Checkout</button>
+            @else
+                <p>Your cart is empty.</p>
+            @endif
+        </div>
+    </form>
+
+    <div id="clearResidentCartWrapper">
+        @if(session('resident_cart'))
+            <form method="POST" action="{{ route('residentPharmacy.clearCart') }}">
+                @csrf
+                <button type="submit" class="btn btn-danger mt-2 w-100">🗑 Clear Cart</button>
+            </form>
+        @endif
+    </div>
 </div>
 
 
@@ -665,13 +729,14 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
     const allProducts = @json($products);
+    let residentCart = [];
 
     document.getElementById('resident_id').addEventListener('change', function () {
         const selectedOption = this.options[this.selectedIndex];
         const medString = selectedOption.getAttribute('data-medications') || '';
         const medList = medString.split(',').map(m => m.trim().toLowerCase());
 
-        const tableBody = document.querySelector('#residentMedTable tbody');
+        const tableBody = document.getElementById('residentMedTableBody');
         tableBody.innerHTML = '';
 
         const filtered = allProducts.filter(product =>
@@ -686,6 +751,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filtered.forEach(product => {
             const stock = product.stock;
             const price = parseFloat(product.price).toFixed(2);
+
             tableBody.innerHTML += `
                 <tr>
                     <td>${product.name}</td>
@@ -693,20 +759,99 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>€${price}</td>
                     <td>
                         ${stock > 0 ? `
-                            <input type="number" name="quantities[${product.id}]" min="1" max="${stock}" value="1" class="form-control" style="width: 80px;">
+                            <input type="number" class="form-control quantity-input" value="1" min="1" max="${stock}" data-product-id="${product.id}" style="width: 80px;">
                         ` : '<span class="text-muted">Out of Stock</span>'}
                     </td>
                     <td>
                         ${stock > 0 ? `
-                            <input type="checkbox" name="order_products[]" value="${product.id}">
+                            <button type="button" class="btn btn-sm btn-success add-to-resident-cart"
+                                data-product-id="${product.id}"
+                                data-name="${product.name}"
+                                data-price="${product.price}">
+                                ➕ Add to Cart
+                            </button>
                         ` : ''}
                     </td>
                 </tr>
             `;
         });
     });
+
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('add-to-resident-cart')) {
+            const productId = e.target.getAttribute('data-product-id');
+            const name = e.target.getAttribute('data-name');
+            const price = parseFloat(e.target.getAttribute('data-price'));
+            const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+            const quantity = parseInt(quantityInput.value);
+
+            const existing = residentCart.find(item => item.id == productId);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                residentCart.push({ id: productId, name, price, quantity });
+            }
+
+            updateResidentCartSidebar();
+        }
+    });
+
+    function updateResidentCartSidebar() {
+        const content = document.getElementById('residentCartContent');
+        let html = '';
+        let total = 0;
+
+        if (residentCart.length) {
+            html += '<ul class="list-group">';
+            residentCart.forEach(item => {
+                const lineTotal = item.price * item.quantity;
+                total += lineTotal;
+                html += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        ${item.name} x ${item.quantity}
+                        <span>€${lineTotal.toFixed(2)}</span>
+                    </li>`;
+            });
+            html += `<li class="list-group-item text-end"><strong>Total: €${total.toFixed(2)}</strong></li>`;
+            html += '</ul>';
+        } else {
+            html = '<p>Your cart is empty.</p>';
+        }
+
+        content.innerHTML = html;
+    }
+
+    function clearResidentCart() {
+        residentCart = [];
+        updateResidentCartSidebar();
+    }
+
+    function checkoutResidentCart() {
+        if (!residentCart.length) return Swal.fire('Empty Cart', 'Please add items first.', 'info');
+
+        Swal.fire('✔️ Order Confirmed!', 'Resident medication order placed.', 'success');
+        residentCart = [];
+        updateResidentCartSidebar();
+    }
 </script>
 
 
+<script> 
+document.addEventListener('DOMContentLoaded', function () {
+    const residentCartSidebar = document.getElementById('residentCartSidebar');
+    const toggleResidentCart = document.getElementById('toggleResidentCart');
+    const closeResidentCart = document.getElementById('closeResidentCart');
+
+    if (toggleResidentCart && residentCartSidebar && closeResidentCart) {
+        toggleResidentCart.addEventListener('click', function () {
+            residentCartSidebar.classList.toggle('show');
+        });
+
+        closeResidentCart.addEventListener('click', function () {
+            residentCartSidebar.classList.remove('show');
+        });
+    }
+});
+</script>
 
 @endsection

@@ -328,3 +328,9 @@ Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class
 
 Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');
 Route::post('/staff/resident-pharmacy/order', [App\Http\Controllers\ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');
+
+Route::post('/staff/resident-pharmacy/checkout', [ResidentPharmacyController::class, 'checkout'])
+    ->name('residentPharmacy.checkout');
+
+Route::post('/staff/resident-pharmacy/clear-cart', [ResidentPharmacyController::class, 'clearCart'])
+    ->name('residentPharmacy.clearCart');
