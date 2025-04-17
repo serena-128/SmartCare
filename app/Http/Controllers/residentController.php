@@ -193,20 +193,18 @@ class residentController extends AppBaseController
      * @param int $id
      * @return Response
      */
-    public function updateMedications(Request $request, $id)
-    {
-        $request->validate([
-            'medications' => 'nullable|string|max:255',
-            'allergies' => 'nullable|string|max:255',
-        ]);
+ public function updateMedications(Request $request, $id)
+{
+    $resident = Resident::findOrFail($id);
 
-        $resident = Resident::findOrFail($id);
-        $resident->medications = $request->medications;
-        $resident->allergies = $request->allergies;
-        $resident->save();
+    $resident->medications = trim($request->input('medications'));  // it's a string now
+    $resident->allergies = trim($request->input('allergies'));      // also a string
 
-        return back()->with('success', 'Resident details updated!');
-    }
+    $resident->save();
+
+    return redirect()->back()->with('success', 'Medications and allergies updated successfully.');
+}
+
 
     /**
      * Show the resident search page.

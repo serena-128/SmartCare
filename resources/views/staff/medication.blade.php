@@ -66,47 +66,90 @@
 
 
 <div class="tab-content mt-4" id="medTabContent">
-    <!-- Resident Medications Tab -->
-    <div class="tab-pane fade {{ $activeTab === 'residents' ? 'show active' : '' }}" id="residents" role="tabpanel">
-        @if($residents->count())
-            <table class="table table-bordered">
-                <thead>
+<!-- Resident Medications Tab -->
+<div class="tab-pane fade {{ $activeTab === 'residents' ? 'show active' : '' }}" id="residents" role="tabpanel">
+    @if($residents->count())
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>👤 Resident Name</th>
+                    <th>💊 Medications</th>
+                    <th>⚠️ Allergies</th>
+                    <th>✏️ Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($residents as $resident)
                     <tr>
-                        <th>Resident Name</th>
-                        <th colspan="2">Medications & Allergies </th>
+                        <td class="fw-semibold">{{ $resident->firstname }} {{ $resident->lastname }}</td>
 
+                        {{-- Medications --}}
+                        <td>
+                            @php $meds = array_filter(array_map('trim', explode(',', $resident->medications))); @endphp
+                            @if(count($meds))
+                                <ul class="list-unstyled mb-0">
+                                    @foreach($meds as $med)
+                                        <li><span class="badge bg-primary">{{ $med }}</span></li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <span class="text-muted">No meds listed</span>
+                            @endif
+                        </td>
+
+                        {{-- Allergies --}}
+                        <td>
+                            @php $allergies = array_filter(array_map('trim', explode(',', $resident->allergies))); @endphp
+                            @if(count($allergies))
+                                <ul class="list-unstyled mb-0">
+                                    @foreach($allergies as $allergy)
+                                        <li><span class="badge bg-danger">{{ $allergy }}</span></li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <span class="text-muted">No allergies listed</span>
+                            @endif
+                        </td>
+
+                        {{-- Actions --}}
+                        <td class="text-center">
+                            <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $resident->id }}">Edit</button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach($residents as $resident)
-                        <tr>
-                            <td>{{ $resident->firstname }} {{ $resident->lastname }}</td>
-                            <td colspan="2">
-    <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}" class="medication-update-form">
-        @csrf
-        @method('PUT')
-        <div class="row g-2 align-items-center">
-            <div class="col">
-                <input type="text" name="medications" class="form-control form-control-sm" placeholder="Medications" value="{{ $resident->medications }}">
-            </div>
-            <div class="col">
-                <input type="text" name="allergies" class="form-control form-control-sm" placeholder="Allergies" value="{{ $resident->allergies }}">
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-outline-success">💾</button>
-            </div>
-        </div>
-    </form>
-</td>
 
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <p>No resident data available.</p>
-        @endif
-    </div>
+                    {{-- Modal for editing meds/allergies --}}
+                    <div class="modal fade" id="editModal{{ $resident->id }}" tabindex="-1" aria-labelledby="editLabel{{ $resident->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="POST" action="{{ route('residents.updateMedications', $resident->id) }}">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-content">
+                                    <div class="modal-header bg-info text-white">
+                                        <h5 class="modal-title" id="editLabel{{ $resident->id }}">Edit {{ $resident->firstname }}'s Info</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label class="form-label">Medications (comma-separated):</label>
+                                        <input type="text" name="medications" class="form-control mb-3" value="{{ $resident->medications }}">
+
+                                        <label class="form-label">Allergies (comma-separated):</label>
+                                        <input type="text" name="allergies" class="form-control" value="{{ $resident->allergies }}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Save</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="text-muted">No resident data available.</p>
+    @endif
+</div>
 
     <!-- Medication Lookup Tab -->
     <div class="tab-pane fade {{ $activeTab === 'lookup' ? 'show active' : '' }}" id="lookup" role="tabpanel">
