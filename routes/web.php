@@ -47,6 +47,8 @@ use App\Models\EmergencyAlert; // added from komal_2
 use App\Models\StaffMember;
 use App\Http\Controllers\ResidentMedicationOrderController;
 use App\Http\Controllers\ResidentPharmacyController;
+use App\Http\Controllers\DietaryController;
+
 
 /*
 |---------------------------------------------------------------------- 
@@ -338,3 +340,9 @@ Route::post('/staff/resident-pharmacy/clear-cart', [ResidentPharmacyController::
 Route::post('/staff/resident-pharmacy/add-to-cart', 
     [ResidentPharmacyController::class, 'addToCart'])
     ->name('residentPharmacy.addToCart');
+Route::get('/resident/medications', function () {
+    return view('resident.medications');
+})->name('resident.medications');
+
+Route::get('/dietary', [DietaryController::class, 'index'])->name('dietary.index');
+Route::post('/meal-plan/store', [DietaryController::class, 'store'])->name('mealPlan.store');
