@@ -342,7 +342,7 @@
                     </option>
                 @endforeach
             </select>
-            <input type="hidden" id="selectedResidentId" name="selected_resident_id" value="">
+            <input type="hidden" id="selectedResidentId" name="resident_id" value="">
 
         </div>
 <div class="d-flex justify-content-end mb-3">
@@ -487,6 +487,56 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('click', e => {
+    if (!e.target.classList.contains('add-to-resident-cart')) return;
+
+    const btn        = e.target;
+    const productId  = btn.dataset.productId;
+    const name       = btn.dataset.name;
+    const quantity   = parseInt(
+      document.querySelector(
+        `.quantity-input[data-product-id="${productId}"]`
+      ).value, 10
+    );
+    const residentId = document.getElementById('resident_id').value;
+
+    fetch("{{ route('residentPharmacy.addToCart') }}", {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        resident_id: residentId,
+        product_id:  productId,
+        quantity:    quantity
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      // update sidebar
+      document.getElementById('residentCartCount').innerText   = data.count;
+      document.getElementById('residentCartContent').innerHTML = data.html;
+      document.getElementById('residentCartActions').style.display =
+        data.count ? 'block' : 'none';
+
+      Swal.fire({
+        title: 'Added to Cart!',
+        text:  `${quantity}×${name} added to resident cart.`,
+        icon:  'success',
+        confirmButtonColor: '#28a745'
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      Swal.fire('Error', 'Could not add to cart. Please try again.', 'error');
+    });
+  });
 });
 </script>
 
@@ -743,121 +793,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
-<script>
-    const allProducts = @json($products);
-    let residentCart = [];
-
-    document.getElementById('resident_id').addEventListener('change', function () {
-    const selectedId = this.value;
-    document.getElementById('selectedResidentId').value = selectedId;
-
-    // your existing code to update the resident medication table
-    const selectedOption = this.options[this.selectedIndex];
-    const medString = selectedOption.getAttribute('data-medications') || '';
-    const medList = medString.split(',').map(m => m.trim().toLowerCase());
-
-    const tableBody = document.getElementById('residentMedTableBody');
-    tableBody.innerHTML = '';
-
-const filtered = allProducts.filter(product =>
-    medList.some(med => med && product.name.toLowerCase().includes(med))
-);
 
 
-
-    if (filtered.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="text-muted">No medications found for this resident.</td></tr>`;
-        return;
-    }
-
-    filtered.forEach(product => {
-        const stock = product.stock;
-        const price = parseFloat(product.price).toFixed(2);
-
-        tableBody.innerHTML += `
-            <tr>
-                <td>${product.name}</td>
-                <td>${stock}</td>
-                <td>€${price}</td>
-                <td>
-                    ${stock > 0 ? `
-                        <input type="number" class="form-control quantity-input" value="1" min="1" max="${stock}" data-product-id="${product.id}" style="width: 80px;">
-                    ` : '<span class="text-muted">Out of Stock</span>'}
-                </td>
-                <td>
-                    ${stock > 0 ? `
-                        <button type="button" class="btn btn-sm btn-success add-to-resident-cart"
-                            data-product-id="${product.id}"
-                            data-name="${product.name}"
-                            data-price="${product.price}">
-                            ➕ Add to Cart
-                        </button>
-                    ` : ''}
-                </td>
-            </tr>
-        `;
-    });
-});
-
-
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('add-to-resident-cart')) {
-            const productId = e.target.getAttribute('data-product-id');
-            const name = e.target.getAttribute('data-name');
-            const price = parseFloat(e.target.getAttribute('data-price'));
-            const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
-            const quantity = parseInt(quantityInput.value);
-
-            const existing = residentCart.find(item => item.id == productId);
-            if (existing) {
-                existing.quantity += quantity;
-            } else {
-                residentCart.push({ id: productId, name, price, quantity });
-            }
-
-            updateResidentCartSidebar();
-        }
-    });
-
-    function updateResidentCartSidebar() {
-        const content = document.getElementById('residentCartContent');
-        let html = '';
-        let total = 0;
-
-        if (residentCart.length) {
-            html += '<ul class="list-group">';
-            residentCart.forEach(item => {
-                const lineTotal = item.price * item.quantity;
-                total += lineTotal;
-                html += `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        ${item.name} x ${item.quantity}
-                        <span>€${lineTotal.toFixed(2)}</span>
-                    </li>`;
-            });
-            html += `<li class="list-group-item text-end"><strong>Total: €${total.toFixed(2)}</strong></li>`;
-            html += '</ul>';
-        } else {
-            html = '<p>Your cart is empty.</p>';
-        }
-
-        content.innerHTML = html;
-        document.getElementById('residentCartCount').innerText = residentCart.length;
-    }
-
-    function clearResidentCart() {
-        residentCart = [];
-        updateResidentCartSidebar();
-    }
-
-    function checkoutResidentCart() {
-        if (!residentCart.length) return Swal.fire('Empty Cart', 'Please add items first.', 'info');
-
-        Swal.fire('✔️ Order Confirmed!', 'Resident medication order placed.', 'success');
-        residentCart = [];
-        updateResidentCartSidebar();
-    }
-</script>
 
 
 <script> 

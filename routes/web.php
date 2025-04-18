@@ -334,3 +334,7 @@ Route::post('/staff/resident-pharmacy/checkout', [ResidentPharmacyController::cl
 
 Route::post('/staff/resident-pharmacy/clear-cart', [ResidentPharmacyController::class, 'clearCart'])
     ->name('residentPharmacy.clearCart');
+
+Route::post('/staff/resident-pharmacy/add-to-cart', 
+    [ResidentPharmacyController::class, 'addToCart'])
+    ->name('residentPharmacy.addToCart');

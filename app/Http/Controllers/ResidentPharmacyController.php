@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\ResidentMedicationOrder;
 use Illuminate\Support\Facades\DB;
 use App\Models\ResidentOrder;
+use Illuminate\Support\Facades\Session;
+
 
 class ResidentPharmacyController extends Controller
 {
@@ -157,5 +159,41 @@ public function store(Request $request)
     return back()->with('success', 'Resident medication order placed successfully!');
 }
 
+public function addToCart(Request $request)
+    {
+        $request->validate([
+            'resident_id' => 'required|exists:residents,id',
+            'product_id'  => 'required|exists:products,id',
+            'quantity'    => 'required|integer|min:1',
+        ]);
 
+        $cart = Session::get('resident_cart', []);
+
+        $id       = $request->product_id;
+        $quantity = $request->quantity;
+
+        // load product once for name & price
+        $product = Product::findOrFail($id);
+
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity'] += $quantity;
+        } else {
+            $cart[$id] = [
+                'id'       => $id,
+                'name'     => $product->name,
+                'price'    => $product->price,
+                'quantity' => $quantity,
+            ];
+        }
+
+        Session::put('resident_cart', $cart);
+
+        // return new count and simple HTML for sidebar
+        $html = view('partials.resident_cart', ['items' => $cart])->render();
+
+        return response()->json([
+            'count' => count($cart),
+            'html'  => $html,
+        ]);
+    }
 }
