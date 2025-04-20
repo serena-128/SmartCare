@@ -352,9 +352,7 @@
               @endif
               <div class="card-body">
                 <h5 class="card-title">{{ $r['title'] }}</h5>
-                <p class="card-text">
-                  {!! $r['summary'] ?? 'No summary available.' !!}
-                </p>
+                <p class="card-text">{!! $r['summary'] ?? 'No summary available.' !!}</p>
 
                 <button
                   class="btn btn-sm btn-outline-secondary mt-2"
@@ -364,7 +362,7 @@
                   aria-expanded="false"
                   aria-controls="details-{{ $r['id'] }}"
                 >
-                  Show details
+                  Toggle details
                 </button>
 
                 <div class="collapse mt-3" id="details-{{ $r['id'] }}">
@@ -380,22 +378,10 @@
 
                   <h6>Dietary Flags</h6>
                   <ul class="list-unstyled">
-                    <li>
-                      <strong>Dish types:</strong>
-                      {{ implode(', ', $r['dishTypes'] ?? []) }}
-                    </li>
-                    <li>
-                      <strong>Diets:</strong>
-                      {{ implode(', ', $r['diets'] ?? []) }}
-                    </li>
-                    <li>
-                      <strong>Gluten‑free:</strong>
-                      {{ !empty($r['glutenFree']) ? 'Yes' : 'No' }}
-                    </li>
-                    <li>
-                      <strong>Vegan:</strong>
-                      {{ !empty($r['vegan'])      ? 'Yes' : 'No' }}
-                    </li>
+                    <li><strong>Dish types:</strong> {{ implode(', ', $r['dishTypes'] ?? []) }}</li>
+                    <li><strong>Diets:</strong>      {{ implode(', ', $r['diets']      ?? []) }}</li>
+                    <li><strong>Gluten‑free:</strong> {{ !empty($r['glutenFree']) ? 'Yes' : 'No' }}</li>
+                    <li><strong>Vegan:</strong>      {{ !empty($r['vegan'])      ? 'Yes' : 'No' }}</li>
                   </ul>
                 </div>
               </div>
@@ -404,33 +390,30 @@
         @endforeach
       </div>
 
-      <!-- Prev / Next -->
-      <button
-        class="carousel-control-prev"
-        type="button"
-        data-bs-target="#recipeCarousel"
-        data-bs-slide="prev"
-      >
-        <span class="carousel-control-prev-icon"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button
-        class="carousel-control-next"
-        type="button"
-        data-bs-target="#recipeCarousel"
-        data-bs-slide="next"
-      >
-        <span class="carousel-control-next-icon"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
+      <!-- Big, obvious Prev/Next buttons under the cards -->
+      <div class="d-flex justify-content-center gap-2 mt-3">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          data-bs-target="#recipeCarousel"
+          data-bs-slide="prev"
+        >
+          ← Previous
+        </button>
+        <button
+          class="btn btn-secondary"
+          type="button"
+          data-bs-target="#recipeCarousel"
+          data-bs-slide="next"
+        >
+          Next →
+        </button>
+      </div>
     </div>
   @else
-    <p class="text-muted">
-      No recipes found for “{{ request('recipe') }}.”
-    </p>
+    <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
   @endif
 </div>
-
 
 
 
