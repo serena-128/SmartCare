@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Resident;
 use App\Models\MealPlan;
 use App\Models\MealPlanEntry;
+use App\Models\StaffMember;
+
 
 
 class DietaryController extends Controller
@@ -169,31 +171,37 @@ class DietaryController extends Controller
     /**
      * Persist a resident’s meal plan.
      */
-    public function storeMealPlan(Request $request)
-    {
-        $data = $request->validate([
-            'resident_id' => 'required|exists:resident,id',
+  public function storeMealPlan(Request $request)
+{
+    $data = $request->validate([
+        'resident_id' => 'required|exists:resident,id',
+        'plan_date'   => 'required|date',
+        'category'    => 'required|in:breakfast,lunch,dinner,snacks,treats',
+        'meals'       => 'required|string',
+        'time'        => 'nullable|date_format:H:i',
+        'quantity'    => 'nullable|integer|min:1',
+    ]);
 
-            'plan_date'   => 'required|date',
-            'category'    => 'required|in:breakfast,lunch,dinner,snacks,treats',
-            'meals'       => 'required|string',    // comma‑separated
-            'time'        => 'nullable|date_format:H:i',
-            'quantity'    => 'nullable|integer|min:1',
-        ]);
+    // ✅ Get the staff member ID from session
+    $staffId = session('staff_id');
 
-        $plan = MealPlan::create([
-            'resident_id' => $data['resident_id'],
-            'plan_date'   => $data['plan_date'],
-            'category'    => $data['category'],
-            'meals'       => $data['meals'],
-            'time'        => $data['time'] ?? null,
-            'quantity'    => $data['quantity'] ?? null,
-            'created_by'  => auth()->id(),
-        ]);
-
-        return response()->json($plan, 201);
+    if (!$staffId) {
+        return response()->json(['error' => 'Not logged in as staff.'], 401);
     }
-    
+
+    $plan = MealPlan::create([
+        'resident_id' => $data['resident_id'],
+        'plan_date'   => $data['plan_date'],
+        'category'    => $data['category'],
+        'meals'       => $data['meals'],
+        'time'        => $data['time'] ?? null,
+        'quantity'    => $data['quantity'] ?? null,
+        'created_by'  => $staffId,  // 👈 uses the session
+    ]);
+
+    return response()->json($plan, 201);
+}
+
         /**
      * AJAX: Add a new meal entry (breakfast, lunch, etc.).
      */

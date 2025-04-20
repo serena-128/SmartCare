@@ -42,8 +42,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
         // 🔐 Add your relationship here
-        public function staffProfile()
-        {
-            return $this->hasOne(\App\Models\StaffProfile::class);
-        }
+        public function staffmember()
+{
+    return $this->hasOne(\App\Models\StaffMember::class, 'email', 'email');
 }
+
