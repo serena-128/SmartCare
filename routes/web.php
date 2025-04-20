@@ -396,4 +396,6 @@ Route::get('/dietary/calendar', [DietaryController::class, 'calendarEvents'])->n
 Route::post('/dietary/meal-plans', [DietaryController::class, 'storeMealPlan'])
      ->name('dietary.meal-plans.store');
 
+Route::delete('/dietary/meal-plans/{id}', [MealPlanController::class, 'destroy'])->name('dietary.meal-plans.destroy');
+
 

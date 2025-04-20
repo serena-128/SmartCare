@@ -612,25 +612,64 @@ document.addEventListener('DOMContentLoaded', function() {
         info.el.style.backgroundColor = colors[category] || '#f8f9fa';
       },
       eventClick: function(info) {
-        const meal = info.event.extendedProps;
-        const details = `
-          <strong>Category:</strong> ${meal.category}<br>
-          <strong>Items:</strong> ${meal.meals}<br>
-          <strong>Time:</strong> ${meal.time || 'N/A'}<br>
-          <strong>Quantity:</strong> ${meal.quantity || 'N/A'}
-        `;
-        Swal.fire({
-          title: info.event.title,
-          html: details,
-          showCancelButton: true,
-          confirmButtonText: 'Edit',
-          cancelButtonText: 'Close'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/dietary/meal-plans/${info.event.id}/edit`;
-          }
-        });
-      }
+  const meal = info.event.extendedProps;
+
+  const details = `
+    <strong>Category:</strong> ${meal.category}<br>
+    <strong>Items:</strong> ${meal.meals}<br>
+    <strong>Time:</strong> ${meal.time || 'N/A'}<br>
+    <strong>Quantity:</strong> ${meal.quantity || 'N/A'}
+  `;
+
+  Swal.fire({
+    title: `${info.event.title}`,
+    html: details,
+    showCancelButton: true,
+    showDenyButton: true,
+    confirmButtonText: 'Edit',
+    denyButtonText: 'Delete',
+    cancelButtonText: 'Close',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Redirect to edit page
+      window.location.href = `/dietary/meal-plans/${info.event.id}/edit`;
+    } else if (result.isDenied) {
+      // Confirm deletion
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This meal will be permanently deleted.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+      }).then((confirmResult) => {
+        if (confirmResult.isConfirmed) {
+          fetch(`/dietary/meal-plans/${info.event.id}`, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(resp => {
+            if (resp.ok) {
+              Swal.fire('Deleted!', 'The meal has been removed.', 'success');
+              info.event.remove(); // Removes it from the calendar
+            } else {
+              return resp.text().then(text => { throw new Error(text); });
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            Swal.fire('Error', 'Failed to delete the meal. See console for details.', 'error');
+          });
+        }
+      });
+    }
+  });
+}
+
     });
 
     calendar.render();
