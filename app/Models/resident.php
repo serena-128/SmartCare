@@ -102,6 +102,12 @@ public function nextOfKin()
 {
     return $this->hasMany(ResidentMedicationOrder::class);
 }
+// in app/Models/Resident.php
+
+public function dietaryRestrictions()
+{
+    return $this->hasOne(DietaryRestriction::class, 'residentid');
+}
 
 
 }

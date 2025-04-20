@@ -344,5 +344,31 @@ Route::get('/resident/medications', function () {
     return view('resident.medications');
 })->name('resident.medications');
 
-Route::get('/dietary', [DietaryController::class, 'index'])->name('dietary.index');
 Route::post('/meal-plan/store', [DietaryController::class, 'store'])->name('mealPlan.store');
+Route::get('/food-search', [DietaryController::class, 'searchFood'])->name('foodSearch');
+Route::post('/dietary/store-meal-plan', [DietaryController::class, 'storeMealPlan'])->name('dietary.storeMealPlan');
+
+// Route for food search
+Route::get('/dietary', [DietaryController::class, 'index'])->name('dietary');
+Route::get('/dietary/search', [DietaryController::class, 'searchFood'])->name('dietary.searchFood');
+
+Route::get('/dietary', [DietaryController::class, 'index'])->name('dietary.index');
+
+Route::get('/dietary/allergies',   [DietaryController::class, 'showAllergiesForm'])
+     ->name('dietary.allergies');
+
+Route::get('/dietary/allergies/search', [DietaryController::class, 'searchAllergy'])
+     ->name('dietary.searchAllergy');
+
+//meal planning
+Route::get('/dietary',                [DietaryController::class, 'index'])
+     ->name('dietary.index');
+
+Route::post('/dietary/meal-plan',     [DietaryController::class, 'storeMealPlan'])
+     ->name('dietary.storeMealPlan');
+
+Route::get('/dietary/search-food',    [DietaryController::class, 'searchFood'])
+     ->name('dietary.searchFood');
+
+Route::get('/dietary/search-allergy', [DietaryController::class, 'searchAllergy'])
+     ->name('dietary.searchAllergy');
