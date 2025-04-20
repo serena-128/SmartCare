@@ -310,18 +310,15 @@
     </div>
       
       <!-- Recipe Search Tab -->
-<!-- 5) Recipe Search Tab -->
-<div class="tab-pane fade {{ $active==='recipe-search' ? 'show active' : '' }}"
+<!-- Recipe Search Tab -->
+<div class="tab-pane fade {{ $active==='recipe-search'?'show active':'' }}"
      id="recipe-search"
      role="tabpanel"
      aria-labelledby="recipe-search-tab">
 
-  {{-- 5a) The search form --}}
-  <form method="GET" action="{{ route('dietary.searchRecipe') }}" class="mb-4">
-    {{-- preserve resident & date --}}
+  <form class="mb-4" method="GET" action="{{ route('dietary.searchRecipe') }}">
     <input type="hidden" name="resident_id" value="{{ $selectedResident }}">
     <input type="hidden" name="plan_date"   value="{{ $planDate }}">
-
     <div class="input-group">
       <input type="text"
              name="recipe"
@@ -332,58 +329,65 @@
     </div>
   </form>
 
-  {{-- 5b) The results grid --}}
-  <div class="row row-cols-1 row-cols-md-2 g-4">
-    @forelse($recipes as $r)
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          @if(!empty($r['image']))
-            <img src="{{ $r['image'] }}"
-                 class="card-img-top"
-                 alt="{{ $r['title'] }}">
-          @endif
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ $r['title'] }}</h5>
-            <p class="card-text text-truncate">
-              {!! strip_tags($r['summary'] ?? '') !!}
-            </p>
+  @if(count($recipes))
+    <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        @foreach($recipes as $i => $r)
+          <div class="carousel-item {{ $i===0 ? 'active' : '' }}">
+            <div class="card mx-auto" style="max-width:600px;">
+              @if(!empty($r['image']))
+                <img src="{{ $r['image'] }}"
+                     class="card-img-top"
+                     alt="{{ $r['title'] }}">
+              @endif
+              <div class="card-body">
+                <h5 class="card-title">{{ $r['title'] }}</h5>
+                <p class="card-text">{!! $r['summary'] ?? 'No summary available.' !!}</p>
 
-            <button class="mt-auto btn btn-sm btn-outline-primary"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#details-{{ $r['id'] }}"
-                    aria-expanded="false">
-              Show details
-            </button>
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#details-{{ $r['id'] }}">
+                  Show details
+                </button>
 
-            <div class="collapse mt-3" id="details-{{ $r['id'] }}">
-              <h6>Ingredients</h6>
-              <ul class="ps-3">
-                @foreach($r['extendedIngredients'] ?? [] as $ing)
-                  <li>{{ $ing['original'] }}</li>
-                @endforeach
-              </ul>
+                <div class="collapse mt-3" id="details-{{ $r['id'] }}">
+                  <h6>Ingredients</h6>
+                  <ul class="ps-3">
+                    @foreach($r['extendedIngredients'] ?? [] as $ing)
+                      <li>{{ $ing['original'] }}</li>
+                    @endforeach
+                  </ul>
 
-              <h6>Instructions</h6>
-              <p>{!! $r['instructions'] ?? 'No instructions available.' !!}</p>
+                  <h6>Instructions</h6>
+                  <p>{!! $r['instructions'] ?? 'No instructions available.' !!}</p>
 
-              <h6>Dietary Flags</h6>
-              <ul class="list-unstyled">
-                <li><strong>Dish types:</strong> {{ implode(', ', $r['dishTypes'] ?? []) }}</li>
-                <li><strong>Diets:</strong>      {{ implode(', ', $r['diets'] ?? []) }}</li>
-                <li><strong>Gluten‑free:</strong> {{ !empty($r['glutenFree']) ? 'Yes' : 'No' }}</li>
-                <li><strong>Vegan:</strong>       {{ !empty($r['vegan'])      ? 'Yes' : 'No' }}</li>
-              </ul>
+                  <h6>Dietary Flags</h6>
+                  <ul class="list-unstyled">
+                    <li><strong>Dish types:</strong> {{ implode(', ', $r['dishTypes'] ?? []) }}</li>
+                    <li><strong>Diets:</strong>      {{ implode(', ', $r['diets'] ?? []) }}</li>
+                    <li><strong>Gluten‑free:</strong> {{ !empty($r['glutenFree']) ? 'Yes' : 'No' }}</li>
+                    <li><strong>Vegan:</strong>       {{ !empty($r['vegan'])      ? 'Yes' : 'No' }}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        @endforeach
       </div>
-    @empty
-      <div class="col">
-        <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
-      </div>
-    @endforelse
-  </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  @else
+    <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
+  @endif
 </div>
+
 
 
 
