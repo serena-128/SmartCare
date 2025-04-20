@@ -431,17 +431,22 @@ public function historyCalendar(Request $request)
     }
 
     $entries = \App\Models\MealPlan::where('resident_id', $residentId)
-                ->where('plan_date', '<=', now())
-                ->get();
+        ->whereDate('plan_date', '<=', now()->toDateString())
+        ->get();
 
     return $entries->map(function ($plan) {
         return [
-            'id'    => $plan->id,
-            'title' => ucfirst($plan->category) . ': ' . $plan->meals,
-            'start' => $plan->plan_date,
-            'allDay'=> true
+            'id'       => $plan->id,
+            'title'    => ucfirst($plan->category) . ': ' . $plan->meals,
+            'start'    => $plan->plan_date,
+            'allDay'   => true,
+            'category' => $plan->category,
+            'extendedProps' => [
+                'category' => $plan->category
+            ]
         ];
     });
 }
+
 
 }  

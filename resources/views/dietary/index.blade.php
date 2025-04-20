@@ -769,22 +769,20 @@ const isEdit = !!mealId;
 });
 </script>
       
-      
-
-
 <script>
-      
 document.addEventListener('DOMContentLoaded', function () {
   const historyCalendarEl = document.getElementById('historyCalendar');
   let historyCalendar;
 
   function initHistoryCalendar(residentId) {
+    if (!residentId) return;
+
     if (historyCalendar) historyCalendar.destroy();
 
     historyCalendar = new FullCalendar.Calendar(historyCalendarEl, {
       initialView: 'dayGridMonth',
       initialDate: new Date(),
-      validRange: { end: new Date() }, // Show only past & today
+      validRange: { end: new Date() }, // Only show today and past
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
@@ -795,19 +793,42 @@ document.addEventListener('DOMContentLoaded', function () {
         extraParams: { resident_id: residentId }
       },
       eventContent: function(arg) {
-        return {
-          html: `<div class="fc-event-title">${arg.event.title}</div>`
+        const category = arg.event.extendedProps.category;
+        const icons = {
+          breakfast: '🍳',
+          lunch:     '🥪',
+          dinner:    '🍝',
+          snacks:    '🍎',
+          treats:    '🍩'
         };
+        const icon = icons[category] || '';
+        return { html: `<div class="fc-event-title">${icon} ${arg.event.title}</div>` };
+      },
+      eventDidMount: function(info) {
+        const colors = {
+          breakfast: '#FFE29A',
+          lunch:     '#A1E3D8',
+          dinner:    '#FFB4A2',
+          snacks:    '#BFD7ED',
+          treats:    '#DDBDD5'
+        };
+        const category = info.event.extendedProps.category;
+        info.el.style.backgroundColor = colors[category] || '#f8f9fa';
       }
     });
 
     historyCalendar.render();
   }
 
-  document.getElementById('historyResidentSelect').addEventListener('change', e => {
+  // Handle initial load if a resident is already selected
+  const initialId = document.getElementById('historyResidentSelect')?.value;
+  if (initialId) initHistoryCalendar(initialId);
+
+  // Change listener
+  document.getElementById('historyResidentSelect')?.addEventListener('change', function (e) {
     initHistoryCalendar(e.target.value);
   });
 });
-
 </script>
+
 @endpush
