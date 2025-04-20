@@ -259,47 +259,52 @@ class DietaryController extends Controller
  */
 public function searchRecipe(Request $request)
 {
-    // 1. Load the shared dashboard data
     $residents        = Resident::with('dietaryRestrictions')->get();
     $allergyInfo      = null;
     $activeTab        = 'recipe-search';
     $selectedResident = $request->input('resident_id');
     $planDate         = $request->input('plan_date', today()->toDateString());
-    $meals            = []; // existing meal‐plan entries, if any…
+    $meals            = [];
 
-    // 2. Grab the search term
     $query = trim($request->input('recipe', ''));
+    $recipes = [];
 
-    // 3. If no query, return the view with empty results
-    if ($query === '') {
-        $recipes = [];
-    } else {
-        // 4. Call Spoonacular complexSearch + recipe info
-        $resp = Http::get('https://api.spoonacular.com/recipes/complexSearch', [
+    if ($query !== '') {
+        $apiKey = config('services.spoonacular.key');
+        // 1) Get a list of recipes (IDs+titles+images)
+        $search = Http::get('https://api.spoonacular.com/recipes/complexSearch', [
             'query'                => $query,
-            'addRecipeInformation' => true,
             'number'               => 10,
-            'apiKey'               => config('services.spoonacular.key'),
-        ]);
+            'apiKey'               => $apiKey,
+        ])->json('results', []);
 
-        $recipes = $resp->successful()
-           ? ($resp->json('results') ?? [])
-           : [];
+        // 2) For each, fetch full info
+        foreach ($search as $r) {
+            $info = Http::get("https://api.spoonacular.com/recipes/{$r['id']}/information", [
+                'includeNutrition' => false,
+                'apiKey'           => $apiKey,
+            ])->json();
+
+            $recipes[] = [
+                'id'                   => $r['id'],
+                'title'                => $info['title']                ?? $r['title'] ?? '',
+                'image'                => $info['image']                ?? $r['image'] ?? '',
+                'summary'              => $info['summary']              ?? 'No summary available.',
+                'instructions'         => $info['instructions']         ?? 'No instructions available.',
+                'extendedIngredients'  => $info['extendedIngredients']  ?? [],
+                'dishTypes'            => $info['dishTypes']            ?? [],
+                'diets'                => $info['diets']                ?? [],
+                'glutenFree'           => $info['glutenFree']           ?? false,
+                'vegan'                => $info['vegan']                ?? false,
+            ];
+        }
     }
 
-    // 5. Render the same index.blade.php with our new $recipes & activeTab
-    return view('dietary.index', [
-  'residents'        => $residents,
-  'foodItems'        => $foodItems   ?? [],
-  'allergyInfo'      => $allergyInfo,
-  'activeTab'        => $activeTab,
-  'selectedResident' => $selectedResident,
-  'planDate'         => $planDate,
-  'meals'            => $meals,
-  'recipes'          => $recipes      ?? [],
-  'entriesByCat'     => $entriesByCat ?? [],
-]);
-
+    return view('dietary.index', compact(
+        'residents','allergyInfo','activeTab',
+        'selectedResident','planDate','meals','recipes'
+    ));
 }
+
 
 }
