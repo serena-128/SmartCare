@@ -587,13 +587,46 @@ document.addEventListener('DOMContentLoaded', function() {
         if (! residentId) {
           return alert('Please pick a resident first.');
         }
+          
+          
         // prepare modal
         document.getElementById('modalResident').value = residentId;
         document.getElementById('modalDate').value     = info.dateStr;
         form.reset();
         toggleQtyField();
         addModal.show();
-      }
+      },
+        eventContent: function(arg) {
+  const category = arg.event.extendedProps.category;
+
+  const icons = {
+    breakfast: '🍳',
+    lunch:     '🥪',
+    dinner:    '🍝',
+    snacks:    '🍎',
+    treats:    '🍩',
+  };
+
+  const icon = icons[category] || '';
+  return {
+    html: `<div class="fc-event-title">${icon} ${arg.event.title}</div>`
+  };
+},
+eventDidMount: function(info) {
+  const category = info.event.extendedProps.category;
+
+  const colors = {
+    breakfast: '#FFE29A',
+    lunch:     '#A1E3D8',
+    dinner:    '#FFB4A2',
+    snacks:    '#BFD7ED',
+    treats:    '#DDBDD5',
+  };
+
+  // Set background color safely
+  info.el.style.backgroundColor = colors[category] || '#f8f9fa';
+}
+
     });
 
     calendar.render();

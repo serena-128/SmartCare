@@ -368,20 +368,25 @@ public function calendarEvents(Request $request)
     $residentId = $request->query('resident_id');
 
     if (!$residentId) {
-        return response()->json([]); // avoid 500 if no resident selected
+        return response()->json([]);
     }
 
     $entries = \App\Models\MealPlan::where('resident_id', $residentId)->get();
 
-    $events = $entries->map(function ($plan) {
+    return $entries->map(function ($plan) {
         return [
-            'title' => ucfirst($plan->category) . ': ' . $plan->meals,
-            'start' => $plan->plan_date,
-            'allDay' => true,
+            'title'    => ucfirst($plan->category) . ': ' . $plan->meals,
+            'start'    => $plan->plan_date,
+            'allDay'   => true,
+            'category' => $plan->category, // for color/icon logic
+            'extendedProps' => [
+                'meals'    => $plan->meals,
+                'time'     => $plan->time,
+                'quantity' => $plan->quantity,
+                'createdBy'=> $plan->created_by,
+            ],
         ];
     });
-
-    return response()->json($events);
 }
 
 
