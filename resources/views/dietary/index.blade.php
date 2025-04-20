@@ -159,21 +159,24 @@
 </div>
 
 <!-- Modal for adding a meal entry -->
+<!-- Modal for adding a meal entry -->
 <div class="modal fade" id="addMealModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <form id="addMealForm">
       @csrf
       <input type="hidden" name="resident_id" id="modalResident">
-      <input type="hidden" name="plan_date" id="modalDate">
+      <input type="hidden" name="plan_date"   id="modalDate">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add Meal Entry</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close"
+                  data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
             <label for="modalCategory" class="form-label">Category</label>
-            <select id="modalCategory" name="category" class="form-select" required>
+            <select id="modalCategory" name="category"
+                    class="form-select" required>
               <option value="breakfast">Breakfast</option>
               <option value="lunch">Lunch</option>
               <option value="dinner">Dinner</option>
@@ -182,22 +185,36 @@
             </select>
           </div>
           <div class="mb-3">
-            <label for="modalName" class="form-label">Item Name</label>
-            <input id="modalName" name="name" type="text" class="form-control" required>
+            <label for="modalName" class="form-label">
+              Item Name(s) <small class="text-muted">(comma‑separate)</small>
+            </label>
+            <input id="modalName" name="name" type="text"
+                   class="form-control" placeholder="e.g. Tea, Toast, Orange Juice"
+                   required>
           </div>
-          <div class="mb-3">
+            <div class="mb-3">
+              <label for="modalTime" class="form-label">Time</label>
+              <input id="modalTime" name="time" type="time" class="form-control">
+            </div>
+
+          <!-- wrap qty so we can toggle it -->
+          <div class="mb-3" id="qtyWrapper">
             <label for="modalQty" class="form-label">Quantity</label>
-            <input id="modalQty" name="quantity" type="number" min="1" value="1" class="form-control" required>
+            <input id="modalQty" name="quantity" type="number"
+                   min="1" value="1" class="form-control">
           </div>
+
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Add</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary"
+                  data-bs-dismiss="modal">Cancel</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
 
 
 
@@ -530,79 +547,107 @@
 
 @push('scripts')
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    let calendarEl = document.getElementById('mealCalendar');
-    let addModal   = new bootstrap.Modal(document.getElementById('addMealModal'));
-    let calendar;
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarEl   = document.getElementById('mealCalendar');
+  const addModal     = new bootstrap.Modal(document.getElementById('addMealModal'));
+  const form         = document.getElementById('addMealForm');
+  const catSelect    = document.getElementById('modalCategory');
+  const qtyWrapper   = document.getElementById('qtyWrapper');
+  let   calendar;
 
-    function initCalendar(residentId) {
-      if (calendar) calendar.destroy();
-
-      calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        initialDate: new Date(),
-        validRange: { start: new Date() },
-        headerToolbar: {
-          left:  'prev,next today',
-          center:'title',
-          right: ''
-        },
-        events: {
-          url: '/dietary/calendar',
-          extraParams: { resident_id: residentId }
-        },
-        dateClick: info => {
-          if (! residentId) {
-            return alert('Please pick a resident from the dropdown above first.');
-          }
-          document.getElementById('modalResident').value = residentId;
-          document.getElementById('modalDate').value     = info.dateStr;
-          document.getElementById('modalCategory').value= 'breakfast';
-          document.getElementById('modalName').value    = '';
-          document.getElementById('modalQty').value     = 1;
-          addModal.show();
-        }
-      });
-
-      calendar.render();
+  // show/hide quantity field
+  function toggleQtyField() {
+    const cat = catSelect.value;
+    if (cat==='snacks' || cat==='treats') {
+      qtyWrapper.style.display = 'block';
+    } else {
+      qtyWrapper.style.display = 'none';
     }
+  }
+  catSelect.addEventListener('change', toggleQtyField);
 
-    // Re‐init whenever the resident selector changes
-    document.getElementById('residentSelect')
-      .addEventListener('change', e => initCalendar(e.target.value));
+  // initialize calendar instance
+  function initCalendar(residentId) {
+    if (calendar) calendar.destroy();
 
-    // Kick things off for the initially selected resident
-    initCalendar(document.getElementById('residentSelect').value);
-
-    // Handle the “add meal” form submit
-    document.getElementById('addMealForm')
-      .addEventListener('submit', async function(e) {
-        e.preventDefault();
-        let form = e.target;
-        let payload = {
-          resident_id: form.resident_id.value,
-          plan_date:   form.plan_date.value,
-          category:    form.category.value,
-          name:        form.name.value,
-          quantity:    form.quantity.value
-        };
-
-        let resp = await fetch('/dietary/entry', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (resp.ok) {
-          addModal.hide();
-          calendar.refetchEvents();
-        } else {
-          alert('Couldn’t add that meal entry. Please try again.');
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView:   'dayGridMonth',
+      initialDate:   new Date(),
+      validRange:    { start: new Date() },
+      headerToolbar: {
+        left:  'prev,next today',
+        center:'title',
+        right: ''
+      },
+      events: {
+        url: '/dietary/calendar',
+        extraParams: { resident_id: residentId }
+      },
+      dateClick: info => {
+        if (! residentId) {
+          return alert('Please pick a resident first.');
         }
-      });
-  });
+        // prepare modal
+        document.getElementById('modalResident').value = residentId;
+        document.getElementById('modalDate').value     = info.dateStr;
+        form.reset();
+        toggleQtyField();
+        addModal.show();
+      }
+    });
+
+    calendar.render();
+  }
+
+  // when resident dropdown changes…
+  document.getElementById('residentSelect')
+    .addEventListener('change', e => {
+      initCalendar(e.target.value);
+    });
+
+  // kick off on page load (if a resident is pre‑selected)
+  initCalendar(document.getElementById('residentSelect').value);
+
+  // form submit: split items by comma
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const payload = {
+    resident_id: form.resident_id.value,
+    plan_date:   form.plan_date.value,
+    category:    form.category.value,
+    meals:       form.name.value,  // this is already comma-separated
+    time:        form.time?.value || null,
+    quantity:    ['snacks','treats'].includes(form.category.value)
+                 ? parseInt(form.quantity.value) || 1
+                 : null
+  };
+
+  try {
+    const resp = await fetch("{{ route('dietary.meal-plans.store') }}", {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (resp.ok) {
+      addModal.hide();
+      calendar.refetchEvents();
+    } else {
+      const error = await resp.text();
+      console.error(error);
+      alert("Error: couldn't save meal. Check console.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("An unexpected error occurred.");
+  }
+});
+
+});
 </script>
 @endpush
+

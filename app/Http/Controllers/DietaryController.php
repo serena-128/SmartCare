@@ -172,28 +172,26 @@ class DietaryController extends Controller
     public function storeMealPlan(Request $request)
     {
         $data = $request->validate([
-            'resident_id'    => 'required|exists:resident,id',
-            'plan_date'      => 'required|date',
-            'meals'          => 'nullable|array',
-            'meals.*.name'   => 'required|string',
-            'meals.*.qty'    => 'required|integer|min:1',
+            'resident_id' => 'required|exists:resident,id',
+
+            'plan_date'   => 'required|date',
+            'category'    => 'required|in:breakfast,lunch,dinner,snacks,treats',
+            'meals'       => 'required|string',    // comma‑separated
+            'time'        => 'nullable|date_format:H:i',
+            'quantity'    => 'nullable|integer|min:1',
         ]);
 
-        $plan = MealPlan::updateOrCreate(
-            [
-              'resident_id'=> $data['resident_id'],
-              'plan_date'  => $data['plan_date'],
-            ],
-            [
-              'meals'      => $data['meals'],
-              'created_by' => Auth::id(),
-              'updated_by' => Auth::id(),
-            ]
-        );
+        $plan = MealPlan::create([
+            'resident_id' => $data['resident_id'],
+            'plan_date'   => $data['plan_date'],
+            'category'    => $data['category'],
+            'meals'       => $data['meals'],
+            'time'        => $data['time'] ?? null,
+            'quantity'    => $data['quantity'] ?? null,
+            'created_by'  => auth()->id(),
+        ]);
 
-        return back()
-          ->with(['activeTab'=>'meal-plan','selectedResident'=>$data['resident_id'],'planDate'=>$data['plan_date']])
-          ->withToast('Meal plan saved!');
+        return response()->json($plan, 201);
     }
     
         /**

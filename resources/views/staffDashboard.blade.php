@@ -36,8 +36,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
-                        <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}">💊 Medications</a></li>
-                        <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li> <!-- ✅ Added this -->
+                            <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}"> 💊Medication Center</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dietary.index') }}">📋 Dietary</a></li>
+                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li>
 
                     </ul>
                 </li>

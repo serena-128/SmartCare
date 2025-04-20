@@ -364,8 +364,6 @@ Route::get('/dietary/allergies/search', [DietaryController::class, 'searchAllerg
 Route::get('/dietary',                [DietaryController::class, 'index'])
      ->name('dietary.index');
 
-Route::post('/dietary/meal-plan',     [DietaryController::class, 'storeMealPlan'])
-     ->name('dietary.storeMealPlan');
 
 Route::get('/dietary/search-food',    [DietaryController::class, 'searchFood'])
      ->name('dietary.searchFood');
@@ -393,3 +391,7 @@ Route::get('/dietary/recipe-search', [DietaryController::class, 'searchRecipe'])
 Route::get('dietary/search-off', [DietaryController::class, 'searchOff'])
      ->name('dietary.searchOff');
 Route::get('/dietary/calendar', [DietaryController::class,'calendarEvents']);
+
+Route::post('/dietary/meal-plans', [DietaryController::class, 'storeMealPlan'])
+     ->name('dietary.meal-plans.store');
+
