@@ -304,54 +304,67 @@
 @endpush
 
 
-     <!-- 4) Food Search Results -->
-    <div class="tab-pane fade {{ $active==='food-search' ? 'show active' : '' }}"
-         id="food-search"
-         role="tabpanel"
-         aria-labelledby="food-search-tab">
+<!-- 4) Food Search Results -->
+<div
+  class="tab-pane fade {{ $active==='food-search' ? 'show active' : '' }}"
+  id="food-search"
+  role="tabpanel"
+  aria-labelledby="food-search-tab"
+>
+  <h5 class="mb-3">Food Search Results</h5>
 
-      <h5 class="mb-3">Food Search Results</h5>
-
-      <form method="GET" action="{{ route('dietary.searchOff') }}" class="mb-3">
-        <div class="input-group">
-          <input
-            type="text"
-            name="food_item"
-            class="form-control"
-            placeholder="Search foods (e.g. apple)"
-            value="{{ request('food_item') }}"
-          >
-          <button class="btn btn-primary" type="submit">Search</button>
-        </div>
-      </form>
-
-      @if(count($foodItems ?? []))
-        <ul class="list-unstyled">
-          @foreach($foodItems as $food)
-            <li class="mb-4">
-              <h6>{{ $food['product_name'] ?? 'Unknown' }}</h6>
-              @if(!empty($food['image_front_small_url']))
-                <img
-                  src="{{ $food['image_front_small_url'] }}"
-                  alt="{{ $food['product_name'] }}"
-                  class="img-thumbnail mb-2"
-                >
-              @endif
-              <p><strong>Brand:</strong> {{ $food['brands'] ?? 'N/A' }}</p>
-              @if(!empty($food['nutriments']['energy-kcal_100g']))
-                <p>
-                  <strong>Energy:</strong>
-                  {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
-                </p>
-              @endif
-            </li>
-          @endforeach
-        </ul>
-      @else
-        <p class="text-muted">No food items found.</p>
-      @endif
-
+  <form method="GET" action="{{ route('dietary.searchOff') }}" class="mb-3">
+    <div class="input-group">
+      <input
+        type="text"
+        name="food_item"
+        class="form-control"
+        placeholder="Search foods (e.g. apple)"
+        value="{{ request('food_item') }}"
+      >
+      <button class="btn btn-primary" type="submit">Search</button>
     </div>
+  </form>
+
+  @if(count($foodItems ?? []))
+    <ul class="list-unstyled">
+      @foreach($foodItems as $food)
+        <li class="mb-4">
+          <h6>{{ $food['product_name'] ?? 'Unknown' }}</h6>
+
+          @if(!empty($food['image_front_small_url']))
+            <img
+              src="{{ $food['image_front_small_url'] }}"
+              alt="{{ $food['product_name'] }}"
+              class="img-thumbnail mb-2"
+            >
+          @endif
+
+          <p><strong>Brand:</strong> {{ $food['brands'] ?? 'N/A' }}</p>
+
+          @if(!empty($food['generic_name']))
+            <p><strong>Description:</strong> {{ $food['generic_name'] }}</p>
+          @endif
+
+          @if(!empty($food['nutriments']['energy-kcal_100g']))
+            <p>
+              <strong>Energy:</strong>
+              {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
+            </p>
+          @endif
+
+          @if(!empty($food['ingredients_text']))
+            <p><strong>Ingredients:</strong> {{ $food['ingredients_text'] }}</p>
+          @endif
+        </li>
+      @endforeach
+    </ul>
+  @else
+    <p class="text-muted">No food items found.</p>
+  @endif
+
+</div>
+
 
     <!-- 5) Recipe Search -->
     <div class="tab-pane fade {{ $active==='recipe-search' ? 'show active' : '' }}"

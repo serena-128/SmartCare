@@ -313,26 +313,23 @@ public function searchRecipe(Request $request)
      * @return array              Array of OFF products
      */
     protected function fetchOffProducts(string $term, int $pageSize = 20): array
-    {
-        $term = trim($term);
-        if ($term === '') {
-            return [];
-        }
+{
+    $resp = Http::get('https://world.openfoodfacts.org/cgi/search.pl', [
+        'search_terms'  => $term,
+        'search_simple' => 1,
+        'action'        => 'process',
+        'json'          => 1,
+        'page_size'     => $pageSize,
+        // ask OFF to also send these fields:
+        'fields'        => 'code,product_name,brands,quantity,generic_name,ingredients_text,image_front_small_url,nutriments'
+    ]);
 
-        $resp = Http::get('https://world.openfoodfacts.org/cgi/search.pl', [
-            'search_terms'  => $term,
-            'search_simple' => 1,
-            'action'        => 'process',
-            'json'          => 1,
-            'page_size'     => $pageSize,
-        ]);
-
-        if (! $resp->successful()) {
-            return [];
-        }
-
-        return $resp->json('products', []);
+    if (! $resp->successful()) {
+        return [];
     }
+
+    return $resp->json('products', []);
+}
 
 /**
  * Show Food Search using OpenFoodFacts.
