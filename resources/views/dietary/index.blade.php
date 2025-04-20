@@ -156,6 +156,25 @@
   </div>
 
   <div id="mealCalendar"></div>
+    @if(isset($editMeal))
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const meal = @json($editMeal);
+
+    document.getElementById('modalResident').value = meal.resident_id;
+    document.getElementById('modalDate').value = meal.plan_date;
+    document.getElementById('modalCategory').value = meal.category;
+    document.getElementById('modalName').value = meal.meals;
+    document.getElementById('modalTime').value = meal.time ?? '';
+    document.getElementById('modalQty').value = meal.quantity ?? 1;
+
+    toggleQtyField(); // make sure the quantity field toggles properly
+
+    new bootstrap.Modal(document.getElementById('addMealModal')).show();
+  });
+</script>
+@endif
+
 </div>
 
 <!-- Modal for adding a meal entry -->
@@ -164,6 +183,7 @@
   <div class="modal-dialog">
     <form id="addMealForm">
       @csrf
+       <input type="hidden" name="meal_id" id="mealId" value="{{ $editMeal->id ?? '' }}">
       <input type="hidden" name="resident_id" id="modalResident">
       <input type="hidden" name="plan_date"   id="modalDate">
       <div class="modal-content">
@@ -530,19 +550,26 @@
 </div>
 
 
+<!-- 6) Meal History -->
+<div class="tab-pane fade {{ $active==='meal-history' ? 'show active' : '' }}"
+     id="meal-history"
+     role="tabpanel"
+     aria-labelledby="meal-history-tab">
+  <h5 class="mb-3">Meal History</h5>
 
-
-
-    <!-- 5) Meal History -->
-    <div class="tab-pane fade {{ $active==='meal-history'?'show active':'' }}"
-         id="meal-history"
-         role="tabpanel"
-         aria-labelledby="meal-history-tab">
-      <h5 class="mb-3">Meal History</h5>
-      <p class="text-muted">No meal history available.</p>
-    </div>
+  <div class="mb-3 d-flex align-items-center">
+    <label for="historyResidentSelect" class="me-2">Resident:</label>
+    <select id="historyResidentSelect" class="form-select w-auto">
+      <option value="">— choose resident —</option>
+      @foreach($residents as $r)
+        <option value="{{ $r->id }}">{{ $r->full_name }}</option>
+      @endforeach
+    </select>
   </div>
+
+  <div id="historyCalendar"></div>
 </div>
+
 @endsection
 
 @push('scripts')
@@ -631,9 +658,20 @@ document.addEventListener('DOMContentLoaded', function() {
     cancelButtonText: 'Close',
   }).then((result) => {
     if (result.isConfirmed) {
-      // Redirect to edit page
-      window.location.href = `/dietary/meal-plans/${info.event.id}/edit`;
-    } else if (result.isDenied) {
+  // Show edit modal directly with filled values
+  document.getElementById('modalResident').value = residentId;
+  document.getElementById('modalDate').value = info.event.startStr;
+  document.getElementById('modalCategory').value = meal.category;
+  document.getElementById('modalName').value = meal.meals;
+  document.getElementById('modalTime').value = meal.time || '';
+  document.getElementById('modalQty').value = meal.quantity || 1;
+  document.getElementById('mealId').value = info.event.id;
+
+  toggleQtyField(); // Update quantity visibility based on category
+
+  addModal.show(); // Open the modal
+}
+ else if (result.isDenied) {
       // Confirm deletion
       Swal.fire({
         title: 'Are you sure?',
@@ -682,43 +720,94 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initCalendar(document.getElementById('residentSelect').value);
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
+ form.addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-    const payload = {
-      resident_id: form.resident_id.value,
-      plan_date:   form.plan_date.value,
-      category:    form.category.value,
-      meals:       form.name.value,
-      time:        form.time?.value || null,
-      quantity:    ['snacks','treats'].includes(form.category.value)
-                   ? parseInt(form.quantity.value) || 1
-                   : null
-    };
+  const mealId = document.getElementById('mealId').value;
+const isEdit = !!mealId;
+  const url = isEdit
+  ? `/dietary/meal-plans/${mealId}`
+  : "{{ route('dietary.meal-plans.store') }}";
 
-    try {
-      const resp = await fetch("{{ route('dietary.meal-plans.store') }}", {
-        method: 'POST',
-        headers: {
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+  const method = isEdit ? 'PUT' : 'POST';
 
-      if (resp.ok) {
-        addModal.hide();
-        calendar.refetchEvents();
-      } else {
-        const error = await resp.text();
-        console.error(error);
-        alert("Error: couldn't save meal. Check console.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("An unexpected error occurred.");
+  const payload = {
+    resident_id: form.resident_id.value,
+    plan_date:   form.plan_date.value,
+    category:    form.category.value,
+    meals:       form.name.value,
+    time:        form.time?.value || null,
+    quantity:    ['snacks','treats'].includes(form.category.value)
+                 ? parseInt(form.quantity.value) || 1
+                 : null
+  };
+
+  try {
+    const resp = await fetch(url, {
+      method: method,
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (resp.ok) {
+      addModal.hide();
+      calendar.refetchEvents();
+    } else {
+      const error = await resp.text();
+      console.error(error);
+      alert("Error: couldn't save meal. Check console.");
     }
+  } catch (err) {
+    console.error(err);
+    alert("An unexpected error occurred.");
+  }
+});
+
+});
+</script>
+      
+      
+
+
+<script>
+      
+document.addEventListener('DOMContentLoaded', function () {
+  const historyCalendarEl = document.getElementById('historyCalendar');
+  let historyCalendar;
+
+  function initHistoryCalendar(residentId) {
+    if (historyCalendar) historyCalendar.destroy();
+
+    historyCalendar = new FullCalendar.Calendar(historyCalendarEl, {
+      initialView: 'dayGridMonth',
+      initialDate: new Date(),
+      validRange: { end: new Date() }, // Show only past & today
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: ''
+      },
+      events: {
+        url: '/dietary/history-calendar',
+        extraParams: { resident_id: residentId }
+      },
+      eventContent: function(arg) {
+        return {
+          html: `<div class="fc-event-title">${arg.event.title}</div>`
+        };
+      }
+    });
+
+    historyCalendar.render();
+  }
+
+  document.getElementById('historyResidentSelect').addEventListener('change', e => {
+    initHistoryCalendar(e.target.value);
   });
 });
+
 </script>
 @endpush

@@ -238,19 +238,48 @@ class DietaryController extends Controller
     /**
      * AJAX: Update the “consumed” status on one entry.
      */
-    public function updateEntry(Request $request, MealPlanEntry $entry)
-    {
-        $request->validate([
-            'consumed' => 'required|in:none,some,all',
-        ]);
+    public function edit($id)
+{
+    $meal = \App\Models\MealPlan::findOrFail($id);
+    $residents = \App\Models\Resident::with('dietaryRestrictions')->get();
 
-        $entry->update([
-            'consumed'   => $request->input('consumed'),
-            'updated_at' => now(),
-        ]);
+    return view('dietary.index', [
+        'residents'        => $residents,
+        'activeTab'        => 'meal-plan',
+        'selectedResident' => $meal->resident_id,
+        'planDate'         => $meal->plan_date,
+        'editMeal'         => $meal, // 👈 used in view to trigger edit modal
+        'meals'            => [],
+        'entriesByCat'     => [],
+        'recipes'          => [],
+        'foodItems'        => [],
+        'allergyInfo'      => null,
+    ]);
+}
+public function update(Request $request, $id)
+{
+    $meal = MealPlan::findOrFail($id);
 
-        return response()->json($entry);
+    $data = $request->validate([
+        'category'  => 'required|in:breakfast,lunch,dinner,snacks,treats',
+        'meals'     => 'required|string',
+        'time'      => 'nullable|date_format:H:i',
+        'quantity'  => 'nullable|integer|min:1',
+    ]);
+
+    // Get the staff member ID from session
+    $staffId = session('staff_id');
+    if (!$staffId) {
+        return response()->json(['error' => 'Not logged in as staff.'], 401);
     }
+
+    $data['updated_by'] = $staffId;
+
+    $meal->update($data);
+
+    return response()->json(['message' => 'Meal updated successfully']);
+}
+
 
     /**
      * AJAX: Delete one entry.
@@ -393,5 +422,26 @@ public function calendarEvents(Request $request)
     });
 }
 
+public function historyCalendar(Request $request)
+{
+    $residentId = $request->query('resident_id');
+
+    if (!$residentId) {
+        return response()->json([]);
+    }
+
+    $entries = \App\Models\MealPlan::where('resident_id', $residentId)
+                ->where('plan_date', '<=', now())
+                ->get();
+
+    return $entries->map(function ($plan) {
+        return [
+            'id'    => $plan->id,
+            'title' => ucfirst($plan->category) . ': ' . $plan->meals,
+            'start' => $plan->plan_date,
+            'allDay'=> true
+        ];
+    });
+}
 
 }  
