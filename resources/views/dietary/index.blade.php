@@ -313,7 +313,7 @@
 >
   <h5 class="mb-3">Food Search Results</h5>
 
-  <form method="GET" action="{{ route('dietary.searchOff') }}" class="mb-3">
+  <form method="GET" action="{{ route('dietary.searchOff') }}" class="mb-4">
     <div class="input-group">
       <input
         type="text"
@@ -327,43 +327,51 @@
   </form>
 
   @if(count($foodItems ?? []))
-    <ul class="list-unstyled">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       @foreach($foodItems as $food)
-        <li class="mb-4">
-          <h6>{{ $food['product_name'] ?? 'Unknown' }}</h6>
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            @if(!empty($food['image_front_small_url']))
+              <img
+                src="{{ $food['image_front_small_url'] }}"
+                class="card-img-top"
+                alt="{{ $food['product_name'] }}"
+                style="object-fit:cover; height: 180px;"
+              >
+            @endif
 
-          @if(!empty($food['image_front_small_url']))
-            <img
-              src="{{ $food['image_front_small_url'] }}"
-              alt="{{ $food['product_name'] }}"
-              class="img-thumbnail mb-2"
-            >
-          @endif
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ $food['product_name'] ?? 'Unknown' }}</h5>
 
-          <p><strong>Brand:</strong> {{ $food['brands'] ?? 'N/A' }}</p>
+              @if(!empty($food['brands']))
+                <p class="card-text mb-1"><strong>Brand:</strong> {{ $food['brands'] }}</p>
+              @endif
 
-          @if(!empty($food['generic_name']))
-            <p><strong>Description:</strong> {{ $food['generic_name'] }}</p>
-          @endif
+              @if(!empty($food['generic_name']))
+                <p class="card-text mb-1"><strong>Description:</strong> {{ $food['generic_name'] }}</p>
+              @endif
 
-          @if(!empty($food['nutriments']['energy-kcal_100g']))
-            <p>
-              <strong>Energy:</strong>
-              {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
-            </p>
-          @endif
+              @if(!empty($food['ingredients_text']))
+                <p class="card-text mb-1"><strong>Ingredients:</strong> {{ $food['ingredients_text'] }}</p>
+              @endif
 
-          @if(!empty($food['ingredients_text']))
-            <p><strong>Ingredients:</strong> {{ $food['ingredients_text'] }}</p>
-          @endif
-        </li>
+              @if(!empty($food['nutriments']['energy-kcal_100g']))
+                <p class="card-text mt-auto">
+                  <strong>Energy:</strong>
+                  {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
+                </p>
+              @endif
+            </div>
+          </div>
+        </div>
       @endforeach
-    </ul>
+    </div>
   @else
     <p class="text-muted">No food items found.</p>
   @endif
 
 </div>
+
 
 
     <!-- 5) Recipe Search -->
