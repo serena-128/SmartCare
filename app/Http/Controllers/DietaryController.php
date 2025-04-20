@@ -363,18 +363,23 @@ public function searchOff(Request $request)
         'recipes'          => [],
     ]);
 }
-    public function calendarEvents(Request $request)
+   public function calendarEvents(Request $request)
 {
-    $resident = $request->query('resident_id');
-    $entries = MealPlanEntry::where('resident_id', $resident)
-      ->get()
-      ->map(function($e) {
-        return [
-          'title' => "{$e->category}: {$e->name}×{$e->quantity}",
-          'start' => $e->plan_date,
-          'allDay'=> true,
-        ];
-      });
+    $residentId = $request->query('resident_id');
+
+    if (!$residentId) {
+        return response()->json([], 200);
+    }
+
+    $entries = \App\Models\MealPlan::where('resident_id', $residentId)
+        ->get()
+        ->map(function ($plan) {
+            return [
+                'title' => ucfirst($plan->category) . ': ' . $plan->meals,
+                'start' => $plan->plan_date,
+                'allDay' => true,
+            ];
+        });
 
     return response()->json($entries);
 }
