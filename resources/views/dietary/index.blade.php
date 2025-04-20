@@ -304,6 +304,7 @@
 @endpush
 
 
+
 <!-- 4) Food Search Results -->
 <div
   class="tab-pane fade {{ $active==='food-search' ? 'show active' : '' }}"
@@ -326,27 +327,26 @@
     </div>
   </form>
 
-  @if(count($foodItems))
-    <div class="row row-cols-2 row-cols-md-3 g-4">
+  @if(count($foodItems ?? []))
+    <div class="row g-4">
       @foreach($foodItems as $i => $food)
-        <div class="col">
-          <div class="card h-100 text-center">
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="card h-100">
+            {{-- clickable image + title --}}
             @if(!empty($food['image_front_small_url']))
               <img
                 src="{{ $food['image_front_small_url'] }}"
                 class="card-img-top"
                 alt="{{ $food['product_name'] }}"
                 style="height:150px; object-fit:contain; cursor:pointer;"
-                data-bs-toggle="collapse"
-                data-bs-target="#food-details-{{ $i }}"
-                aria-expanded="false"
-                aria-controls="food-details-{{ $i }}"
+                onclick="toggleDetails({{ $i }})"
               >
             @endif
-            <div class="card-body py-2">
+            <div class="card-body text-center py-2" onclick="toggleDetails({{ $i }})" style="cursor:pointer;">
               <h6 class="card-title mb-0">{{ $food['product_name'] ?? 'Unknown' }}</h6>
             </div>
 
+            {{-- collapse panel for details --}}
             <div class="collapse" id="food-details-{{ $i }}">
               <div class="card-body border-top text-start">
                 @if(!empty($food['brands']))
@@ -357,23 +357,43 @@
                   <p class="mb-1"><strong>Description:</strong> {{ $food['generic_name'] }}</p>
                 @endif
 
-                @if(!empty($food['ingredients_text']))
-                  @php
-                    $ings = array_map('trim', explode(',', $food['ingredients_text']));
-                  @endphp
+                {{-- Ingredients --}}
+                @php
+                  $ingredients = collect($food['ingredients'] ?? [])
+                                   ->pluck('text')
+                                   ->filter()
+                                   ->toArray();
+                  if (empty($ingredients) && !empty($food['ingredients_text'])) {
+                    $ingredients = array_map('trim', explode(',', $food['ingredients_text']));
+                  }
+                @endphp
+                @if(count($ingredients))
                   <p class="mb-1"><strong>Ingredients:</strong></p>
-                  <ul class="ps-3 mb-2" style="max-height:100px; overflow:auto;">
-                    @foreach($ings as $ing)
+                  <ul class="ps-3 mb-2" style="max-height: 80px; overflow:auto;">
+                    @foreach($ingredients as $ing)
                       <li>{{ $ing }}</li>
                     @endforeach
                   </ul>
                 @endif
 
-                @if(!empty($food['nutriments']['energy-kcal_100g']))
-                  <p class="mb-0">
-                    <strong>Energy:</strong>
-                    {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
-                  </p>
+                {{-- Energy values --}}
+                @php
+                  $energies = collect($food['nutriments'] ?? [])
+                    ->filter(function($val,$key){
+                      return Str::contains($key,'energy');
+                    })
+                    ->map(function($val,$key){
+                      return ['label'=>ucfirst(str_replace('_',' ',$key)),'value'=>$val];
+                    })
+                    ->values();
+                @endphp
+                @if($energies->isNotEmpty())
+                  <p class="mb-1"><strong>Energy (per 100 g):</strong></p>
+                  <ul class="ps-3 mb-0">
+                    @foreach($energies as $e)
+                      <li>{{ $e['label'] }}: {{ $e['value'] }} kcal</li>
+                    @endforeach
+                  </ul>
                 @endif
               </div>
             </div>
@@ -384,8 +404,18 @@
   @else
     <p class="text-muted">No food items found.</p>
   @endif
-
 </div>
+
+@push('scripts')
+<script>
+  function toggleDetails(i) {
+    const el = document.getElementById(`food-details-${i}`);
+    bootstrap.Collapse.getOrCreateInstance(el).toggle();
+  }
+</script>
+@endpush
+
+
 
 
 
