@@ -357,4 +357,20 @@ public function searchOff(Request $request)
         'recipes'          => [],
     ]);
 }
+    public function calendarEvents(Request $request)
+{
+    $resident = $request->query('resident_id');
+    $entries = MealPlanEntry::where('resident_id', $resident)
+      ->get()
+      ->map(function($e) {
+        return [
+          'title' => "{$e->category}: {$e->name}×{$e->quantity}",
+          'start' => $e->plan_date,
+          'allDay'=> true,
+        ];
+      });
+
+    return response()->json($entries);
+}
+
 }  

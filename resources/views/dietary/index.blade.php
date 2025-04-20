@@ -138,170 +138,66 @@
     </div>
 
     <!-- 3) Meal Planning -->
-<div class="tab-pane fade {{ session('activeTab','preferences')=='meal-plan'?'show active':'' }}"
-     id="meal-plan" role="tabpanel">
+<!-- Meal Planning as Calendar -->
+<div class="tab-pane fade {{ $active==='meal-plan'?'show active':'' }}"
+     id="meal-plan" role="tabpanel" aria-labelledby="meal-plan-tab">
 
-  <form id="planHeader" class="row g-2 mb-3">
-    <div class="col-md-4">
-      <select id="residentSelect" class="form-select" name="resident_id">
-        <option value="">— Choose resident —</option>
-        @foreach($residents as $r)
-          <option value="{{ $r->id }}"
-            {{ optional($resident)->id==$r->id?'selected':'' }}>
-            {{ $r->full_name }}
-          </option>
-        @endforeach
-      </select>
-    </div>
-    <div class="col-md-3">
-      <input type="date" name="plan_date" id="planDate" class="form-control"
-             value="{{ $planDate }}">
-    </div>
-  </form>
-
-  @php
-    $categories = ['breakfast','lunch','dinner','snacks','treats'];
-  @endphp
-
-  <div class="row">
-    @foreach($categories as $cat)
-      <div class="col-md-4 mb-4">
-        <div class="card h-100">
-          <div class="card-header text-capitalize bg-secondary text-white">
-            {{ str_replace('-', ' ', $cat) }}
-          </div>
-          <ul class="list-group list-group-flush" id="{{ $cat }}List">
-            @foreach($entriesByCat[$cat] ?? [] as $e)
-              <li class="list-group-item d-flex justify-content-between align-items-center"
-                  data-id="{{ $e['id'] }}">
-                <div>
-                  {{ $e['name'] }} × {{ $e['quantity'] }}
-                </div>
-                <div class="btn-group btn-group-sm">
-                  @foreach(['none'=>'⚪','some'=>'🟡','all'=>'🟢'] as $status=>$icon)
-                    <button type="button"
-                            data-status="{{ $status }}"
-                            class="btn btn-outline-dark mark-consumed
-                              {{ $e['consumed']==$status?'active':'' }}">
-                      {{ $icon }}
-                    </button>
-                  @endforeach
-                  <button type="button"
-                          class="btn btn-outline-danger remove-entry">
-                    ✖
-                  </button>
-                </div>
-              </li>
-            @endforeach
-          </ul>
-          <div class="card-footer">
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control new-name"
-                     placeholder="Add item…">
-              <input type="number" class="form-control new-qty"
-                     value="1" min="1" style="max-width:60px">
-              <button class="btn btn-primary add-entry" data-cat="{{ $cat }}">
-                ➕
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    @endforeach
+  <div class="mb-3 d-flex align-items-center">
+    <label for="residentSelect" class="me-2">Resident:</label>
+    <select id="residentSelect" class="form-select w-auto">
+      <option value="">— choose resident —</option>
+      @foreach($residents as $r)
+        <option value="{{ $r->id }}"
+          {{ $selectedResident == $r->id ? 'selected' : '' }}>
+          {{ $r->full_name }}
+        </option>
+      @endforeach
+    </select>
   </div>
+
+  <div id="mealCalendar"></div>
 </div>
 
-@push('scripts')
-<script>
-  const token = document.querySelector('meta[name="csrf-token"]').content;
-
-  // helpers
-  const apiUrl     = url => '/dietary/entry'+url;
-  const getHeader  = () => ({
-    headers: {
-      'X-CSRF-TOKEN': token,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  });
-  const selectedResident = () => document.getElementById('residentSelect').value;
-  const planDate         = () => document.getElementById('planDate').value;
-
-  // add entry
-  document.querySelectorAll('.add-entry').forEach(btn =>
-    btn.onclick = async e => {
-      e.preventDefault();
-      const cat = btn.dataset.cat;
-      const cont = btn.closest('.card');
-      const name = cont.querySelector('.new-name').value.trim();
-      const qty  = parseInt(cont.querySelector('.new-qty').value,10);
-      if (! name || ! selectedResident()) return;
-      const body = JSON.stringify({
-        resident_id: selectedResident(),
-        plan_date:   planDate(),
-        category:    cat,
-        name, qty
-      });
-      const resp = await fetch(apiUrl(''), {
-        method: 'POST', ...getHeader(), body
-      });
-      const j = await resp.json();
-      // append to list
-      const ul = document.getElementById(cat+'List');
-      const li = document.createElement('li');
-      li.className = 'list-group-item d-flex justify-content-between align-items-center';
-      li.dataset.id = j.id;
-      li.innerHTML = `
-        <div>${j.name} × ${j.quantity}</div>
-        <div class="btn-group btn-group-sm">
-          <button data-status="none"  class="btn btn-outline-dark mark-consumed active">⚪</button>
-          <button data-status="some"  class="btn btn-outline-dark mark-consumed">🟡</button>
-          <button data-status="all"   class="btn btn-outline-dark mark-consumed">🟢</button>
-          <button class="btn btn-outline-danger remove-entry">✖</button>
-        </div>`;
-      ul.appendChild(li);
-      cont.querySelector('.new-name').value = '';
-    }
-  );
-
-  // delegate: remove or toggle consumed
-  document.querySelector('.tab-pane#meal-plan').addEventListener('click', async e => {
-    // remove
-    if (e.target.matches('.remove-entry')) {
-      const li = e.target.closest('li');
-      const id = li.dataset.id;
-      await fetch(apiUrl('/'+id), {
-        method:'DELETE', ...getHeader()
-      });
-      li.remove();
-    }
-    // consumed toggle
-    if (e.target.matches('.mark-consumed')) {
-      const btn    = e.target;
-      const li     = btn.closest('li');
-      const id     = li.dataset.id;
-      const status = btn.dataset.status;
-      // update visuals
-      li.querySelectorAll('.mark-consumed').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      // send
-      await fetch(apiUrl('/'+id), {
-        method:'PATCH',
-        ...getHeader(),
-        body: JSON.stringify({ consumed: status })
-      });
-    }
-  });
-
-  // when user changes resident or date, reload with query params
-  document.getElementById('planHeader').addEventListener('change', () => {
-    const rid = selectedResident();
-    const dt  = planDate();
-    if (! rid) return;
-    location.href = `?resident_id=${rid}&plan_date=${dt}&activeTab=meal-plan`;
-  });
-</script>
-@endpush
+<!-- Modal for adding a meal entry -->
+<div class="modal fade" id="addMealModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="addMealForm">
+      @csrf
+      <input type="hidden" name="resident_id" id="modalResident">
+      <input type="hidden" name="plan_date" id="modalDate">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Meal Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="modalCategory" class="form-label">Category</label>
+            <select id="modalCategory" name="category" class="form-select" required>
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snacks">Snacks</option>
+              <option value="treats">Treats</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="modalName" class="form-label">Item Name</label>
+            <input id="modalName" name="name" type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="modalQty" class="form-label">Quantity</label>
+            <input id="modalQty" name="quantity" type="number" min="1" value="1" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 
 
@@ -632,3 +528,81 @@
 </div>
 @endsection
 
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let calendarEl = document.getElementById('mealCalendar');
+    let addModal   = new bootstrap.Modal(document.getElementById('addMealModal'));
+    let calendar;
+
+    function initCalendar(residentId) {
+      if (calendar) calendar.destroy();
+
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        initialDate: new Date(),
+        validRange: { start: new Date() },
+        headerToolbar: {
+          left:  'prev,next today',
+          center:'title',
+          right: ''
+        },
+        events: {
+          url: '/dietary/calendar',
+          extraParams: { resident_id: residentId }
+        },
+        dateClick: info => {
+          if (! residentId) {
+            return alert('Please pick a resident from the dropdown above first.');
+          }
+          document.getElementById('modalResident').value = residentId;
+          document.getElementById('modalDate').value     = info.dateStr;
+          document.getElementById('modalCategory').value= 'breakfast';
+          document.getElementById('modalName').value    = '';
+          document.getElementById('modalQty').value     = 1;
+          addModal.show();
+        }
+      });
+
+      calendar.render();
+    }
+
+    // Re‐init whenever the resident selector changes
+    document.getElementById('residentSelect')
+      .addEventListener('change', e => initCalendar(e.target.value));
+
+    // Kick things off for the initially selected resident
+    initCalendar(document.getElementById('residentSelect').value);
+
+    // Handle the “add meal” form submit
+    document.getElementById('addMealForm')
+      .addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let form = e.target;
+        let payload = {
+          resident_id: form.resident_id.value,
+          plan_date:   form.plan_date.value,
+          category:    form.category.value,
+          name:        form.name.value,
+          quantity:    form.quantity.value
+        };
+
+        let resp = await fetch('/dietary/entry', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (resp.ok) {
+          addModal.hide();
+          calendar.refetchEvents();
+        } else {
+          alert('Couldn’t add that meal entry. Please try again.');
+        }
+      });
+  });
+</script>
+@endpush
