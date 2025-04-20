@@ -386,3 +386,6 @@ Route::delete('/dietary/entry/{entry}',
                                  [DietaryController::class,'removeEntry'])
      ->name('dietary.entry.remove');
 
+// Recipe search form + results (tabs will preserve via query string)
+Route::get('/dietary/recipe-search', [DietaryController::class, 'searchRecipe'])
+     ->name('dietary.searchRecipe');

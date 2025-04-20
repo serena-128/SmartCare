@@ -53,6 +53,17 @@
          aria-selected="{{ $active==='food-search'?'true':'false' }}">
         Food Search
       </a>
+        </li>
+        <li class="nav-item">
+  <a class="nav-link {{ $activeTab==='recipe-search'?'active':'' }}"
+     id="recipe-search-tab"
+     data-bs-toggle="tab"
+     href="#recipe-search"
+     role="tab"
+     aria-controls="recipe-search"
+     aria-selected="{{ $activeTab==='recipe-search'?'true':'false' }}">
+    Recipe Search
+  </a>
     </li>
     <li class="nav-item">
       <a class="nav-link {{ $active==='meal-history'?'active':'' }}"
@@ -277,7 +288,8 @@
          role="tabpanel"
          aria-labelledby="food-search-tab">
       <h5 class="mb-3">Food Search Results</h5>
-      @if(count($foodItems))
+      @if(count($foodItems ?? []))
+
         <ul class="list-unstyled">
           @foreach($foodItems as $food)
             <li class="mb-4">
@@ -295,6 +307,78 @@
         <p class="text-muted">No food items found.</p>
       @endif
     </div>
+      
+      <!-- Recipe Search Tab -->
+<div class="tab-pane fade {{ $activeTab==='recipe-search'?'show active':'' }}"
+     id="recipe-search"
+     role="tabpanel"
+     aria-labelledby="recipe-search-tab">
+
+  {{-- Search form --}}
+  <form class="mb-3" method="GET" action="{{ route('dietary.searchRecipe') }}">
+    {{-- preserve resident & date --}}
+    <input type="hidden" name="resident_id"  value="{{ $selectedResident }}">
+    <input type="hidden" name="plan_date"    value="{{ $planDate }}">
+
+    <div class="input-group">
+      <input
+        type="text"
+        name="recipe"
+        class="form-control"
+        placeholder="Search recipes (e.g. lasagna)"
+        value="{{ request('recipe') }}"
+      >
+      <button class="btn btn-primary">Search</button>
+    </div>
+  </form>
+
+  @if(! empty($recipes))
+    @foreach($recipes as $r)
+      <div class="card mb-4">
+        <img
+          src="{{ $r['image'] }}"
+          class="card-img-top"
+          alt="{{ $r['title'] }}"
+        >
+        <div class="card-body">
+          <h5 class="card-title">{{ $r['title'] }}</h5>
+
+          {{-- Summary --}}
+            <p>{!! $r['summary'] ?? 'No summary available.' !!}</p>
+
+
+          {{-- Ingredients --}}
+        <p><strong>Ingredients:</strong></p>
+        <ul>
+          @foreach($r['extendedIngredients'] ?? [] as $ing)
+            <li>{{ $ing['original'] }}</li>
+          @endforeach
+        </ul>
+
+
+          {{-- Instructions --}}
+        <p><strong>Instructions:</strong></p>
+        <p>{!! $r['instructions'] ?? 'No instructions available.' !!}</p>
+
+
+          {{-- Dietary flags --}}
+            <p>
+              <strong>Dish types:</strong> {{ implode(', ', $r['dishTypes'] ?? []) }}<br>
+              <strong>Diets:</strong> {{ implode(', ', $r['diets'] ?? []) }}<br>
+              <strong>Gluten‑free:</strong> {{ ($r['glutenFree'] ?? false) ? 'Yes' : 'No' }}<br>
+              <strong>Vegan:</strong>      {{ ($r['vegan']      ?? false) ? 'Yes' : 'No' }}
+            </p>
+
+        </div>
+      </div>
+    @endforeach
+  @elseif(request()->has('recipe'))
+    <p class="text-warning">
+      No recipes found for “{{ request('recipe') }}.”
+    </p>
+  @endif
+</div>
+
 
     <!-- 5) Meal History -->
     <div class="tab-pane fade {{ $active==='meal-history'?'show active':'' }}"

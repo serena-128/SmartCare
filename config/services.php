@@ -47,6 +47,8 @@ return [
 ],
 
 
-
+'spoonacular' => [
+        'key' => env('SPOONACULAR_KEY'),
+    ],
 
 ];
