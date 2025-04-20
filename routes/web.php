@@ -380,10 +380,6 @@ Route::patch('/dietary/entry/{entry}',
                                  [DietaryController::class,'updateEntry'])
      ->name('dietary.entry.update');
 
-Route::delete('/dietary/entry/{entry}', 
-                                 [DietaryController::class,'removeEntry'])
-     ->name('dietary.entry.remove');
-
 // Recipe search form + results (tabs will preserve via query string)
 Route::get('/dietary/recipe-search', [DietaryController::class, 'searchRecipe'])
      ->name('dietary.searchRecipe');
@@ -396,6 +392,7 @@ Route::get('/dietary/calendar', [DietaryController::class, 'calendarEvents'])->n
 Route::post('/dietary/meal-plans', [DietaryController::class, 'storeMealPlan'])
      ->name('dietary.meal-plans.store');
 
-Route::delete('/dietary/meal-plans/{id}', [MealPlanController::class, 'destroy'])->name('dietary.meal-plans.destroy');
+Route::delete('/dietary/meal-plans/{id}', [DietaryController::class, 'destroy'])->name('meal-plans.destroy');
+Route::get('/dietary/meal-plans/{id}/edit', [DietaryController::class, 'edit'])->name('dietary.meal-plans.edit');
 
 

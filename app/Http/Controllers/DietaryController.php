@@ -255,11 +255,14 @@ class DietaryController extends Controller
     /**
      * AJAX: Delete one entry.
      */
-    public function removeEntry(MealPlanEntry $entry)
-    {
-        $entry->delete();
-        return response()->json(['deleted' => true]);
-    }
+public function destroy($id)
+{
+    $meal = MealPlan::findOrFail($id);
+    $meal->delete();
+
+    return response()->json(['message' => 'Meal deleted successfully']);
+}
+
 /**
  * Search Spoonacular for recipes and show them in the "Recipe Search" tab.
  */
@@ -375,6 +378,7 @@ public function calendarEvents(Request $request)
 
     return $entries->map(function ($plan) {
         return [
+            'id'       => $plan->id,
             'title'    => ucfirst($plan->category) . ': ' . $plan->meals,
             'start'    => $plan->plan_date,
             'allDay'   => true,
