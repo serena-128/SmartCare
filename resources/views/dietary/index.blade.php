@@ -28,7 +28,7 @@
 
 <div class="container">
   <h2 class="mb-4">Dietary Management</h2>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+
 
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" id="dietaryTab" role="tablist">
