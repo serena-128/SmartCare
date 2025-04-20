@@ -390,8 +390,10 @@ Route::get('/dietary/recipe-search', [DietaryController::class, 'searchRecipe'])
 
 Route::get('dietary/search-off', [DietaryController::class, 'searchOff'])
      ->name('dietary.searchOff');
-Route::get('/dietary/calendar', [DietaryController::class,'calendarEvents']);
+Route::get('/dietary/calendar', [DietaryController::class, 'calendarEvents'])->name('dietary.calendar');
+
 
 Route::post('/dietary/meal-plans', [DietaryController::class, 'storeMealPlan'])
      ->name('dietary.meal-plans.store');
+
 
