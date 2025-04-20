@@ -546,6 +546,9 @@
 @endsection
 
 @push('scripts')
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl   = document.getElementById('mealCalendar');
@@ -553,134 +556,130 @@ document.addEventListener('DOMContentLoaded', function() {
   const form         = document.getElementById('addMealForm');
   const catSelect    = document.getElementById('modalCategory');
   const qtyWrapper   = document.getElementById('qtyWrapper');
-  let   calendar;
+  let calendar;
 
-  // show/hide quantity field
   function toggleQtyField() {
     const cat = catSelect.value;
-    if (cat==='snacks' || cat==='treats') {
-      qtyWrapper.style.display = 'block';
-    } else {
-      qtyWrapper.style.display = 'none';
-    }
+    qtyWrapper.style.display = (cat === 'snacks' || cat === 'treats') ? 'block' : 'none';
   }
   catSelect.addEventListener('change', toggleQtyField);
 
-  // initialize calendar instance
   function initCalendar(residentId) {
     if (calendar) calendar.destroy();
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView:   'dayGridMonth',
-      initialDate:   new Date(),
-      validRange:    { start: new Date() },
+      initialView: 'dayGridMonth',
+      initialDate: new Date(),
+      validRange: { start: new Date() },
       headerToolbar: {
-        left:  'prev,next today',
-        center:'title',
+        left: 'prev,next today',
+        center: 'title',
         right: ''
       },
       events: {
         url: '/dietary/calendar',
         extraParams: { resident_id: residentId }
       },
-      dateClick: info => {
-        if (! residentId) {
-          return alert('Please pick a resident first.');
-        }
-          
-          
-        // prepare modal
+      dateClick: function(info) {
+        if (!residentId) return alert('Please pick a resident first.');
         document.getElementById('modalResident').value = residentId;
-        document.getElementById('modalDate').value     = info.dateStr;
+        document.getElementById('modalDate').value = info.dateStr;
         form.reset();
         toggleQtyField();
         addModal.show();
       },
-        eventContent: function(arg) {
-  const category = arg.event.extendedProps.category;
-
-  const icons = {
-    breakfast: '🍳',
-    lunch:     '🥪',
-    dinner:    '🍝',
-    snacks:    '🍎',
-    treats:    '🍩',
-  };
-
-  const icon = icons[category] || '';
-  return {
-    html: `<div class="fc-event-title">${icon} ${arg.event.title}</div>`
-  };
-},
-eventDidMount: function(info) {
-  const category = info.event.extendedProps.category;
-
-  const colors = {
-    breakfast: '#FFE29A',
-    lunch:     '#A1E3D8',
-    dinner:    '#FFB4A2',
-    snacks:    '#BFD7ED',
-    treats:    '#DDBDD5',
-  };
-
-  // Set background color safely
-  info.el.style.backgroundColor = colors[category] || '#f8f9fa';
-}
-
+      eventContent: function(arg) {
+        const category = arg.event.extendedProps.category;
+        const icons = {
+          breakfast: '🍳',
+          lunch:     '🥪',
+          dinner:    '🍝',
+          snacks:    '🍎',
+          treats:    '🍩'
+        };
+        const icon = icons[category] || '';
+        return { html: `<div class="fc-event-title">${icon} ${arg.event.title}</div>` };
+      },
+      eventDidMount: function(info) {
+        const colors = {
+          breakfast: '#FFE29A',
+          lunch:     '#A1E3D8',
+          dinner:    '#FFB4A2',
+          snacks:    '#BFD7ED',
+          treats:    '#DDBDD5'
+        };
+        const category = info.event.extendedProps.category;
+        info.el.style.backgroundColor = colors[category] || '#f8f9fa';
+      },
+      eventClick: function(info) {
+        const meal = info.event.extendedProps;
+        const details = `
+          <strong>Category:</strong> ${meal.category}<br>
+          <strong>Items:</strong> ${meal.meals}<br>
+          <strong>Time:</strong> ${meal.time || 'N/A'}<br>
+          <strong>Quantity:</strong> ${meal.quantity || 'N/A'}
+        `;
+        Swal.fire({
+          title: info.event.title,
+          html: details,
+          showCancelButton: true,
+          confirmButtonText: 'Edit',
+          cancelButtonText: 'Close'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/dietary/meal-plans/${info.event.id}/edit`;
+          }
+        });
+      }
     });
 
     calendar.render();
   }
 
-  // when resident dropdown changes…
-  document.getElementById('residentSelect')
-    .addEventListener('change', e => {
-      initCalendar(e.target.value);
-    });
+  // Event listeners
+  document.getElementById('residentSelect').addEventListener('change', e => {
+    initCalendar(e.target.value);
+  });
 
-  // kick off on page load (if a resident is pre‑selected)
   initCalendar(document.getElementById('residentSelect').value);
 
-  // form submit: split items by comma
-form.addEventListener('submit', async function(e) {
-  e.preventDefault();
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  const payload = {
-    resident_id: form.resident_id.value,
-    plan_date:   form.plan_date.value,
-    category:    form.category.value,
-    meals:       form.name.value,  // this is already comma-separated
-    time:        form.time?.value || null,
-    quantity:    ['snacks','treats'].includes(form.category.value)
-                 ? parseInt(form.quantity.value) || 1
-                 : null
-  };
+    const payload = {
+      resident_id: form.resident_id.value,
+      plan_date:   form.plan_date.value,
+      category:    form.category.value,
+      meals:       form.name.value,
+      time:        form.time?.value || null,
+      quantity:    ['snacks','treats'].includes(form.category.value)
+                   ? parseInt(form.quantity.value) || 1
+                   : null
+    };
 
-  try {
-    const resp = await fetch("{{ route('dietary.meal-plans.store') }}", {
-      method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const resp = await fetch("{{ route('dietary.meal-plans.store') }}", {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
 
-    if (resp.ok) {
-      addModal.hide();
-      calendar.refetchEvents();
-    } else {
-      const error = await resp.text();
-      console.error(error);
-      alert("Error: couldn't save meal. Check console.");
+      if (resp.ok) {
+        addModal.hide();
+        calendar.refetchEvents();
+      } else {
+        const error = await resp.text();
+        console.error(error);
+        alert("Error: couldn't save meal. Check console.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An unexpected error occurred.");
     }
-  } catch (err) {
-    console.error(err);
-    alert("An unexpected error occurred.");
-  }
-});
-
+  });
 });
 </script>
 @endpush
-
