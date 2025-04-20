@@ -305,6 +305,59 @@ public function searchRecipe(Request $request)
         'selectedResident','planDate','meals','recipes'
     ));
 }
+ /**
+     * Fetch products from OpenFoodFacts.
+     *
+     * @param  string  $term      Search term (e.g. "apple")
+     * @param  int     $pageSize  Number of results to return
+     * @return array              Array of OFF products
+     */
+    protected function fetchOffProducts(string $term, int $pageSize = 20): array
+    {
+        $term = trim($term);
+        if ($term === '') {
+            return [];
+        }
 
+        $resp = Http::get('https://world.openfoodfacts.org/cgi/search.pl', [
+            'search_terms'  => $term,
+            'search_simple' => 1,
+            'action'        => 'process',
+            'json'          => 1,
+            'page_size'     => $pageSize,
+        ]);
 
+        if (! $resp->successful()) {
+            return [];
+        }
+
+        return $resp->json('products', []);
+    }
+
+/**
+ * Show Food Search using OpenFoodFacts.
+ */
+public function searchOff(Request $request)
+{
+    $residents   = Resident::with('dietaryRestrictions')->get();
+    $allergyInfo = null;
+    $activeTab   = 'food-search';
+    $query       = $request->input('food_item', '');
+
+    // pull products from OFF
+    $foodItems = $this->fetchOffProducts($query, 30);
+
+    // no meals/recipes here
+    return view('dietary.index', [
+        'residents'        => $residents,
+        'foodItems'        => $foodItems,
+        'allergyInfo'      => $allergyInfo,
+        'activeTab'        => $activeTab,
+        'selectedResident' => null,
+        'planDate'         => null,
+        'meals'            => [],
+        'entriesByCat'     => [],
+        'recipes'          => [],
+    ]);
 }
+}  
