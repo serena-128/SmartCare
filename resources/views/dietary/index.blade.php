@@ -326,41 +326,56 @@
     </div>
   </form>
 
-  @if(count($foodItems ?? []))
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      @foreach($foodItems as $food)
+  @if(count($foodItems))
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+      @foreach($foodItems as $i => $food)
         <div class="col">
-          <div class="card h-100 shadow-sm">
+          <div class="card h-100 text-center">
             @if(!empty($food['image_front_small_url']))
               <img
                 src="{{ $food['image_front_small_url'] }}"
                 class="card-img-top"
                 alt="{{ $food['product_name'] }}"
-                style="object-fit:cover; height: 180px;"
+                style="height:150px; object-fit:contain; cursor:pointer;"
+                data-bs-toggle="collapse"
+                data-bs-target="#food-details-{{ $i }}"
+                aria-expanded="false"
+                aria-controls="food-details-{{ $i }}"
               >
             @endif
+            <div class="card-body py-2">
+              <h6 class="card-title mb-0">{{ $food['product_name'] ?? 'Unknown' }}</h6>
+            </div>
 
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ $food['product_name'] ?? 'Unknown' }}</h5>
+            <div class="collapse" id="food-details-{{ $i }}">
+              <div class="card-body border-top text-start">
+                @if(!empty($food['brands']))
+                  <p class="mb-1"><strong>Brand:</strong> {{ $food['brands'] }}</p>
+                @endif
 
-              @if(!empty($food['brands']))
-                <p class="card-text mb-1"><strong>Brand:</strong> {{ $food['brands'] }}</p>
-              @endif
+                @if(!empty($food['generic_name']))
+                  <p class="mb-1"><strong>Description:</strong> {{ $food['generic_name'] }}</p>
+                @endif
 
-              @if(!empty($food['generic_name']))
-                <p class="card-text mb-1"><strong>Description:</strong> {{ $food['generic_name'] }}</p>
-              @endif
+                @if(!empty($food['ingredients_text']))
+                  @php
+                    $ings = array_map('trim', explode(',', $food['ingredients_text']));
+                  @endphp
+                  <p class="mb-1"><strong>Ingredients:</strong></p>
+                  <ul class="ps-3 mb-2" style="max-height:100px; overflow:auto;">
+                    @foreach($ings as $ing)
+                      <li>{{ $ing }}</li>
+                    @endforeach
+                  </ul>
+                @endif
 
-              @if(!empty($food['ingredients_text']))
-                <p class="card-text mb-1"><strong>Ingredients:</strong> {{ $food['ingredients_text'] }}</p>
-              @endif
-
-              @if(!empty($food['nutriments']['energy-kcal_100g']))
-                <p class="card-text mt-auto">
-                  <strong>Energy:</strong>
-                  {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
-                </p>
-              @endif
+                @if(!empty($food['nutriments']['energy-kcal_100g']))
+                  <p class="mb-0">
+                    <strong>Energy:</strong>
+                    {{ $food['nutriments']['energy-kcal_100g'] }} kcal / 100 g
+                  </p>
+                @endif
+              </div>
             </div>
           </div>
         </div>
