@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Resident;
 use App\Models\MealPlan;
+use App\Models\MealPlanEntry;
+
 
 class DietaryController extends Controller
 {
@@ -159,4 +161,64 @@ class DietaryController extends Controller
           ->with(['activeTab'=>'meal-plan','selectedResident'=>$data['resident_id'],'planDate'=>$data['plan_date']])
           ->withToast('Meal plan saved!');
     }
+    
+        /**
+     * AJAX: Add a new meal entry (breakfast, lunch, etc.).
+     */
+    public function addEntry(Request $request)
+    {
+        $data = $request->validate([
+            'resident_id'  => 'required|exists:resident,id',
+            'plan_date'    => 'required|date',
+            'category'     => 'required|in:breakfast,lunch,dinner,snacks,treats',
+            'name'         => 'required|string|max:100',
+            'quantity'     => 'required|integer|min:1',
+        ]);
+
+        // Get or create that day's plan
+        $plan = MealPlan::firstOrCreate([
+            'resident_id' => $data['resident_id'],
+            'plan_date'   => $data['plan_date'],
+        ], [
+            'created_by'  => Auth::id(),
+            'updated_by'  => Auth::id(),
+        ]);
+
+        // Create the entry
+        $entry = $plan->entries()->create([
+            'category'    => $data['category'],
+            'name'        => $data['name'],
+            'quantity'    => $data['quantity'],
+            'consumed'    => 'none',
+        ]);
+
+        return response()->json($entry);
+    }
+
+    /**
+     * AJAX: Update the “consumed” status on one entry.
+     */
+    public function updateEntry(Request $request, MealPlanEntry $entry)
+    {
+        $request->validate([
+            'consumed' => 'required|in:none,some,all',
+        ]);
+
+        $entry->update([
+            'consumed'   => $request->input('consumed'),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json($entry);
+    }
+
+    /**
+     * AJAX: Delete one entry.
+     */
+    public function removeEntry(MealPlanEntry $entry)
+    {
+        $entry->delete();
+        return response()->json(['deleted' => true]);
+    }
+
 }

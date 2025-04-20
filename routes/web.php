@@ -372,3 +372,17 @@ Route::get('/dietary/search-food',    [DietaryController::class, 'searchFood'])
 
 Route::get('/dietary/search-allergy', [DietaryController::class, 'searchAllergy'])
      ->name('dietary.searchAllergy');
+Route::get('/dietary',            [DietaryController::class,'index'])
+     ->name('dietary.index');
+
+Route::post('/dietary/entry',     [DietaryController::class,'addEntry'])
+     ->name('dietary.entry.add');
+
+Route::patch('/dietary/entry/{entry}', 
+                                 [DietaryController::class,'updateEntry'])
+     ->name('dietary.entry.update');
+
+Route::delete('/dietary/entry/{entry}', 
+                                 [DietaryController::class,'removeEntry'])
+     ->name('dietary.entry.remove');
+

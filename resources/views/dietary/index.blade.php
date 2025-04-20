@@ -105,90 +105,168 @@
     </div>
 
     <!-- 3) Meal Planning -->
-<div class="tab-pane fade {{ $active==='meal-plan'?'show active':'' }}"
-     id="meal-plan" role="tabpanel" aria-labelledby="meal-plan-tab">
+<div class="tab-pane fade {{ session('activeTab','preferences')=='meal-plan'?'show active':'' }}"
+     id="meal-plan" role="tabpanel">
 
-  <h5 class="mb-3">Meal Plan</h5>
-
-  <form action="{{ route('dietary.storeMealPlan') }}" method="POST" id="mealPlanForm">
-    @csrf
-    <div class="row g-3 mb-3">
-      {{-- Select Resident --}}
-      <div class="col-md-4">
-        <label class="form-label">Resident</label>
-        <select name="resident_id" class="form-select" id="residentSelect">
-          <option value="">— Choose —</option>
-          @foreach($residents as $r)
-            <option value="{{ $r->id }}"
-              {{ (old('resident_id',$selectedResident??'')==$r->id)?'selected':'' }}>
-              {{ $r->full_name }}
-            </option>
-          @endforeach
-        </select>
-      </div>
-      {{-- Choose Date --}}
-      <div class="col-md-4">
-        <label class="form-label">Date</label>
-        <input type="date" name="plan_date" class="form-control"
-          value="{{ old('plan_date',$planDate??today()->toDateString()) }}">
-      </div>
+  <form id="planHeader" class="row g-2 mb-3">
+    <div class="col-md-4">
+      <select id="residentSelect" class="form-select" name="resident_id">
+        <option value="">— Choose resident —</option>
+        @foreach($residents as $r)
+          <option value="{{ $r->id }}"
+            {{ optional($resident)->id==$r->id?'selected':'' }}>
+            {{ $r->full_name }}
+          </option>
+        @endforeach
+      </select>
     </div>
-
-    {{-- Search & Add Meals --}}
-    <div class="input-group mb-3">
-      <input type="text" id="mealSearch" class="form-control"
-             placeholder="Search food to add…">
-      <button type="button" class="btn btn-outline-secondary"
-              id="addMealBtn">➕ Add</button>
+    <div class="col-md-3">
+      <input type="date" name="plan_date" id="planDate" class="form-control"
+             value="{{ $planDate }}">
     </div>
-
-    {{-- Current meals list --}}
-    <ul class="list-group mb-3" id="mealList">
-      @foreach($meals as $item)
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <span>{{ $item['name'] }} × {{ $item['qty'] }}</span>
-          <button type="button" class="btn btn-sm btn-outline-danger remove-meal">&times;</button>
-          <input type="hidden" name="meals[][name]" value="{{ $item['name'] }}">
-          <input type="hidden" name="meals[][qty]"  value="{{ $item['qty'] }}">
-        </li>
-      @endforeach
-    </ul>
-
-    <button class="btn btn-success">Save Meal Plan</button>
   </form>
+
+  @php
+    $categories = ['breakfast','lunch','dinner','snacks','treats'];
+  @endphp
+
+  <div class="row">
+    @foreach($categories as $cat)
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-header text-capitalize bg-secondary text-white">
+            {{ str_replace('-', ' ', $cat) }}
+          </div>
+          <ul class="list-group list-group-flush" id="{{ $cat }}List">
+            @foreach($entriesByCat[$cat] ?? [] as $e)
+              <li class="list-group-item d-flex justify-content-between align-items-center"
+                  data-id="{{ $e['id'] }}">
+                <div>
+                  {{ $e['name'] }} × {{ $e['quantity'] }}
+                </div>
+                <div class="btn-group btn-group-sm">
+                  @foreach(['none'=>'⚪','some'=>'🟡','all'=>'🟢'] as $status=>$icon)
+                    <button type="button"
+                            data-status="{{ $status }}"
+                            class="btn btn-outline-dark mark-consumed
+                              {{ $e['consumed']==$status?'active':'' }}">
+                      {{ $icon }}
+                    </button>
+                  @endforeach
+                  <button type="button"
+                          class="btn btn-outline-danger remove-entry">
+                    ✖
+                  </button>
+                </div>
+              </li>
+            @endforeach
+          </ul>
+          <div class="card-footer">
+            <div class="input-group input-group-sm">
+              <input type="text" class="form-control new-name"
+                     placeholder="Add item…">
+              <input type="number" class="form-control new-qty"
+                     value="1" min="1" style="max-width:60px">
+              <button class="btn btn-primary add-entry" data-cat="{{ $cat }}">
+                ➕
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endforeach
+  </div>
 </div>
 
-{{-- And include somewhere after closing tags: --}}
 @push('scripts')
 <script>
-// Simple in‑page meal add/remove logic
-document.getElementById('addMealBtn').onclick = () => {
-  const name = document.getElementById('mealSearch').value.trim();
-  if (!name) return alert('Enter a meal name.');
-  const qty  = 1;
-  const list = document.getElementById('mealList');
+  const token = document.querySelector('meta[name="csrf-token"]').content;
 
-  // create list item
-  const li = document.createElement('li');
-  li.className = 'list-group-item d-flex justify-content-between align-items-center';
+  // helpers
+  const apiUrl     = url => '/dietary/entry'+url;
+  const getHeader  = () => ({
+    headers: {
+      'X-CSRF-TOKEN': token,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  const selectedResident = () => document.getElementById('residentSelect').value;
+  const planDate         = () => document.getElementById('planDate').value;
 
-  li.innerHTML = `
-    <span>${name} × ${qty}</span>
-    <button type="button" class="btn btn-sm btn-outline-danger remove-meal">&times;</button>
-    <input type="hidden" name="meals[][name]" value="${name}">
-    <input type="hidden" name="meals[][qty]"  value="${qty}">
-  `;
+  // add entry
+  document.querySelectorAll('.add-entry').forEach(btn =>
+    btn.onclick = async e => {
+      e.preventDefault();
+      const cat = btn.dataset.cat;
+      const cont = btn.closest('.card');
+      const name = cont.querySelector('.new-name').value.trim();
+      const qty  = parseInt(cont.querySelector('.new-qty').value,10);
+      if (! name || ! selectedResident()) return;
+      const body = JSON.stringify({
+        resident_id: selectedResident(),
+        plan_date:   planDate(),
+        category:    cat,
+        name, qty
+      });
+      const resp = await fetch(apiUrl(''), {
+        method: 'POST', ...getHeader(), body
+      });
+      const j = await resp.json();
+      // append to list
+      const ul = document.getElementById(cat+'List');
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex justify-content-between align-items-center';
+      li.dataset.id = j.id;
+      li.innerHTML = `
+        <div>${j.name} × ${j.quantity}</div>
+        <div class="btn-group btn-group-sm">
+          <button data-status="none"  class="btn btn-outline-dark mark-consumed active">⚪</button>
+          <button data-status="some"  class="btn btn-outline-dark mark-consumed">🟡</button>
+          <button data-status="all"   class="btn btn-outline-dark mark-consumed">🟢</button>
+          <button class="btn btn-outline-danger remove-entry">✖</button>
+        </div>`;
+      ul.appendChild(li);
+      cont.querySelector('.new-name').value = '';
+    }
+  );
 
-  list.appendChild(li);
-  document.getElementById('mealSearch').value = '';
-};
+  // delegate: remove or toggle consumed
+  document.querySelector('.tab-pane#meal-plan').addEventListener('click', async e => {
+    // remove
+    if (e.target.matches('.remove-entry')) {
+      const li = e.target.closest('li');
+      const id = li.dataset.id;
+      await fetch(apiUrl('/'+id), {
+        method:'DELETE', ...getHeader()
+      });
+      li.remove();
+    }
+    // consumed toggle
+    if (e.target.matches('.mark-consumed')) {
+      const btn    = e.target;
+      const li     = btn.closest('li');
+      const id     = li.dataset.id;
+      const status = btn.dataset.status;
+      // update visuals
+      li.querySelectorAll('.mark-consumed').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      // send
+      await fetch(apiUrl('/'+id), {
+        method:'PATCH',
+        ...getHeader(),
+        body: JSON.stringify({ consumed: status })
+      });
+    }
+  });
 
-// delegate remove
-document.getElementById('mealList').addEventListener('click', e => {
-  if (e.target.matches('.remove-meal')) {
-    e.target.closest('li').remove();
-  }
-});
+  // when user changes resident or date, reload with query params
+  document.getElementById('planHeader').addEventListener('change', () => {
+    const rid = selectedResident();
+    const dt  = planDate();
+    if (! rid) return;
+    location.href = `?resident_id=${rid}&plan_date=${dt}&activeTab=meal-plan`;
+  });
 </script>
 @endpush
 
