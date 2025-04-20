@@ -309,44 +309,61 @@
       @endif
     </div>
       
-      <!-- Recipe Search Tab -->
+  <!-- Recipe Search Tab -->
 <!-- Recipe Search Tab -->
-<div class="tab-pane fade {{ $active==='recipe-search'?'show active':'' }}"
-     id="recipe-search"
-     role="tabpanel"
-     aria-labelledby="recipe-search-tab">
-
+<div
+  class="tab-pane fade {{ $active==='recipe-search' ? 'show active' : '' }}"
+  id="recipe-search"
+  role="tabpanel"
+  aria-labelledby="recipe-search-tab"
+>
+  <!-- Search form -->
   <form class="mb-4" method="GET" action="{{ route('dietary.searchRecipe') }}">
     <input type="hidden" name="resident_id" value="{{ $selectedResident }}">
     <input type="hidden" name="plan_date"   value="{{ $planDate }}">
     <div class="input-group">
-      <input type="text"
-             name="recipe"
-             class="form-control"
-             placeholder="Search recipes (e.g. lasagna)"
-             value="{{ request('recipe') }}">
+      <input
+        type="text"
+        name="recipe"
+        class="form-control"
+        placeholder="Search recipes (e.g. lasagna)"
+        value="{{ request('recipe') }}"
+      >
       <button class="btn btn-primary" type="submit">Search</button>
     </div>
   </form>
 
   @if(count($recipes))
-    <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div
+      id="recipeCarousel"
+      class="carousel slide"
+      data-bs-interval="false"
+    >
       <div class="carousel-inner">
         @foreach($recipes as $i => $r)
           <div class="carousel-item {{ $i===0 ? 'active' : '' }}">
             <div class="card mx-auto" style="max-width:600px;">
               @if(!empty($r['image']))
-                <img src="{{ $r['image'] }}"
-                     class="card-img-top"
-                     alt="{{ $r['title'] }}">
+                <img
+                  src="{{ $r['image'] }}"
+                  class="card-img-top"
+                  alt="{{ $r['title'] }}"
+                >
               @endif
               <div class="card-body">
                 <h5 class="card-title">{{ $r['title'] }}</h5>
-                <p class="card-text">{!! $r['summary'] ?? 'No summary available.' !!}</p>
+                <p class="card-text">
+                  {!! $r['summary'] ?? 'No summary available.' !!}
+                </p>
 
-                <button class="btn btn-sm btn-outline-secondary"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#details-{{ $r['id'] }}">
+                <button
+                  class="btn btn-sm btn-outline-secondary mt-2"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#details-{{ $r['id'] }}"
+                  aria-expanded="false"
+                  aria-controls="details-{{ $r['id'] }}"
+                >
                   Show details
                 </button>
 
@@ -363,10 +380,22 @@
 
                   <h6>Dietary Flags</h6>
                   <ul class="list-unstyled">
-                    <li><strong>Dish types:</strong> {{ implode(', ', $r['dishTypes'] ?? []) }}</li>
-                    <li><strong>Diets:</strong>      {{ implode(', ', $r['diets'] ?? []) }}</li>
-                    <li><strong>Gluten‑free:</strong> {{ !empty($r['glutenFree']) ? 'Yes' : 'No' }}</li>
-                    <li><strong>Vegan:</strong>       {{ !empty($r['vegan'])      ? 'Yes' : 'No' }}</li>
+                    <li>
+                      <strong>Dish types:</strong>
+                      {{ implode(', ', $r['dishTypes'] ?? []) }}
+                    </li>
+                    <li>
+                      <strong>Diets:</strong>
+                      {{ implode(', ', $r['diets'] ?? []) }}
+                    </li>
+                    <li>
+                      <strong>Gluten‑free:</strong>
+                      {{ !empty($r['glutenFree']) ? 'Yes' : 'No' }}
+                    </li>
+                    <li>
+                      <strong>Vegan:</strong>
+                      {{ !empty($r['vegan'])      ? 'Yes' : 'No' }}
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -374,19 +403,35 @@
           </div>
         @endforeach
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
+
+      <!-- Prev / Next -->
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#recipeCarousel"
+        data-bs-slide="prev"
+      >
         <span class="carousel-control-prev-icon"></span>
         <span class="visually-hidden">Previous</span>
       </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#recipeCarousel"
+        data-bs-slide="next"
+      >
         <span class="carousel-control-next-icon"></span>
         <span class="visually-hidden">Next</span>
       </button>
     </div>
   @else
-    <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
+    <p class="text-muted">
+      No recipes found for “{{ request('recipe') }}.”
+    </p>
   @endif
 </div>
+
+
 
 
 
