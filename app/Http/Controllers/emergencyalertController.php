@@ -30,15 +30,20 @@ class emergencyalertController extends AppBaseController
      *
      * @return Response
      */
-public function index()
+public function index(Request $request)
 {
-    // Fetch all emergency alerts
-    $emergencyalerts = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy'])
-    ->orderByRaw("FIELD(status, 'Pending', 'In Progress', 'Resolved')")
-    ->get();
+    $query = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy']);
 
+    // If filtering by status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
 
-    // Pass to the view
+    // Sort: Pending > In Progress > Resolved
+    $emergencyalerts = $query
+        ->orderByRaw("FIELD(status, 'Pending', 'In Progress', 'Resolved')")
+        ->get();
+
     return view('emergencyalerts.index', compact('emergencyalerts'));
 }
 

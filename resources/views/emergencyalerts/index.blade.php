@@ -23,12 +23,27 @@
 </style>
 
 <section class="content-header">
-    <h1 class="pull-left">Emergency Alerts</h1>
+    <h1 class="pull-left">
+    Emergency Alerts 
+    @if(request('status')) – <span class="text-muted">{{ request('status') }} Only</span> @endif
+    </h1>
     <h1 class="pull-right">
         <a class="btn btn-primary pull-right" style="margin-top: -10px; margin-bottom: 5px" 
            href="{{ route('emergencyalerts.create') }}">Add New</a>
     </h1>
 </section>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Filter Alerts</h4>
+    <form method="GET" action="{{ route('emergencyalerts.index') }}" class="d-flex align-items-center">
+        <select name="status" class="form-select me-2" style="width: 200px;">
+            <option value="">All</option>
+            <option value="Pending" {{ request('status') === 'Pending' ? 'selected' : '' }}>Pending</option>
+            <option value="In Progress" {{ request('status') === 'In Progress' ? 'selected' : '' }}>In Progress</option>
+            <option value="Resolved" {{ request('status') === 'Resolved' ? 'selected' : '' }}>Resolved</option>
+        </select>
+        <button type="submit" class="btn btn-dark">Filter</button>
+    </form>
+</div>
 
 <div class="table-responsive mt-4">
     <table class="table table-bordered">
