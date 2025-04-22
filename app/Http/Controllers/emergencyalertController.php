@@ -32,7 +32,7 @@ class emergencyalertController extends AppBaseController
      */
 public function index(Request $request)
 {
-    $query = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy']);
+    $query = EmergencyAlert::with(['resident', 'triggeredBy', 'resolvedBy', 'inProgressBy']);
 
     // If filtering by status
     if ($request->filled('status')) {
@@ -201,18 +201,22 @@ public function resolve($id, Request $request)
     $alert = EmergencyAlert::findOrFail($id);
     $alert->status = 'Resolved';
     $alert->resolvedbyid = $request->input('resolvedbyid');
+    $alert->inprogressbyid = null; // ✅ clear this when resolved
     $alert->save();
 
     return response()->json(['message' => 'Alert marked as resolved.']);
 }
 
-public function markInProgress($id)
+
+public function markInProgress($id, Request $request)
 {
     $alert = EmergencyAlert::findOrFail($id);
     $alert->status = 'In Progress';
+    $alert->inprogressbyid = $request->input('staff_id'); // set staff handling it
     $alert->save();
 
     return response()->json(['message' => 'Alert marked as In Progress.']);
 }
+
 
 }

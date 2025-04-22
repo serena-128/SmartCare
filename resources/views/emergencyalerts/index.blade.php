@@ -56,7 +56,7 @@
                 <th>Triggered By</th>
                 <th>Alert Time</th>
                 <th>Status</th>
-                <th>Resolved By</th>
+                <th>Handled By</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -89,7 +89,13 @@
             @endif
         </td>
 
-            <td>{{ $alert->details }}</td>
+            <td>
+                <button class="btn btn-outline-info btn-sm view-details-btn" 
+                    data-details="{{ $alert->details }}">
+                    View
+                </button>
+            </td>
+
             <td>{{ $alert->triggeredBy->firstname ?? 'N/A' }} {{ $alert->triggeredBy->lastname ?? '' }}</td>
             <td>{{ $alert->alerttimestamp }}</td>
 
@@ -103,7 +109,15 @@
                 @endif
             </td>
 
-            <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }} {{ $alert->resolvedBy->lastname ?? '' }}</td>
+            <td>
+            @if ($alert->status === 'Resolved')
+                ✅ {{ $alert->resolvedBy->firstname ?? 'N/A' }} {{ $alert->resolvedBy->lastname ?? '' }}
+            @elseif ($alert->status === 'In Progress')
+                🟡 {{ $alert->inProgressBy->firstname ?? 'N/A' }} {{ $alert->inProgressBy->lastname ?? '' }}
+            @else
+                ⏳ Unassigned
+            @endif
+        </td>
 
             <td>
                 <button class="btn btn-info btn-sm alert-options-btn"
@@ -199,11 +213,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).then((result) => {
     if (result.isConfirmed) {
-        // ✅ Resolved
-        $.post(`/emergencyalerts/${alertId}/resolve`, {
-            _token: '{{ csrf_token() }}',
-            resolvedbyid: {{ session('staff_id') }}
-        }, function (response) {
+    // ✅ Resolved
+    $.post(`/emergencyalerts/${alertId}/resolve`, {
+        _token: '{{ csrf_token() }}',
+        resolvedbyid: {{ session('staff_id') }}
+    }, function (response) {
+
             Swal.fire('Resolved!', response.message, 'success').then(() => {
                 location.reload();
             });
@@ -213,9 +228,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     } else if (result.dismiss === Swal.DismissReason.cancel) {
         // 🟡 In Progress
-        $.post(`/emergencyalerts/${alertId}/progress`, {
-            _token: '{{ csrf_token() }}',
-        }, function (response) {
+        // 🟡 In Progress
+    $.post(`/emergencyalerts/${alertId}/progress`, {
+        _token: '{{ csrf_token() }}',
+        staff_id: {{ session('staff_id') }} // ✅ pass staff ID here too!
+    }, function (response) {
+
             Swal.fire('In Progress!', 'The alert has been marked as In Progress.', 'success').then(() => {
                 location.reload();
             });
@@ -261,6 +279,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
+    });
+});
+    
+    $(document).on('click', '.view-details-btn', function () {
+    const details = $(this).data('details');
+
+    Swal.fire({
+        title: 'Alert Details',
+        text: details,
+        icon: 'info',
+        confirmButtonText: 'Close'
     });
 });
 </script>

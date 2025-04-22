@@ -39,6 +39,7 @@ class EmergencyAlert extends Model
     'residentid',
     'triggeredbyid',
     'resolvedbyid',
+    'inprogressbyid',
     'status',
     'alerttimestamp'
 ];
@@ -88,5 +89,10 @@ public function resolvedBy()
 {
     return $this->belongsTo(\App\Models\StaffMember::class, 'resolvedbyid');
 }
+    public function inProgressBy()
+{
+    return $this->belongsTo(StaffMember::class, 'inprogressbyid');
+}
+
 
 }
