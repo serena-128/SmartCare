@@ -18,24 +18,37 @@ class ResidentController extends Controller
         $this->residentRepository = $residentRepo;
     }
 
+    // List all residents
     public function index(Request $request)
     {
         $residents = $this->residentRepository->all();
         return view('residents.index', compact('residents'));
     }
 
+    // Show form to create new resident
     public function create()
     {
         return view('residents.create');
     }
 
+    // Save new resident
     public function store(Request $request)
     {
+        $request->validate([
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'dateofbirth' => 'required|date',
+            'gender' => 'nullable|string|max:20',
+            'roomnumber' => 'nullable|integer',
+            'admissiondate' => 'nullable|date',
+        ]);
+
         $resident = $this->residentRepository->create($request->all());
         Flash::success('Resident saved successfully.');
         return redirect(route('residents.index'));
     }
 
+    // Show single resident with diagnoses and care logs
     public function show(Request $request, $id)
     {
         $resident = Resident::with('diagnoses')->findOrFail($id);
@@ -56,6 +69,7 @@ class ResidentController extends Controller
         return view('residents.show', compact('resident', 'careLogs', 'caregivers'));
     }
 
+    // Show form to edit resident
     public function edit($id)
     {
         $resident = $this->residentRepository->find($id);
@@ -68,8 +82,14 @@ class ResidentController extends Controller
         return view('residents.edit', compact('resident'));
     }
 
+    // Update resident details
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'roomnumber' => 'required|integer|min:1',
+            'admissiondate' => 'required|date',
+        ]);
+
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
@@ -83,6 +103,7 @@ class ResidentController extends Controller
         return redirect(route('residents.index'));
     }
 
+    // Delete a resident
     public function destroy($id)
     {
         $resident = $this->residentRepository->find($id);
@@ -98,12 +119,14 @@ class ResidentController extends Controller
         return redirect(route('residents.index'));
     }
 
+    // Profile view for a single resident
     public function profile($id)
     {
         $resident = Resident::with('diagnoses')->findOrFail($id);
         return view('residents.profile', compact('resident'));
     }
 
+    // Custom resident dashboard
     public function showResidentDashboard($residentId)
     {
         $resident = Resident::find($residentId);

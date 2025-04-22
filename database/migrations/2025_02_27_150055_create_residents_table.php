@@ -9,14 +9,14 @@ class CreateResidentsTable extends Migration
     public function up()
     {
         Schema::create('residents', function (Blueprint $table) {
-            $table->id('residentid'); // Primary key
-            $table->string('firstname', 50); // Resident's first name
-            $table->string('lastname', 50); // Resident's last name
-            $table->date('dateofbirth'); // Date of birth
-            $table->string('gender', 20); // Gender
-            $table->integer('roomnumber'); // Room number
-            $table->date('admissiondate'); // Admission date
-            $table->timestamps(); // created_at and updated_at timestamps
+            $table->id(); // Laravel will default this to 'id'
+            $table->string('first_name', 50);
+            $table->string('last_name', 50);
+            $table->date('date_of_birth');
+            $table->string('gender', 20);
+            $table->integer('room_number')->nullable();     // Optional
+            $table->date('admission_date')->nullable();      // Optional
+            $table->timestamps(); // Includes created_at and updated_at
         });
     }
 

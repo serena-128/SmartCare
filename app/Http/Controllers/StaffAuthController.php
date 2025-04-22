@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use App\Models\StaffMember;
+use Illuminate\Support\Facades\Auth;
 
 class StaffAuthController extends Controller
 {
@@ -17,28 +16,25 @@ class StaffAuthController extends Controller
     // Process login
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required', // Simple match for now (no hashing)
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        $staff = StaffMember::where('email', $request->email)->first();
-
-        if ($staff) {
-            // Store staff info in session
-            Session::put('staff_id', $staff->id);
-            Session::put('staff_name', $staff->firstname . ' ' . $staff->lastname);
-            return redirect()->route('staffDashboard');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/staffDashboard');
         }
 
-        return back()->withErrors(['login_error' => 'Invalid Credentials']);
+        return back()->withErrors([
+            'email' => 'Invalid credentials.',
+        ]);
     }
 
     // Logout
-    public function logout()
+    public function logout(Request $request)
     {
-        Session::forget('staff_id');
-        Session::forget('staff_name');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect('/login');
     }
 }

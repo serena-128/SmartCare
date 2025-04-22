@@ -91,7 +91,8 @@
 
                     <!-- My Schedule -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a>
+                        <a class="nav-link" href="{{ route('staff.shifts.index') }}">📅 My Schedule</a>
+
                     </li>
 
                     <!-- Dashboard -->

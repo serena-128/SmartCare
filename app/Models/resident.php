@@ -93,3 +93,5 @@ class Resident extends Model
         return $this->hasMany(Medication::class);
     }
 }
+
+
