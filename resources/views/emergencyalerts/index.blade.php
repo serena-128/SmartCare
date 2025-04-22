@@ -31,7 +31,7 @@
 </section>
 
 <div class="table-responsive mt-4">
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th>Resident</th>
@@ -47,16 +47,33 @@
         </thead>
         <tbody>
     @foreach($emergencyalerts as $alert)
-        <tr 
-            @if($alert->urgency === 'High')
-                style="background-color: #f8d7da;" 
-            @elseif($alert->urgency === 'Medium')
-                style="background-color: #fff3cd;"
-            @endif
-        >
+       <tr 
+    @if($alert->status === 'Resolved')
+        style="background-color: #e6f4ea; color: #256029;" {{-- ✅ Greenish --}}
+    @elseif($alert->urgency === 'High')
+        style="background-color: #fdecea; color: #b71c1c;" {{-- 🔴 Soft red --}}
+    @elseif($alert->urgency === 'Medium')
+        style="background-color: #fff4e5; color: #e65100;" {{-- 🟠 Soft orange --}}
+    @elseif($alert->urgency === 'Low')
+        style="background-color: #fefae0; color: #a88700;" {{-- 🟡 Soft yellow --}}
+    @endif
+>
+
+
             <td>{{ $alert->resident->firstname ?? 'N/A' }} {{ $alert->resident->lastname ?? '' }}</td>
             <td>{{ $alert->alerttype }}</td>
-            <td>{{ $alert->urgency }}</td>
+            <td>
+            @if($alert->urgency === 'High')
+                🔴 High
+            @elseif($alert->urgency === 'Medium')
+                🟠 Medium
+            @elseif($alert->urgency === 'Low')
+                🟡 Low
+            @else
+                {{ $alert->urgency }}
+            @endif
+        </td>
+
             <td>{{ $alert->details }}</td>
             <td>{{ $alert->triggeredBy->firstname ?? 'N/A' }} {{ $alert->triggeredBy->lastname ?? '' }}</td>
             <td>{{ $alert->alerttimestamp }}</td>
