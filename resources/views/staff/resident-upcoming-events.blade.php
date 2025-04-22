@@ -7,6 +7,11 @@
     <div id="calendar"></div>
 </div>
 @endsection
+<style>
+    .swal-wide {
+        width: 600px !important;
+    }
+</style>
 
 @push('scripts')
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
@@ -42,19 +47,35 @@
                     });
                 },
 
-                select: function(info) {
+select: function(info) {
+    // Format selected date to YYYY-MM-DDTHH:MM for datetime-local input
+    const selectedDate = new Date(info.startStr);
+    const pad = num => String(num).padStart(2, '0');
+    const formattedStart = `${selectedDate.getFullYear()}-${pad(selectedDate.getMonth()+1)}-${pad(selectedDate.getDate())}T${pad(selectedDate.getHours())}:${pad(selectedDate.getMinutes())}`;
+    
     Swal.fire({
         title: 'Add New Event',
         html: `
-            <input id="swal-title" class="swal2-input" placeholder="Event Title">
-            <textarea id="swal-description" class="swal2-textarea" placeholder="Description"></textarea>
-            <label for="swal-start" class="d-block text-start mt-2">Start Date & Time</label>
-            <input id="swal-start" type="datetime-local" class="swal2-input">
-            <label for="swal-end" class="d-block text-start mt-2">End Date & Time</label>
-            <input id="swal-end" type="datetime-local" class="swal2-input">
+            <div style="text-align: left;">
+                <label for="swal-title" style="display:block; margin-top:10px;">Event Title</label>
+                <input id="swal-title" class="swal2-input" placeholder="Enter event title">
+
+                <label for="swal-description" style="display:block; margin-top:10px;">Description</label>
+                <textarea id="swal-description" class="swal2-textarea" placeholder="Optional description" style="height:80px;"></textarea>
+
+                <label for="swal-start" style="display:block; margin-top:15px;">Start Date & Time</label>
+                <input id="swal-start" type="datetime-local" class="swal2-input" value="${formattedStart}">
+
+                <label for="swal-end" style="display:block; margin-top:15px;">End Date & Time</label>
+                <input id="swal-end" type="datetime-local" class="swal2-input">
+            </div>
         `,
+        customClass: {
+            popup: 'swal-wide'
+        },
         showCancelButton: true,
-        confirmButtonText: 'Add',
+        confirmButtonText: 'Add Event',
+        focusConfirm: false,
         preConfirm: () => {
             const title = document.getElementById('swal-title').value;
             const description = document.getElementById('swal-description').value;
@@ -62,7 +83,7 @@
             const end = document.getElementById('swal-end').value;
 
             if (!title || !start || !end) {
-                Swal.showValidationMessage('Please fill in all fields: Title, Start, End');
+                Swal.showValidationMessage('Please fill in Title, Start, and End date/time.');
                 return false;
             }
 
@@ -81,8 +102,14 @@
                     end_date: result.value.end
                 },
                 success: function () {
-                    Swal.fire('Success!', 'Event added.', 'success');
                     calendar.refetchEvents();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Event Added!',
+                        text: 'The event was successfully created.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 },
                 error: function () {
                     Swal.fire('Error', 'Something went wrong.', 'error');
