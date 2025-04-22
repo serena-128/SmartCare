@@ -447,6 +447,29 @@ public function historyCalendar(Request $request)
         ];
     });
 }
+public function storeMealHistory(Request $request, $mealPlanId)
+{
+    $validated = $request->validate([
+        'resident_id' => 'required|exists:resident,id',
+        'consumed'    => 'required|in:none,some,all',
+        'notes'       => 'nullable|string',
+        'time'        => 'nullable'
+    ]);
+
+    \App\Models\MealPlanEntry::updateOrCreate(
+        [
+            'meal_plan_id' => $mealPlanId,
+            'resident_id'  => $validated['resident_id'],
+            'time'         => $validated['time']
+        ],
+        [
+            'consumed' => $validated['consumed'],
+            'notes'    => $validated['notes']
+        ]
+    );
+
+    return response()->json(['status' => 'success']);
+}
 
 
 }  

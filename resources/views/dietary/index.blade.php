@@ -725,7 +725,52 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         const category = info.event.extendedProps.category;
         info.el.style.backgroundColor = colors[category] || '#f8f9fa';
+      },
+        eventClick: function(info) {
+  const meal = info.event.extendedProps;
+
+  Swal.fire({
+    title: `${info.event.title} (${meal.category})`,
+    html: `
+      <label for="consumedStatus" class="form-label">Consumption Status:</label>
+      <select id="consumedStatus" class="form-select mb-2">
+      <option value="all">Eaten</option>
+      <option value="some">Partially Eaten</option>
+      <option value="none">Not Eaten</option>
+    </select>
+
+      <label for="mealNote" class="form-label mt-2">Notes:</label>
+      <textarea id="mealNote" class="form-control" rows="3" placeholder="Any notes..."></textarea>
+    `,
+    confirmButtonText: 'Save Entry',
+    showCancelButton: true,
+    preConfirm: () => {
+      return {
+        consumed: document.getElementById('consumedStatus').value,
+        notes: document.getElementById('mealNote').value
       }
+    }
+  }).then(result => {
+    if (result.isConfirmed) {
+      fetch(`/dietary/meal-history-entry/${info.event.id}`, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          consumed: result.value.consumed,
+          notes: result.value.notes,
+          time: meal.time || '00:00',
+          resident_id: meal.resident_id
+        })
+      })
+      .then(res => res.ok ? Swal.fire('Saved!', '', 'success') : Swal.fire('Error saving', '', 'error'))
+      .catch(() => Swal.fire('Error', 'Something went wrong', 'error'));
+    }
+  });
+}
+
     });
 
     historyCalendar.render();

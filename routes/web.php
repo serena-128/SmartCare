@@ -399,5 +399,7 @@ Route::put('/dietary/meal-plans/{id}', [DietaryController::class, 'update'])->na
 
 Route::get('/dietary/history-calendar', [DietaryController::class, 'historyCalendar'])->name('dietary.historyCalendar');
 
+Route::post('/dietary/meal-history-entry/{mealPlanId}', [DietaryController::class, 'storeMealHistory']);
+
 
 
