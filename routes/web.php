@@ -157,28 +157,19 @@ Route::get('/medications/calendar/json', [MedicationController::class, 'calendar
 
 Route::resource('residents', ResidentController::class);
 
-
-
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\StaffShiftController;
 
-// ✅ Manager: Assign Shifts
+// ✅ Manager: Manage Shifts
 Route::middleware(['auth', 'role:Manager'])->group(function () {
     Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
     Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
-});
-
-// ✅ Staff: View Own Schedule (Only Define Once!)
-Route::middleware(['auth', 'role:Nurse|Caregiver|Doctor'])->group(function () {
-    Route::get('/my-schedule', [StaffShiftController::class, 'index'])->name('staff.schedule');
-});
-
-Route::middleware(['auth', 'role:Manager'])->group(function () {
-    Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
-    Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
-
-    // ✅ Add these lines:
     Route::get('/shifts/{shift}/edit', [ShiftController::class, 'edit'])->name('shifts.edit');
     Route::put('/shifts/{shift}', [ShiftController::class, 'update'])->name('shifts.update');
     Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
+});
+
+// ✅ Staff: View Own Schedule
+Route::middleware(['auth', 'role:Nurse|Caregiver|Doctor'])->group(function () {
+    Route::get('/my-schedule', [StaffShiftController::class, 'index'])->name('staff.schedule');
 });
