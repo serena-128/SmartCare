@@ -4,17 +4,20 @@
 <style>
   /* make recipe cards wider but cap their height */
   #recipe-search .recipe-card {
-    max-width: 600px;
-    height: 280px;
+    max-width: 900px;
+    height: 500px;
     overflow: hidden;
   }
 
   /* shrink the top image */
   #recipe-search .recipe-card .card-img-top {
-    height: 120px;
-    object-fit: cover;
-    width: 100%;
-  }
+  width: 100%;
+  height: 250px; /* or try 200px or 300px depending on your preference */
+  object-fit: contain; /* OR try 'cover' if you prefer cropping instead of squeezing */
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa; /* optional light background in case image has transparency */
+}
+
 
   /* let the body scroll if it overflows */
   #recipe-search .recipe-card .card-body {
@@ -353,98 +356,6 @@
 
 
     <!-- 5) Recipe Search -->
-    <div class="tab-pane fade {{ $active==='recipe-search' ? 'show active' : '' }}"
-         id="recipe-search"
-         role="tabpanel"
-         aria-labelledby="recipe-search-tab">
-
-      <form class="mb-4" method="GET" action="{{ route('dietary.searchRecipe') }}">
-        <input type="hidden" name="resident_id" value="{{ $selectedResident }}">
-        <input type="hidden" name="plan_date"   value="{{ $planDate }}">
-        <div class="input-group">
-          <input
-            type="text"
-            name="recipe"
-            class="form-control"
-            placeholder="Search recipes (e.g. lasagna)"
-            value="{{ request('recipe') }}"
-          >
-          <button class="btn btn-primary" type="submit">Search</button>
-        </div>
-      </form>
-
-      @if(count($recipes))
-        <div id="recipeCarousel" class="carousel slide" data-bs-interval="false">
-          <div class="carousel-inner">
-            @foreach($recipes as $i => $r)
-              <div class="carousel-item {{ $i===0 ? 'active' : '' }}">
-                <div class="card mx-auto" style="max-width:400px;">
-                  @if(!empty($r['image']))
-                    <img src="{{ $r['image'] }}"
-                         class="card-img-top"
-                         alt="{{ $r['title'] }}">
-                  @endif
-                  <div class="card-body">
-                    <h5 class="card-title">{{ $r['title'] }}</h5>
-                    <p class="card-text">{!! $r['summary'] ?? 'No summary available.' !!}</p>
-
-                    <button class="btn btn-sm btn-outline-secondary mt-2"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#details-{{ $r['id'] }}"
-                            aria-expanded="false"
-                            aria-controls="details-{{ $r['id'] }}">
-                      Toggle details
-                    </button>
-
-                    <div class="collapse mt-3" id="details-{{ $r['id'] }}">
-                      <h6>Ingredients</h6>
-                      <ul class="ps-3">
-                        @foreach($r['extendedIngredients'] ?? [] as $ing)
-                          <li>{{ $ing['original'] }}</li>
-                        @endforeach
-                      </ul>
-
-                      <h6>Instructions</h6>
-                      <p>{!! $r['instructions'] ?? 'No instructions available.' !!}</p>
-
-                      <h6>Dietary Flags</h6>
-                      <ul class="list-unstyled">
-                        <li><strong>Dish types:</strong> {{ implode(', ', $r['dishTypes'] ?? []) }}</li>
-                        <li><strong>Diets:</strong>      {{ implode(', ', $r['diets']      ?? []) }}</li>
-                        <li><strong>Gluten‑free:</strong> {{ $r['glutenFree'] ? 'Yes' : 'No' }}</li>
-                        <li><strong>Vegan:</strong>       {{ $r['vegan']      ? 'Yes' : 'No' }}</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            @endforeach
-          </div>
-
-          <div class="d-flex justify-content-center gap-2 mt-3">
-            <button class="btn btn-secondary"
-                    type="button"
-                    data-bs-target="#recipeCarousel"
-                    data-bs-slide="prev">
-              ← Previous
-            </button>
-            <button class="btn btn-secondary"
-                    type="button"
-                    data-bs-target="#recipeCarousel"
-                    data-bs-slide="next">
-              Next →
-            </button>
-          </div>
-        </div>
-      @else
-        <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
-      @endif
-
-    </div>
-
-  <!-- Recipe Search Tab -->
-<!-- Recipe Search Tab -->
 <div
   class="tab-pane fade {{ $active==='recipe-search' ? 'show active' : '' }}"
   id="recipe-search"
@@ -476,7 +387,7 @@
       <div class="carousel-inner">
         @foreach($recipes as $i => $r)
           <div class="carousel-item {{ $i===0 ? 'active' : '' }}">
-            <div class="card mx-auto" style="max-width:400px;">
+            <div class="card recipe-card mx-auto">
               @if(!empty($r['image']))
                 <img
                   src="{{ $r['image'] }}"
@@ -544,9 +455,9 @@
         </button>
       </div>
     </div>
-  @else
-    <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
-  @endif
+  @elseif(request()->has('recipe') && request('recipe') !== '')
+  <p class="text-muted">No recipes found for “{{ request('recipe') }}.”</p>
+@endif
 </div>
 
 
