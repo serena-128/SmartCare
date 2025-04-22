@@ -23,9 +23,13 @@ class UpdateemergencyalertRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
-        $rules = emergencyalert::$rules;
-        
-        return $rules;
-    }
+{
+    return [
+        'alerttype' => 'required|string|max:50',
+        'urgency' => 'nullable|string|max:255',
+        'details' => 'nullable|string'
+    ];
 }
+
+}
+

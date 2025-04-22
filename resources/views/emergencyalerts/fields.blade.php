@@ -1,30 +1,41 @@
 <!-- Residentid Field -->
-<div class="form-group">
-    {!! Form::label('residentid', 'Resident') !!}
-    {!! Form::select('residentid', $residents, null, ['class' => 'form-control']) !!}
+<div class="form-group col-sm-6">
+    {!! Form::label('residentid', 'Residentid:') !!}
+    {!! Form::number('residentid', null, ['class' => 'form-control']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('alerttype', 'Alert Type') !!}
+<!-- Triggeredbyid Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('triggeredbyid', 'Triggeredbyid:') !!}
+    {!! Form::number('triggeredbyid', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Alerttype Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('alerttype', 'Alerttype:') !!}
     {!! Form::text('alerttype', null, ['class' => 'form-control']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('alerttimestamp', 'Timestamp') !!}
-    {!! Form::date('alerttimestamp', \Carbon\Carbon::parse($emergencyalert->alerttimestamp)->format('Y-m-d'), ['class' => 'form-control']) !!}
+<!-- Alerttimestamp Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('alerttimestamp', 'Alerttimestamp:') !!}
+    {!! Form::date('alerttimestamp', null, ['class' => 'form-control']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('status', 'Status') !!}
-    {!! Form::select('status', ['Pending' => 'Pending', 'Resolved' => 'Resolved'], null, ['class' => 'form-control']) !!}
+<!-- Status Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('status', 'Status:') !!}
+    {!! Form::text('status', null, ['class' => 'form-control']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('resolvedbyid', 'Resolved By') !!}
+<!-- Resolvedbyid Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('resolvedbyid', 'Resolvedbyid:') !!}
     {!! Form::number('resolvedbyid', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Submit Button -->
-<div class="form-group text-right">
-    {!! Form::submit('Update Alert', ['class' => 'btn btn-primary']) !!}
+<!-- Submit Field -->
+<div class="form-group col-sm-12">
+    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+    <a href="{!! route('emergencyalerts.index') !!}" class="btn btn-default">Cancel</a>
 </div>
