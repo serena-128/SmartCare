@@ -69,12 +69,15 @@
                     <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }}</td>
                         <td>
                             <button class="btn btn-info btn-sm alert-options-btn"
-                                    data-id="{{ $alert->id }}"
-                                    data-resident="{{ $alert->resident->firstname }}"
-                                    data-edit-url="{{ route('emergencyalerts.edit', $alert->id) }}"
-                                    data-delete-url="{{ route('emergencyalerts.destroy', $alert->id) }}">
-                                ⚙️ Actions
-                            </button>
+                            data-id="{{ $alert->id }}"
+                            data-resident="{{ $alert->resident->firstname }}"
+                            data-alerttype="{{ $alert->alerttype }}"
+                            data-urgency="{{ $alert->urgency }}"
+                            data-details="{{ $alert->details }}"
+                            data-edit-url="{{ route('emergencyalerts.update', $alert->id) }}"
+                            data-delete-url="{{ route('emergencyalerts.destroy', $alert->id) }}">
+                        ⚙️ Actions
+                    </button>
                         </td>
 
                 </tr>
@@ -90,6 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const resident = $(this).data('resident');
         const editUrl = $(this).data('edit-url');
         const deleteUrl = $(this).data('delete-url');
+        const alertType = $(this).data('alerttype');
+        const urgency = $(this).data('urgency');
+        const details = $(this).data('details');
 
         Swal.fire({
             title: `Manage Alert for ${resident}`,
@@ -101,16 +107,59 @@ document.addEventListener('DOMContentLoaded', function () {
             showDenyButton: true,
             denyButtonText: 'Delete',
             showCloseButton: true,
-            footer: `<a href="${editUrl}" class="swal2-edit-link">✏️ Edit this Alert</a>`,
+            footer: `<button id="inline-edit-btn" class="btn btn-sm btn-primary">✏️ Edit this Alert</button>`,
             customClass: {
                 confirmButton: 'btn btn-success',
                 denyButton: 'btn btn-danger',
                 cancelButton: 'btn btn-secondary'
             },
-            buttonsStyling: false
+            buttonsStyling: false,
+            didOpen: () => {
+                document.getElementById('inline-edit-btn').addEventListener('click', () => {
+                    Swal.fire({
+                        title: 'Edit Alert Details',
+                        html: `
+                            <input id="edit-alerttype" class="swal2-input" placeholder="Alert Type" value="${alertType}">
+                            <input id="edit-urgency" class="swal2-input" placeholder="Urgency" value="${urgency}">
+                            <textarea id="edit-details" class="swal2-textarea" placeholder="Details">${details}</textarea>
+                        `,
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Save Changes',
+                        preConfirm: () => {
+                            return {
+                                alerttype: document.getElementById('edit-alerttype').value,
+                                urgency: document.getElementById('edit-urgency').value,
+                                details: document.getElementById('edit-details').value
+                            };
+                        }
+                    }).then((editResult) => {
+                        if (editResult.isConfirmed) {
+                            $.ajax({
+                                url: editUrl,
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    _method: 'PUT',
+                                    alerttype: editResult.value.alerttype,
+                                    urgency: editResult.value.urgency,
+                                    details: editResult.value.details
+                                },
+                                success: function () {
+                                    Swal.fire('Updated!', 'The alert has been updated.', 'success').then(() => {
+                                        location.reload();
+                                    });
+                                },
+                                error: function () {
+                                    Swal.fire('Error', 'Failed to update alert.', 'error');
+                                }
+                            });
+                        }
+                    });
+                });
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Resolve via AJAX
                 $.post(`/emergencyalerts/${alertId}/resolve`, {
                     _token: '{{ csrf_token() }}',
                     resolvedbyid: {{ session('staff_id') }}
@@ -122,37 +171,37 @@ document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire('Error', 'Failed to resolve alert.', 'error');
                 });
             } else if (result.isDenied) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "This alert will be permanently deleted.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((delResult) => {
-        if (delResult.isConfirmed) {
-            $.ajax({
-                url: deleteUrl,
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    _method: 'DELETE'
-                },
-                success: function () {
-                    Swal.fire({
-                        title: 'Deleted!',
-                        text: 'The alert has been deleted.',
-                        icon: 'success',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                    });
-                },
-                error: function () {
-                    Swal.fire('Error', 'Failed to delete alert.', 'error');
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This alert will be permanently deleted.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((delResult) => {
+                    if (delResult.isConfirmed) {
+                        $.ajax({
+                            url: deleteUrl,
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
+                            success: function () {
+                                Swal.fire({
+                                    title: 'Deleted!',
+                                    text: 'The alert has been deleted.',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Failed to delete alert.', 'error');
+                            }
                         });
                     }
                 });
@@ -162,5 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
+
 
 @endsection

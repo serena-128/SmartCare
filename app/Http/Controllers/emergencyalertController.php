@@ -132,22 +132,27 @@ public function store(CreateemergencyalertRequest $request)
      *
      * @return Response
      */
-    public function update($id, UpdateemergencyalertRequest $request)
-    {
-        $emergencyalert = $this->emergencyalertRepository->find($id);
+   public function update($id, UpdateemergencyalertRequest $request)
+{
+    $emergencyalert = $this->emergencyalertRepository->find($id);
 
-        if (empty($emergencyalert)) {
-            Flash::error('Emergencyalert not found');
-
-            return redirect(route('emergencyalerts.index'));
+    if (empty($emergencyalert)) {
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Alert not found'], 404);
         }
-
-        $emergencyalert = $this->emergencyalertRepository->update($request->all(), $id);
-
-        Flash::success('Emergencyalert updated successfully.');
-
+        Flash::error('Emergencyalert not found');
         return redirect(route('emergencyalerts.index'));
     }
+
+    $this->emergencyalertRepository->update($request->all(), $id);
+
+    if ($request->ajax()) {
+        return response()->json(['message' => 'Emergencyalert updated successfully.']);
+    }
+
+    Flash::success('Emergencyalert updated successfully.');
+    return redirect(route('emergencyalerts.index'));
+}
 
     /**
      * Remove the specified emergencyalert from storage.

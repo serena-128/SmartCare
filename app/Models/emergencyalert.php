@@ -33,19 +33,23 @@ class EmergencyAlert extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+    'alerttype',
+    'urgency',
+    'details',
     'residentid',
     'triggeredbyid',
-    'alerttype',
-    'alerttimestamp',
-    'status',
     'resolvedbyid',
-    'last_updated_at' // New Column
+    'status',
+    'alerttimestamp'
 ];
+
     protected $casts = [
         'id' => 'integer',
         'residentid' => 'integer',
         'triggeredbyid' => 'integer',
         'alerttype' => 'string',
+        'urgency' => 'string',
+        'details' => 'string',
         'alerttimestamp' => 'datetime',
         'status' => 'string',
         'resolvedbyid' => 'integer'
@@ -55,6 +59,8 @@ class EmergencyAlert extends Model
         'residentid' => 'required|integer',
         'triggeredbyid' => 'required|integer',
         'alerttype' => 'required|string|max:50',
+        'urgency' => 'nullable|string|max:255',
+        'details' => 'nullable|string',
         'alerttimestamp' => 'nullable',
         'status' => 'nullable|string|max:20',
         'resolvedbyid' => 'nullable|integer',
