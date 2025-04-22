@@ -183,6 +183,15 @@ public function showEmergencyAlertsHub()
     return view('emergencyalertshub', compact('totalAlerts', 'activeAlerts', 'resolvedAlerts'));
 }
 
+public function resolve($id, Request $request)
+{
+    $alert = EmergencyAlert::findOrFail($id);
+    $alert->status = 'Resolved';
+    $alert->resolvedbyid = $request->input('resolvedbyid');
+    $alert->save();
+
+    return response()->json(['message' => 'Alert marked as resolved.']);
+}
 
 
 }

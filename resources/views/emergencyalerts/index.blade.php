@@ -67,18 +67,92 @@
                     </td>
 
                     <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }}</td>
+                        <td>
+                            <button class="btn btn-info btn-sm alert-options-btn"
+                                    data-id="{{ $alert->id }}"
+                                    data-resident="{{ $alert->resident->firstname }}"
+                                    data-edit-url="{{ route('emergencyalerts.edit', $alert->id) }}"
+                                    data-delete-url="{{ route('emergencyalerts.destroy', $alert->id) }}">
+                                ⚙️ Actions
+                            </button>
+                        </td>
 
-                    <td>
-                        <a href="{{ route('emergencyalerts.edit', $alert->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('emergencyalerts.destroy', $alert->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    $('.alert-options-btn').click(function () {
+        const alertId = $(this).data('id');
+        const resident = $(this).data('resident');
+        const editUrl = $(this).data('edit-url');
+        const deleteUrl = $(this).data('delete-url');
+
+        Swal.fire({
+            title: `Manage Alert for ${resident}`,
+            text: 'Choose an action below.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Mark as Resolved',
+            cancelButtonText: 'Close',
+            showDenyButton: true,
+            denyButtonText: 'Delete',
+            showCloseButton: true,
+            footer: `<a href="${editUrl}" class="swal2-edit-link">✏️ Edit this Alert</a>`,
+            customClass: {
+                confirmButton: 'btn btn-success',
+                denyButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Resolve via AJAX
+                $.post(`/emergencyalerts/${alertId}/resolve`, {
+                    _token: '{{ csrf_token() }}',
+                    resolvedbyid: {{ session('staff_id') }}
+                }, function (response) {
+                    Swal.fire('Resolved!', response.message, 'success').then(() => {
+                        location.reload();
+                    });
+                }).fail(() => {
+                    Swal.fire('Error', 'Failed to resolve alert.', 'error');
+                });
+            } else if (result.isDenied) {
+                // Confirm delete
+                Swal.fire({
+                    title: 'Delete this alert?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                }).then((delResult) => {
+                    if (delResult.isConfirmed) {
+                        $.ajax({
+                            url: deleteUrl,
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
+                            success: function () {
+                                Swal.fire('Deleted!', 'The alert has been deleted.', 'success').then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Failed to delete alert.', 'error');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush
+
 @endsection

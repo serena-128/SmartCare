@@ -406,4 +406,5 @@ Route::put('/dietary/preferences/update', [App\Http\Controllers\DietaryControlle
 Route::get('/staff/daily-tasks', [StaffTaskController::class, 'daily'])->name('stafftasks.daily');
 Route::post('/stafftasks/update-status/{id}', [App\Http\Controllers\stafftaskController::class, 'updateStatus']);
 Route::get('/stafftasks/json', [App\Http\Controllers\stafftaskController::class, 'getTasksJson']);
+Route::post('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'resolve']);
 
