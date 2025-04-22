@@ -91,5 +91,7 @@ public function showMedicationInfo(Request $request)
     return view('staff.medications', compact('residents', 'drugData', 'drugName'));
 }
 
+
+
 }
 

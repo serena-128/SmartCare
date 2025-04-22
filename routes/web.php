@@ -49,7 +49,7 @@ use App\Http\Controllers\ResidentMedicationOrderController;
 use App\Http\Controllers\ResidentPharmacyController;
 use App\Http\Controllers\DietaryController;
 use App\Http\Controllers\StaffEventController;
-
+use App\Http\Controllers\StaffController;
 /*
 |---------------------------------------------------------------------- 
 | Web Routes
@@ -414,3 +414,5 @@ Route::get('/staff/resident-events', function () {
 
 Route::get('/staff/events/json', [StaffEventController::class, 'fetchEvents']);
 Route::post('/staff/events', [StaffEventController::class, 'store']);
+Route::get('/staff/photo-gallery', [StaffController::class, 'photoGallery'])->name('staff.photoGallery');
+
