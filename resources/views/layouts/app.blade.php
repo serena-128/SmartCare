@@ -43,10 +43,9 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}"> 💊Medication Center</a></li>
-                            <li><a class="dropdown-item" href="{{ route('dietary.index') }}">📋 Dietary</a></li>
-                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li>
-
+                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">🩺 Care Plan Hub</a></li>
+                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📆 Upcoming events</a></li>
+                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📸 Photo Gallery</a></li>
                         </ul>
                     </li>
 
@@ -56,6 +55,10 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
                             <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
+                            <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">📜 Medical History</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dietary.index') }}">🧑‍🤝‍🧑 Next of Kin Information</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}"> 💊Medication Center</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dietary.index') }}">🍽️ Dietary</a></li>
                         </ul>
                     </li>
 
@@ -66,7 +69,7 @@
                             <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
                             <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
                             <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 My Appointments</a></li>
-                            <li><a class="dropdown-item" href="{{ route('stafftasks.daily') }}">📝 My Daily Tasks</a></li>
+                            <li><a class="dropdown-item" href="{{ route('stafftasks.daily') }}">📌 My Daily Tasks</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('photo.create') }}">🖼️ Add Photos</a></li>
                             <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">➕ Add Event/Appointment</a></li>

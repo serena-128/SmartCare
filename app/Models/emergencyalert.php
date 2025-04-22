@@ -25,7 +25,7 @@ class EmergencyAlert extends Model
 {
     use SoftDeletes, HasFactory;
 
-    protected $table = 'emergencyalerts'; // ✅ Fixed table name
+    protected $table = 'emergencyalert'; // ✅ Fixed table name
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -68,24 +68,19 @@ class EmergencyAlert extends Model
     /**
      * Define relationship with Resident
      */
-    public function resident()
-    {
-        return $this->belongsTo(Resident::class, 'residentid');
-    }
+   public function resident()
+{
+    return $this->belongsTo(\App\Models\Resident::class, 'residentid');
+}
 
-    /**
-     * Define relationship with StaffMember who triggered the alert
-     */
-    public function triggeredBy()
-    {
-        return $this->belongsTo(StaffMember::class, 'triggeredbyid');
-    }
+public function triggeredBy()
+{
+    return $this->belongsTo(\App\Models\StaffMember::class, 'triggeredbyid');
+}
 
-    /**
-     * Define relationship with StaffMember who resolved the alert
-     */
-    public function resolvedBy()
-    {
-        return $this->belongsTo(StaffMember::class, 'resolvedbyid');
-    }
+public function resolvedBy()
+{
+    return $this->belongsTo(\App\Models\StaffMember::class, 'resolvedbyid');
+}
+
 }
