@@ -122,29 +122,37 @@ document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire('Error', 'Failed to resolve alert.', 'error');
                 });
             } else if (result.isDenied) {
-                // Confirm delete
-                Swal.fire({
-                    title: 'Delete this alert?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                }).then((delResult) => {
-                    if (delResult.isConfirmed) {
-                        $.ajax({
-                            url: deleteUrl,
-                            method: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                _method: 'DELETE'
-                            },
-                            success: function () {
-                                Swal.fire('Deleted!', 'The alert has been deleted.', 'success').then(() => {
-                                    location.reload();
-                                });
-                            },
-                            error: function () {
-                                Swal.fire('Error', 'Failed to delete alert.', 'error');
-                            }
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This alert will be permanently deleted.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((delResult) => {
+        if (delResult.isConfirmed) {
+            $.ajax({
+                url: deleteUrl,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    _method: 'DELETE'
+                },
+                success: function () {
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'The alert has been deleted.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to delete alert.', 'error');
+                }
                         });
                     }
                 });
