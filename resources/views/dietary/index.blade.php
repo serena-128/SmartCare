@@ -107,30 +107,86 @@
   <div class="tab-content mt-4" id="dietaryTabContent">
 
     <!-- 1) Resident Preferences -->
-    <div class="tab-pane fade {{ $active==='preferences'?'show active':'' }}"
-         id="resident-preferences"
-         role="tabpanel"
-         aria-labelledby="resident-preferences-tab">
-      <h5 class="mb-3">Resident Preferences</h5>
-      <div class="row g-4">
-        @foreach($residents as $resident)
-          <div class="col-12 col-md-6">
-            <div class="card h-100 shadow-sm">
-              <div class="card-header bg-primary text-white">
-                <h6 class="mb-0">{{ $resident->full_name }}</h6>
-                <small>Room {{ $resident->roomnumber }}</small>
-              </div>
-              <div class="card-body">
-                <p><strong>Allergies:</strong> {{ $resident->allergies ?? 'None' }}</p>
-                <p><strong>Food Restrictions:</strong> {{ $resident->dietaryRestrictions->foodrestrictions ?? 'None' }}</p>
-                <p><strong>Food Preferences:</strong> {{ $resident->dietaryRestrictions->foodpreferences ?? 'None' }}</p>
-                <p><strong>Notes:</strong> {{ $resident->dietaryRestrictions->notes ?? 'None' }}</p>
-              </div>
-            </div>
+<!-- 1) Resident Preferences -->
+<div class="tab-pane fade {{ $active==='preferences'?'show active':'' }}"
+     id="resident-preferences"
+     role="tabpanel"
+     aria-labelledby="resident-preferences-tab">
+  <h5 class="mb-3">Resident Preferences</h5>
+  <div class="row g-4">
+    @foreach($residents as $resident)
+      <div class="col-12 col-md-6">
+        <div class="card h-100 shadow-sm preference-card"
+             data-bs-toggle="modal"
+             data-bs-target="#editPreferenceModal"
+             data-id="{{ $resident->id }}"
+             data-name="{{ $resident->full_name }}"
+             data-room="{{ $resident->roomnumber }}"
+             data-allergies="{{ $resident->allergies }}"
+             data-foodrestrictions="{{ $resident->dietaryRestrictions->foodrestrictions ?? '' }}"
+             data-foodpreferences="{{ $resident->dietaryRestrictions->foodpreferences ?? '' }}"
+             data-notes="{{ $resident->dietaryRestrictions->notes ?? '' }}">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{ $resident->full_name }}</h6>
+            <small>Room {{ $resident->roomnumber }}</small>
           </div>
-        @endforeach
+          <div class="card-body">
+            <p><strong>Allergies:</strong> {{ $resident->allergies ?? 'None' }}</p>
+            <p><strong>Food Restrictions:</strong> {{ $resident->dietaryRestrictions->foodrestrictions ?? 'None' }}</p>
+            <p><strong>Food Preferences:</strong> {{ $resident->dietaryRestrictions->foodpreferences ?? 'None' }}</p>
+            <p><strong>Notes:</strong> {{ $resident->dietaryRestrictions->notes ?? 'None' }}</p>
+          </div>
+        </div>
       </div>
-    </div>
+    @endforeach
+  </div>
+</div>
+<!-- Edit Resident Preference Modal -->
+<!-- Edit Resident Preference Modal -->
+<div class="modal fade" id="editPreferenceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('dietary.updatePreferences') }}">
+      @csrf
+      @method('PUT')
+      <input type="hidden" name="resident_id" id="editResidentId">
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Preferences for <span id="editResidentName"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-2">
+            <label for="editAllergies" class="form-label">Allergies</label>
+            <input type="text" class="form-control" id="editAllergies" name="allergies">
+          </div>
+
+          <div class="mb-2">
+            <label for="editFoodRestrictions" class="form-label">Food Restrictions</label>
+            <input type="text" class="form-control" id="editFoodRestrictions" name="foodrestrictions">
+          </div>
+
+          <div class="mb-2">
+            <label for="editFoodPreferences" class="form-label">Food Preferences</label>
+            <input type="text" class="form-control" id="editFoodPreferences" name="foodpreferences">
+          </div>
+
+          <div class="mb-2">
+            <label for="editNotes" class="form-label">Notes</label>
+            <textarea class="form-control" id="editNotes" name="notes" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 
     <!-- 2) Allergies Lookup -->
     <div class="tab-pane fade {{ $active==='allergies'?'show active':'' }}"
@@ -486,7 +542,18 @@
 @push('scripts')
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>// Fill modal when clicking a preference card
+document.querySelectorAll('.preference-card').forEach(card => {
+  card.addEventListener('click', function () {
+    document.getElementById('editResidentId').value = this.dataset.id;
+    document.getElementById('editResidentName').innerText = this.dataset.name;
+    document.getElementById('editAllergies').value = this.dataset.allergies || '';
+    document.getElementById('editFoodRestrictions').value = this.dataset.foodrestrictions || '';
+    document.getElementById('editFoodPreferences').value = this.dataset.foodpreferences || '';
+    document.getElementById('editNotes').value = this.dataset.notes || '';
+  });
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl   = document.getElementById('mealCalendar');

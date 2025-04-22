@@ -471,5 +471,34 @@ public function storeMealHistory(Request $request, $mealPlanId)
     return response()->json(['status' => 'success']);
 }
 
+public function updatePreferences(Request $request)
+{
+    $request->validate([
+        'resident_id' => 'required|exists:resident,id',
+        'allergies' => 'nullable|string',
+        'foodrestrictions' => 'nullable|string',
+        'foodpreferences' => 'nullable|string',
+        'notes' => 'nullable|string',
+    ]);
+
+    $resident = Resident::findOrFail($request->resident_id);
+
+    // Update allergies in resident table
+    $resident->update([
+        'allergies' => $request->allergies,
+    ]);
+
+    // Update or create dietary restriction
+    $resident->dietaryRestrictions()->updateOrCreate(
+        ['residentid' => $resident->id],
+        [
+            'foodrestrictions' => $request->foodrestrictions,
+            'foodpreferences' => $request->foodpreferences,
+            'notes' => $request->notes,
+        ]
+    );
+
+    return back()->with('success', 'Resident preferences updated successfully.');
+}
 
 }  

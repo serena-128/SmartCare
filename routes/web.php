@@ -401,5 +401,6 @@ Route::get('/dietary/history-calendar', [DietaryController::class, 'historyCalen
 
 Route::post('/dietary/meal-history-entry/{mealPlanId}', [DietaryController::class, 'storeMealHistory']);
 
+Route::put('/dietary/preferences/update', [App\Http\Controllers\DietaryController::class, 'updatePreferences'])->name('dietary.updatePreferences');
 
 
