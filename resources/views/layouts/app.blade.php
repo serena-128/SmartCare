@@ -65,7 +65,8 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
                             <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 Show my appointments</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 My Appointments</a></li>
+                            <li><a class="dropdown-item" href="{{ route('stafftasks.daily') }}">📝 My Daily Tasks</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('photo.create') }}">🖼️ Add Photos</a></li>
                             <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">➕ Add Event/Appointment</a></li>
