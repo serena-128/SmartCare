@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatestafftaskRequest;
 use App\Repositories\stafftaskRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use App\Models\StaffMember; // ✅ Add this line
 use Flash;
 use Response;
 
@@ -20,137 +21,39 @@ class stafftaskController extends AppBaseController
         $this->stafftaskRepository = $stafftaskRepo;
     }
 
-    /**
-     * Display a listing of the stafftask.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function index(Request $request)
-    {
-        $stafftasks = $this->stafftaskRepository->all();
-
-        return view('stafftasks.index')
-            ->with('stafftasks', $stafftasks);
-    }
-
-    /**
-     * Show the form for creating a new stafftask.
-     *
-     * @return Response
-     */
+    // ✅ Replace your current create() with this one:
     public function create()
-    {
-        return view('stafftasks.create');
-    }
+{
+    $staff = StaffMember::all(); // ✅ model name matches capitalization
 
-    /**
-     * Store a newly created stafftask in storage.
-     *
-     * @param CreatestafftaskRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreatestafftaskRequest $request)
-    {
-        $input = $request->all();
+    $staffMembers = $staff->mapWithKeys(function ($s) {
+        return [$s->id => $s->firstname . ' ' . $s->lastname];
+    });
 
-        $stafftask = $this->stafftaskRepository->create($input);
+    return view('stafftasks.create', compact('staffMembers'));
+}
 
-        Flash::success('Stafftask saved successfully.');
+public function store(Request $request)
+{
+    $data = $request->validate([
+        'staff_id' => 'required|exists:staffmember,id',
+        'date' => 'required|date',
+        'time' => 'required',
+        'description' => 'nullable|string',
+    ]);
 
-        return redirect(route('stafftasks.index'));
-    }
+    \App\Models\Stafftask::create($data);
 
-    /**
-     * Display the specified stafftask.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        $stafftask = $this->stafftaskRepository->find($id);
+    Flash::success('Task assigned to staff successfully.');
+    return redirect()->route('stafftasks.index');
+}
+public function index()
+{
+    $stafftasks = \App\Models\Stafftask::with('staff')->latest()->get();
+    return view('stafftasks.index', compact('stafftasks'));
+}
 
-        if (empty($stafftask)) {
-            Flash::error('Stafftask not found');
 
-            return redirect(route('stafftasks.index'));
-        }
 
-        return view('stafftasks.show')->with('stafftask', $stafftask);
-    }
-
-    /**
-     * Show the form for editing the specified stafftask.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
-    {
-        $stafftask = $this->stafftaskRepository->find($id);
-
-        if (empty($stafftask)) {
-            Flash::error('Stafftask not found');
-
-            return redirect(route('stafftasks.index'));
-        }
-
-        return view('stafftasks.edit')->with('stafftask', $stafftask);
-    }
-
-    /**
-     * Update the specified stafftask in storage.
-     *
-     * @param int $id
-     * @param UpdatestafftaskRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdatestafftaskRequest $request)
-    {
-        $stafftask = $this->stafftaskRepository->find($id);
-
-        if (empty($stafftask)) {
-            Flash::error('Stafftask not found');
-
-            return redirect(route('stafftasks.index'));
-        }
-
-        $stafftask = $this->stafftaskRepository->update($request->all(), $id);
-
-        Flash::success('Stafftask updated successfully.');
-
-        return redirect(route('stafftasks.index'));
-    }
-
-    /**
-     * Remove the specified stafftask from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        $stafftask = $this->stafftaskRepository->find($id);
-
-        if (empty($stafftask)) {
-            Flash::error('Stafftask not found');
-
-            return redirect(route('stafftasks.index'));
-        }
-
-        $this->stafftaskRepository->delete($id);
-
-        Flash::success('Stafftask deleted successfully.');
-
-        return redirect(route('stafftasks.index'));
-    }
+    // ...rest of your methods...
 }
