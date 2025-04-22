@@ -46,43 +46,49 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($emergencyalerts as $alert)
-                <tr>
-                    <td>{{ $alert->resident->firstname ?? 'N/A' }} {{ $alert->resident->lastname ?? '' }}</td>
-                    <td>{{ $alert->alerttype }}</td>
-                    <td>{{ $alert->urgency }}</td>
-                    <td>{{ $alert->details }}</td>
-                    <td>{{ $alert->triggeredBy->firstname ?? 'N/A' }} {{ $alert->triggeredBy->lastname ?? '' }}</td>
-                    <td>{{ $alert->alerttimestamp }}</td>
-                    
-                    <!-- Status with styled badge -->
-                    <td>
-                        @if ($alert->status === 'Resolved')
-                            <span class="badge badge-success">Resolved</span>
-                        @elseif ($alert->status === 'In Progress')
-                            <span class="badge badge-warning text-dark">In Progress</span>
-                        @else
-                            <span class="badge badge-danger">Pending</span>
-                        @endif
-                    </td>
+    @foreach($emergencyalerts as $alert)
+        <tr 
+            @if($alert->urgency === 'High')
+                style="background-color: #f8d7da;" 
+            @elseif($alert->urgency === 'Medium')
+                style="background-color: #fff3cd;"
+            @endif
+        >
+            <td>{{ $alert->resident->firstname ?? 'N/A' }} {{ $alert->resident->lastname ?? '' }}</td>
+            <td>{{ $alert->alerttype }}</td>
+            <td>{{ $alert->urgency }}</td>
+            <td>{{ $alert->details }}</td>
+            <td>{{ $alert->triggeredBy->firstname ?? 'N/A' }} {{ $alert->triggeredBy->lastname ?? '' }}</td>
+            <td>{{ $alert->alerttimestamp }}</td>
 
-                   <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }} {{ $alert->resolvedBy->lastname ?? '' }}</td>
-                        <td>
-                            <button class="btn btn-info btn-sm alert-options-btn"
-                            data-id="{{ $alert->id }}"
-                            data-resident="{{ $alert->resident->firstname }}"
-                            data-alerttype="{{ $alert->alerttype }}"
-                            data-urgency="{{ $alert->urgency }}"
-                            data-details="{{ $alert->details }}"
-                            data-edit-url="{{ route('emergencyalerts.update', $alert->id) }}"
-                            data-delete-url="{{ route('emergencyalerts.destroy', $alert->id) }}">
-                        ⚙️ Actions
-                    </button>
-                        </td>
+            <td>
+                @if ($alert->status === 'Resolved')
+                    <span class="badge badge-success">Resolved</span>
+                @elseif ($alert->status === 'In Progress')
+                    <span class="badge badge-warning text-dark">In Progress</span>
+                @else
+                    <span class="badge badge-danger">Pending</span>
+                @endif
+            </td>
 
-                </tr>
-            @endforeach
-        </tbody>
+            <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }} {{ $alert->resolvedBy->lastname ?? '' }}</td>
+
+            <td>
+                <button class="btn btn-info btn-sm alert-options-btn"
+                        data-id="{{ $alert->id }}"
+                        data-resident="{{ $alert->resident->firstname }}"
+                        data-alerttype="{{ $alert->alerttype }}"
+                        data-urgency="{{ $alert->urgency }}"
+                        data-details="{{ $alert->details }}"
+                        data-edit-url="{{ route('emergencyalerts.update', $alert->id) }}"
+                        data-delete-url="{{ route('emergencyalerts.destroy', $alert->id) }}">
+                    ⚙️ Actions
+                </button>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
     </table>
 </div>
 @push('scripts')
