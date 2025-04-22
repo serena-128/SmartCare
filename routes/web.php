@@ -168,7 +168,17 @@ Route::middleware(['auth', 'role:Manager'])->group(function () {
     Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
 });
 
-// ✅ Staff: View Own Schedule
+// ✅ Staff: View Own Schedule (Only Define Once!)
 Route::middleware(['auth', 'role:Nurse|Caregiver|Doctor'])->group(function () {
-    Route::get('/my-schedule', [StaffShiftController::class, 'index'])->name('staff.shifts.index');
+    Route::get('/my-schedule', [StaffShiftController::class, 'index'])->name('staff.schedule');
+});
+
+Route::middleware(['auth', 'role:Manager'])->group(function () {
+    Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
+    Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
+
+    // ✅ Add these lines:
+    Route::get('/shifts/{shift}/edit', [ShiftController::class, 'edit'])->name('shifts.edit');
+    Route::put('/shifts/{shift}', [ShiftController::class, 'update'])->name('shifts.update');
+    Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 });

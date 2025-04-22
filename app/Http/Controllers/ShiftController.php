@@ -10,9 +10,11 @@ class ShiftController extends Controller
 {
     public function index()
     {
-        $staff = StaffMember::all();
+        // Eager load staffMember to avoid N+1 issues
         $shifts = Shift::with('staffMember')->orderBy('shift_date')->get();
-        return view('shifts.index', compact('staff', 'shifts'));
+        $staff = StaffMember::all();
+
+        return view('shifts.index', compact('shifts', 'staff'));
     }
 
     public function store(Request $request)
@@ -24,16 +26,20 @@ class ShiftController extends Controller
             'end_time' => 'required|after:start_time',
         ]);
 
-        // Check for overlapping shifts
-        $exists = Shift::where('staff_member_id', $request->staff_member_id)
+        // Avoid overlapping shifts
+        $hasConflict = Shift::where('staff_member_id', $request->staff_member_id)
             ->where('shift_date', $request->shift_date)
             ->where(function ($query) use ($request) {
                 $query->whereBetween('start_time', [$request->start_time, $request->end_time])
-                      ->orWhereBetween('end_time', [$request->start_time, $request->end_time]);
+                      ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
+                      ->orWhere(function ($query) use ($request) {
+                          $query->where('start_time', '<=', $request->start_time)
+                                ->where('end_time', '>=', $request->end_time);
+                      });
             })->exists();
 
-        if ($exists) {
-            return back()->with('error', 'This staff member already has a shift during this time.');
+        if ($hasConflict) {
+            return back()->with('error', 'This staff member already has a shift that overlaps this time.');
         }
 
         Shift::create($request->all());
