@@ -16,6 +16,8 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('dailyTaskCalendar');
@@ -45,7 +47,47 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${info.event.title}
                     </div>`
             };
+        },
+        eventClick: function (info) {
+    const taskId = info.event.id;
+
+    Swal.fire({
+        title: 'Update Task Status',
+        input: 'radio',
+        inputOptions: {
+            'In Progress': 'In Progress',
+            'Completed': 'Completed'
+        },
+        inputValidator: (value) => {
+            if (!value) {
+                return 'You need to choose a status!';
+            }
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Update',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/stafftasks/update-status/${taskId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: result.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Updated!', 'Task status updated.', 'success')
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire('Error', data.message || 'Something went wrong.', 'error');
+                }
+            });
         }
+    });
+},
+
     });
 
     calendar.render();

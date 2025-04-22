@@ -62,19 +62,35 @@ public function daily()
         ->whereDate('date', today())
         ->get()
         ->map(function ($task) {
-            return [
-                'title' => $task->title ?? 'Task',
-                'start' => $task->date . 'T' . $task->time,
-                'end'   => $task->date . 'T' . date('H:i', strtotime($task->time . ' +1 hour')), // example 1 hour duration
-                'description' => $task->description,
-            ];
-        });
+    return [
+        'id' => $task->id, // ✅ Add this line
+        'title' => $task->description ?? 'Task',
+        'start' => $task->date . 'T' . $task->time,
+        'end'   => $task->date . 'T' . date('H:i', strtotime($task->time . ' +1 hour')),
+    ];
+});
+
 
     return view('staff.daily_tasks', ['tasksJson' => $tasks->toJson()]);
 }
 
 
+public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:Uncompleted,In Progress,Completed',
+    ]);
 
+    $task = \App\Models\Stafftask::find($id);
 
-    // ...rest of your methods...
+    if (!$task) {
+        return response()->json(['success' => false, 'message' => 'Task not found.'], 404);
+    }
+
+    $task->status = $request->status;
+    $task->save();
+
+    return response()->json(['success' => true]);
+}
+
 }

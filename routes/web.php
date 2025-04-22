@@ -404,4 +404,5 @@ Route::post('/dietary/meal-history-entry/{mealPlanId}', [DietaryController::clas
 Route::put('/dietary/preferences/update', [App\Http\Controllers\DietaryController::class, 'updatePreferences'])->name('dietary.updatePreferences');
 
 Route::get('/staff/daily-tasks', [StaffTaskController::class, 'daily'])->name('stafftasks.daily');
+Route::post('/stafftasks/update-status/{id}', [App\Http\Controllers\stafftaskController::class, 'updateStatus']);
 
