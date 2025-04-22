@@ -140,11 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
             text: 'Choose an action below.',
             icon: 'info',
             showCancelButton: true,
-            confirmButtonText: 'Mark as Resolved',
-            cancelButtonText: 'Close',
+            confirmButtonText: '✅ Mark as Resolved',
+            cancelButtonText: '🟡 Mark In Progress',
             showDenyButton: true,
-            denyButtonText: 'Delete',
-            showCloseButton: true,
+            denyButtonText: '🗑️ Delete',
+            showCloseButton: true, 
+
             footer: `<button id="inline-edit-btn" class="btn btn-sm btn-primary">✏️ Edit this Alert</button>`,
             customClass: {
                 confirmButton: 'btn btn-success',
@@ -197,48 +198,63 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         }).then((result) => {
-            if (result.isConfirmed) {
-                $.post(`/emergencyalerts/${alertId}/resolve`, {
-                    _token: '{{ csrf_token() }}',
-                    resolvedbyid: {{ session('staff_id') }}
-                }, function (response) {
-                    Swal.fire('Resolved!', response.message, 'success').then(() => {
-                        location.reload();
-                    });
-                }).fail(() => {
-                    Swal.fire('Error', 'Failed to resolve alert.', 'error');
-                });
-            } else if (result.isDenied) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This alert will be permanently deleted.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((delResult) => {
-                    if (delResult.isConfirmed) {
-                        $.ajax({
-                            url: deleteUrl,
-                            method: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                _method: 'DELETE'
-                            },
-                            success: function () {
-                                Swal.fire({
-                                    title: 'Deleted!',
-                                    text: 'The alert has been deleted.',
-                                    icon: 'success',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            },
-                            error: function () {
-                                Swal.fire('Error', 'Failed to delete alert.', 'error');
+    if (result.isConfirmed) {
+        // ✅ Resolved
+        $.post(`/emergencyalerts/${alertId}/resolve`, {
+            _token: '{{ csrf_token() }}',
+            resolvedbyid: {{ session('staff_id') }}
+        }, function (response) {
+            Swal.fire('Resolved!', response.message, 'success').then(() => {
+                location.reload();
+            });
+        }).fail(() => {
+            Swal.fire('Error', 'Failed to resolve alert.', 'error');
+        });
+
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // 🟡 In Progress
+        $.post(`/emergencyalerts/${alertId}/progress`, {
+            _token: '{{ csrf_token() }}',
+        }, function (response) {
+            Swal.fire('In Progress!', 'The alert has been marked as In Progress.', 'success').then(() => {
+                location.reload();
+            });
+        }).fail(() => {
+            Swal.fire('Error', 'Failed to update alert.', 'error');
+        });
+
+    } else if (result.isDenied) {
+        // 🗑️ Delete
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This alert will be permanently deleted.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((delResult) => {
+            if (delResult.isConfirmed) {
+                $.ajax({
+                    url: deleteUrl,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        _method: 'DELETE'
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The alert has been deleted.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to delete alert.', 'error');
                             }
                         });
                     }

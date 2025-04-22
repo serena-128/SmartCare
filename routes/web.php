@@ -416,3 +416,4 @@ Route::get('/staff/events/json', [StaffEventController::class, 'fetchEvents']);
 Route::post('/staff/events', [StaffEventController::class, 'store']);
 Route::get('/staff/photo-gallery', [StaffController::class, 'photoGallery'])->name('staff.photoGallery');
 
+Route::post('/emergencyalerts/{id}/progress', [emergencyalertController::class, 'markInProgress']);

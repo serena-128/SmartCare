@@ -206,5 +206,13 @@ public function resolve($id, Request $request)
     return response()->json(['message' => 'Alert marked as resolved.']);
 }
 
+public function markInProgress($id)
+{
+    $alert = EmergencyAlert::findOrFail($id);
+    $alert->status = 'In Progress';
+    $alert->save();
+
+    return response()->json(['message' => 'Alert marked as In Progress.']);
+}
 
 }
