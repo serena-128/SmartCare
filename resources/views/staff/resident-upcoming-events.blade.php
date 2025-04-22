@@ -43,41 +43,50 @@
                 },
 
                 select: function(info) {
-                    Swal.fire({
-                        title: 'Add New Event',
-                        html: `
-                            <input id="swal-title" class="swal2-input" placeholder="Event Title">
-                            <textarea id="swal-description" class="swal2-textarea" placeholder="Description"></textarea>
-                        `,
-                        showCancelButton: true,
-                        confirmButtonText: 'Add',
-                        preConfirm: () => {
-                            const title = document.getElementById('swal-title').value;
-                            const description = document.getElementById('swal-description').value;
-                            if (!title) {
-                                Swal.showValidationMessage('Event title is required');
-                            }
-                            return { title, description };
-                        }
-                    }).then(result => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: '/staff/events',
-                                method: 'POST',
-                                data: {
-                                    _token: $('meta[name="csrf-token"]').attr('content'),
-                                    title: result.value.title,
-                                    description: result.value.description,
-                                    start_date: info.startStr,
-                                    end_date: info.endStr
-                                },
-                                success: function () {
-                                    Swal.fire('Success!', 'Event added.', 'success');
-                                    calendar.refetchEvents();
-                                },
-                                error: function () {
-                                    Swal.fire('Error', 'Something went wrong.', 'error');
-                                }
+    Swal.fire({
+        title: 'Add New Event',
+        html: `
+            <input id="swal-title" class="swal2-input" placeholder="Event Title">
+            <textarea id="swal-description" class="swal2-textarea" placeholder="Description"></textarea>
+            <label for="swal-start" class="d-block text-start mt-2">Start Date & Time</label>
+            <input id="swal-start" type="datetime-local" class="swal2-input">
+            <label for="swal-end" class="d-block text-start mt-2">End Date & Time</label>
+            <input id="swal-end" type="datetime-local" class="swal2-input">
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Add',
+        preConfirm: () => {
+            const title = document.getElementById('swal-title').value;
+            const description = document.getElementById('swal-description').value;
+            const start = document.getElementById('swal-start').value;
+            const end = document.getElementById('swal-end').value;
+
+            if (!title || !start || !end) {
+                Swal.showValidationMessage('Please fill in all fields: Title, Start, End');
+                return false;
+            }
+
+            return { title, description, start, end };
+        }
+    }).then(result => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/staff/events',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    title: result.value.title,
+                    description: result.value.description,
+                    start_date: result.value.start,
+                    end_date: result.value.end
+                },
+                success: function () {
+                    Swal.fire('Success!', 'Event added.', 'success');
+                    calendar.refetchEvents();
+                },
+                error: function () {
+                    Swal.fire('Error', 'Something went wrong.', 'error');
+                }
                             });
                         }
                     });
