@@ -35,14 +35,15 @@ class NextOfKinSettingsController extends Controller
      */
     public function updateNotifications(Request $request)
     {
-        $nextOfKin = Auth::guard('nextofkin')->user();
+        $user = Auth::guard('nextofkin')->user();
 
-        $nextOfKin->update([
-            'email_notifications' => $request->has('email_notifications'),
-            'sms_notifications' => $request->has('sms_notifications'),
-            'carehome_updates' => $request->has('carehome_updates'),
-        ]);
+        // The checkboxes will only be present in the request if they're checked.
+        $user->email_notifications = $request->has('email_notifications');
+        $user->sms_notifications = $request->has('sms_notifications');
+        $user->carehome_updates = $request->has('carehome_updates');
 
-        return back()->with('success', 'Notification preferences updated.');
+        $user->save();
+
+        return redirect()->back()->with('success', 'Notification preferences updated.');
     }
 }

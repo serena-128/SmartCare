@@ -14,18 +14,20 @@ class CreateAppointmentRsvpsTable extends Migration
     public function up()
     {
         Schema::create('appointment_rsvps', function (Blueprint $table) {
-    $table->id();
-    $table->unsignedBigInteger('appointment_id');
-    $table->unsignedBigInteger('nextofkin_id');
-    $table->enum('rsvp_status', ['yes', 'no', 'maybe'])->default('maybe');
-    $table->text('comments')->nullable();
-    $table->timestamps();
-    
-    $table->foreign('appointment_id')->references('id')->on('appointment')->onDelete('cascade');
-    $table->foreign('nextofkin_id')->references('id')->on('nextofkin')->onDelete('cascade');
-});
-
+            $table->id();
+            $table->unsignedBigInteger('appointment_id');
+            $table->unsignedBigInteger('nextofkin_id');
+            $table->enum('rsvp_status', ['yes', 'no', 'maybe'])->default('maybe');
+            $table->text('comments')->nullable();
+            $table->timestamps();
+        
+            $table->foreign('appointment_id')->references('id')->on('appointments')->onDelete('cascade');
+            $table->foreign('nextofkin_id')->references('nextofkinid')->on('nextofkins')->onDelete('cascade');
+        });
+        
     }
+    
+
 
     /**
      * Reverse the migrations.

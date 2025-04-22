@@ -23,6 +23,7 @@ if ($hour < 12) {
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <!-- FullCalendar CSS -->
@@ -210,7 +211,149 @@ if ($hour < 12) {
     margin: auto;
 }
 
+/* Notification Tab Styling */
+.notification-tab {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ff66b2; /* Soft pink for the bell */
+  color: white;
+  padding: 12px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth background and transform transition */
+  z-index: 9999; /* Ensure it's always above other content */
+}
 
+.notification-tab:hover {
+  background-color: #ff3385; /* A slightly darker pink on hover */
+  transform: scale(1.1); /* Slight scale effect on hover */
+}
+
+/* Notification Count Styling */
+.notification-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ff0000; /* Red for the notification badge */
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 5px 8px;
+  font-weight: bold;
+}
+
+/* Bounce animation for notification count */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Notification Dropdown Styling */
+.notification-dropdown {
+  position: fixed;
+  top: 60px; /* Adjust to place below the bell */
+  right: 20px;
+  background-color: #fff4f9; /* Soft light pink background */
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  width: 270px;
+  border: 1px solid #f5c6cb;
+  display: none; /* Hidden by default */
+  padding: 10px 15px;
+  font-family: 'Arial', sans-serif;
+  animation: slideDown 0.3s ease-out; /* Add smooth animation for dropdown */
+  z-index: 9998; /* Ensure it's above other content, but below the notification icon */
+}
+
+/* Add an animation for the dropdown to appear smoothly */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Notification Items Styling */
+.notification-dropdown .list-group-item {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f8d7da; /* Soft pink for items */
+  color: #721c24;
+  font-size: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.notification-dropdown .list-group-item:hover {
+  background-color: #f5c6cb; /* A lighter pink when hovered */
+  color: #333;
+  transform: translateX(3px); /* Slight shift to the right on hover for interactivity */
+}
+
+/* For new notifications */
+.notification-dropdown .list-group-item.new-notification {
+  background-color: #ffb3d9; /* A brighter pink for new notifications */
+}
+
+.notification-dropdown .list-group-item.new-notification:hover {
+  background-color: #ff99cc;
+}
+    .bounce {
+  animation: bounce 1s infinite;
+}
+
+ #home {
+  background: linear-gradient(135deg, #E6E6FA, #D8BFD8); /* Light purple gradient */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  }
+  /* Add text-shadow to the greeting and date for better readability */
+  #home h4, #home h5 {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  /* Customize card headers inside the Home section with gradients */
+  #home .card-header {
+    background: linear-gradient(135deg, #ffcc80, #ffb74d);
+    color: #333;
+    font-weight: bold;
+  }
+  /* Weather widget header with blue gradient */
+  #weather-widget .card-header {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    font-weight: bold;
+  }
+  /* Calendar card header with a warm red-purple gradient */
+  /* If your calendar card's header is contained in a specific selector,
+     you can adjust the selector below. For example: */
+  .calendar-card .card-header,
+  #next-week-calendar ~ .card-header {
+    background: linear-gradient(135deg, #7b4397, #dc2430);
+    color: #fff;
+    font-weight: bold;
+  }
+      #home h3 {
+  color: #000000; 
+  font-weight: bold;
+}
 
 
   </style>
@@ -220,6 +363,19 @@ if ($hour < 12) {
 </footer>
 
 <body>
+     <!-- Notification Icon (Top-right corner) -->
+  <div id="notification-tab" class="notification-tab">
+    <i class="fas fa-bell"></i>
+    <span id="notification-count" class="notification-count">0</span>
+
+  </div>
+    <div id="notification-dropdown" class="notification-dropdown" style="display: none;">
+  <ul class="list-group">
+    <li class="list-group-item">New event RSVP available.</li>
+    <li class="list-group-item">Your profile was updated successfully.</li>
+    <li class="list-group-item">New message from a family member.</li>
+  </ul>
+</div>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -229,7 +385,14 @@ if ($hour < 12) {
         <a href="#" class="sidebar-link" onclick="showSection('appointments', this)"><i class="fas fa-calendar-check"></i> Appointments</a>
         <a href="#" class="sidebar-link" onclick="showSection('events', this)"><i class="fas fa-calendar-alt"></i> Events</a>
         <a href="#" class="sidebar-link" onclick="showSection('news', this)"><i class="fas fa-newspaper"></i> News</a>
-        <a href="#" class="sidebar-link" onclick="showSection('settings', this)"><i class="fas fa-cog"></i> Settings</a>
+        <a href="#" class="sidebar-link" onclick="showSection('message', this)"><i class="fas fa-comment-alt"></i> Send Message </a>
+          <a href="#" class="sidebar-link" onclick="showSection('received-messages', this)">
+          <i class="fas fa-envelope-open-text"></i> Received Messages
+        </a>
+        <a href="#" id="settings-sidebar-link" class="sidebar-link" onclick="showSection('settings', this); return false;">
+        <i class="fas fa-cog"></i> Settings
+         </a>
+
         <a href="{{ url('/contact') }}" class="sidebar-link">
       <i class="fas fa-envelope"></i> Contact SmartCare
     </a>
@@ -263,19 +426,23 @@ if ($hour < 12) {
       <!-- Main Content -->
       <div class="col-md-10 content">
         
-        <!-- Home Section (Two-Column Layout) -->
+<!-- Home Section (Two-Column Layout) -->
 <div id="home" class="dashboard-section home-section">
-  <h1>{{ $greeting }}, {{ Auth::user()->firstname }}!</h1>
-  <h1>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h1>
+  <!-- Greeting Section (full-width) -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <h4>{{ $greeting }}, {{ Auth::user()->firstname }}!</h4>
+      <h5>Today is: <strong>{{ now()->format('l, d M Y') }}</strong></h5>
+    </div>
+  </div>
+  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information with the latest weather update, and your schedule for the upcoming week.</p>
 
-  <p>Welcome to your SmartCare dashboard! Below you'll find your resident's information, and upcoming appointments and events.</p>
-
-  <div class="row">
-    <!-- Column 1: Resident Information -->
+  <div class="row allign-items-stretch">
+    <!-- Left Column: Resident Info & Weather Widget -->
     <div class="col-md-6 border-end border-3" style="border-color: #4B0082;">
       <h3>Resident</h3>
       @if(isset($resident) && $resident)
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-body">
             <h5>Resident Name: {{ $resident->firstname }} {{ $resident->lastname }}</h5>
             <p><strong>Room Number:</strong> {{ $resident->roomnumber }}</p>
@@ -289,32 +456,107 @@ if ($hour < 12) {
         </div>
       @endif
 
-      <!-- Resident's Photo Below the Resident Info -->
-      <div class="text-center mt-4">
-        <img src="{{ asset('pictures/resident.jpg') }}" alt="Resident" style="width: 300px; height: auto;">
+      <!-- Weather Widget (positioned below Resident Info) -->
+      <div id="weather-widget" class="card">
+        <div class="card-header bg-info text-white">
+          <i class="fas fa-cloud-sun"></i> Weather Info
+        </div>
+        <div class="card-body">
+          <div id="weather-info">Loading weather data...</div>
+        </div>
       </div>
     </div>
 
-    <!-- Column 2: Upcoming Appointments & Events -->
+    <!-- Right Column: Next Week's Calendar -->
     <div class="col-md-6">
-      <h3>Upcoming Appointments & Events</h3>
+      <h3>Upcoming Week Schedule</h3>
       <div class="card">
-        <div class="card-header">Appointments</div>
+        <div class="card-header">Next Week's Calendar</div>
         <div class="card-body">
-          <p>Doctor Visit - 15th March 2025 at 10:00 AM</p>
-          <p>Physical Therapy - 20th March 2025 at 2:30 PM</p>
-        </div>
-      </div>
-      <div class="card mt-3">
-        <div class="card-header">Events</div>
-        <div class="card-body">
-          <p>Family Day - 25th March 2025</p>
-          <p>Music Therapy Session - 30th March 2025</p>
+          <!-- Calendar container -->
+          <div id="next-week-calendar"></div>
         </div>
       </div>
     </div>
   </div> <!-- End of Row -->
 </div>
+
+<!-- Calendar Initialization Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('next-week-calendar');
+  if (!calendarEl) return;
+  
+  // Fetch and merge appointments and events so that both are visible on the calendar:
+  Promise.all([
+    fetch('{{ route("appointments.fetch") }}').then(res => res.json()),
+    fetch('{{ route("events.fetch") }}').then(res => res.json())
+  ]).then(function(data) {
+    var appointments = data[0];
+    var events = data[1];
+    var allEvents = appointments.concat(events);
+    
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'listWeek',  // Compact list view
+      headerToolbar: false,       // Remove navigation buttons
+      contentHeight: 250,         // Set fixed height to avoid overlapping the footer
+      // Restrict the visible range to next week only:
+      visibleRange: function(currentDate) {
+        // Calculate next Monday
+        let nextMonday = new Date(currentDate.valueOf());
+        let day = nextMonday.getDay();
+        let diff = (day === 0 ? 1 : 8 - day);
+        nextMonday.setDate(nextMonday.getDate() + diff);
+        // Next week's Sunday
+        let nextSunday = new Date(nextMonday.valueOf());
+        nextSunday.setDate(nextMonday.getDate() + 6);
+        return {
+          start: nextMonday,
+          end: nextSunday
+        };
+      },
+      events: allEvents,
+      eventClick: function(info) {
+        Swal.fire({
+          title: info.event.title,
+          text: info.event.extendedProps.description || '',
+          icon: 'info'
+        });
+      }
+    });
+    calendar.render();
+  }).catch(function(error) {
+    console.error("Error fetching calendar events: ", error);
+  });
+});
+</script>
+
+<!-- Weather Fetch Script -->
+<script>
+function fetchWeather() {
+  const apiKey = 'ee3f3a4d93e84548a5d204502250204'; // Your WeatherAPI.com key
+  const city = 'Dublin';
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) { throw new Error('Weather data not available'); }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('weather-info').innerHTML = `
+        <h6>Weather in ${data.location.name}</h6>
+        <p><strong>Temp:</strong> ${data.current.temp_c} °C</p>
+        <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+      `;
+    })
+    .catch(error => {
+      console.error('Error fetching weather data:', error);
+      document.getElementById('weather-info').innerHTML = '<p>Error loading weather data.</p>';
+    });
+}
+document.addEventListener('DOMContentLoaded', fetchWeather);
+</script>
 
 
 
@@ -358,26 +600,77 @@ if ($hour < 12) {
     </div>
   </div>
 
-  <!-- Additional Information Section -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card shadow-lg mb-4">
-        <div class="card-header bg-warning text-white">
-          <h3>Additional Information</h3>
-        </div>
-        <div class="card-body">
-          <h5>Family History</h5>
-          <p>{{ $resident->family_history ?? 'N/A' }}</p>
+<!-- Fitbit Summary -->
+<div class="card shadow-lg mb-4" id="fitbit-summary-card">
+  <div class="card-header bg-info text-white">
+    <h3><i class="fas fa-walking"></i> Fitbit Health Summary</h3>
+  </div>
+  <div class="card-body" id="fitbit-summary-content">
+    <!-- Data will be loaded here -->
+    <div id="fitbit-summary-data">
+      <p>Loading Fitbit data...</p>
+    </div>
+    <!-- Chart will be appended here -->
+    <div id="fitbit-summary-chart"></div>
+  </div>
+</div>
 
-          <h5>Preferred Activities</h5>
-          <p>{{ $resident->preferred_activities ?? 'Daily walk' }}</p>
+<hr>
+<div class="card shadow-lg mb-4">
+  <div class="card-header bg-purple text-black">
+    <h4><i class="fas fa-shoe-prints"></i> Activity Insights</h4>
+  </div>
+  <div class="card-body">
+    {{-- Activity Status Badge --}}
+    @if($data['steps'] > 1500)
+        <span class="badge bg-success">Active</span>
+    @elseif($data['steps'] > 800)
+        <span class="badge bg-warning">Moderately Active</span>
+    @else
+        <span class="badge bg-danger">Low Activity</span>
+    @endif
 
-          <h5>Notes from Caregivers</h5>
-          <p>{{ $resident->caregiver_notes ?? 'No notes available' }}</p>
+    {{-- Encouragement Message --}}
+    <div class="mt-2">
+      @if($data['sedentary'] > 600)
+          <p class="text-warning">They’ve been sitting a lot — maybe encourage some gentle movement!</p>
+      @elseif($data['steps'] > 1000)
+          <p class="text-success">More active than usual — that's great!</p>
+      @else
+          <p class="text-info">A calm day so far – might just be a rest day.</p>
+      @endif
+    </div>
+
+    {{-- Daily vs Average --}}
+    @php $avgSteps = 600; @endphp
+    <p><strong>Today:</strong> {{ $data['steps'] }} steps</p>
+    <p><strong>Avg:</strong> {{ $avgSteps }} steps</p>
+
+    @if($data['steps'] > $avgSteps)
+        <p class="text-success">They’ve gone above their usual activity today!</p>
+    @else
+        <p class="text-muted">Below average – could just be taking it easy.</p>
+    @endif
+
+    {{-- Goal Achieved --}}
+    @if($data['steps'] >= 1500)
+        <div class="alert alert-success mt-3">
+            🎉 They reached their step goal today!
         </div>
-      </div>
+    @endif
+
+    {{-- Mood Suggestion --}}
+    <div class="mt-2">
+      @if($data['steps'] > 1000)
+          <p>They might be feeling energized! 🌞</p>
+      @elseif($data['sedentary'] > 600)
+          <p>Probably resting more today — maybe a relaxed mood. ☕</p>
+      @endif
     </div>
   </div>
+</div>
+
+
 
 </div>
 
@@ -385,7 +678,11 @@ if ($hour < 12) {
         <div id="appointments" class="dashboard-section" style="display: none;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Upcoming Appointments</h1>
-        <a href="{{ route('appointments.rsvp.form') }}" class="btn btn-primary">
+        
+    <div class="d-flex align-items-center">
+            <input type="text" class="form-control" id="appointments-search" placeholder="Search appointments..." style="width: 250px; margin-right: 15px;">
+        </div>
+        <a href="{{ route('rsvp.form') }}" class="btn btn-primary">
             <i class="fas fa-check-circle"></i> RSVP to Appointment
         </a>
     </div>
@@ -400,6 +697,10 @@ if ($hour < 12) {
   <!-- Title and RSVP Button in the same row using Flexbox -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Upcoming Events</h1>
+      <div class="d-flex align-items-center">
+        <input type="text" class="form-control" id="events-search" placeholder="Search events..." style="width: 250px; margin-right: 15px;">
+    </div>
+    
     <!-- RSVP Button linking to the RSVP form -->
 <a href="{{ route('rsvp.form') }}" class="btn btn-primary">RSVP to Event</a>
 
@@ -413,63 +714,60 @@ if ($hour < 12) {
 
 
 
-        <div id="news" class="dashboard-section" style="display: none;">
+<div id="news" class="dashboard-section" style="display: none;">
   <h1 class="mb-4">Latest News & Updates</h1>
-
+  
+  <!-- Row for Latest News and Photo Gallery -->
   <div class="row">
-    <!-- Column 1: News Updates -->
+    <!-- Latest News Column -->
     <div class="col-md-6">
       <div class="card">
         <div class="card-header bg-primary text-white">
           <i class="fas fa-newspaper"></i> Latest News
         </div>
         <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item">
-              <strong>Facility Renovation Begins</strong>
-              <p class="text-muted">March 15, 2025</p>
-              <p>We’re upgrading our care home facilities to enhance the experience for residents.</p>
-            </li>
-            <li class="list-group-item">
-              <strong>New Staff Members Joining</strong>
-              <p class="text-muted">April 5, 2025</p>
-              <p>Welcome our new nurses and caregivers to SmartCare!</p>
-            </li>
-            <li class="list-group-item">
-              <strong>Health & Wellness Workshop</strong>
-              <p class="text-muted">April 20, 2025</p>
-              <p>Join us for an informative session on senior health & wellness.</p>
-            </li>
-          </ul>
+          @if($newsUpdates->isEmpty())
+            <p>No recent updates available.</p>
+          @else
+            <ul class="list-group">
+              @foreach($newsUpdates as $news)
+                <li class="list-group-item">
+                  <strong>{{ $news->title }}</strong>
+                  <p class="text-muted">{{ \Carbon\Carbon::parse($news->date)->format('M d, Y') }}</p>
+                  <p>{{ $news->description }}</p>
+                </li>
+              @endforeach
+            </ul>
+          @endif
         </div>
       </div>
     </div>
-
-    <!-- Column 2: Photo Gallery -->
-<div class="col-md-6">
-  <div class="card">
-    <div class="card-header bg-success text-white">
-      <i class="fas fa-images"></i> Photo Gallery
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-4 mb-3">
-          <img src="{{ asset('pictures/event1.jpg') }}" alt="Event" class="img-fluid custom-img">
+    
+    <!-- Photo Gallery Column -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <i class="fas fa-images"></i> Photo Gallery
         </div>
-        <div class="col-4 mb-3">
-          <img src="{{ asset('pictures/carehome_event_2.jpg') }}" alt="Event" class="img-fluid custom-img">
-        </div>
-        <div class="col-4 mb-3">
-          <img src="{{ asset('pictures/carehome_event_3.jpg') }}" alt="Event" class="img-fluid custom-img">
-            </div>
+        <div class="card-body">
+          <div class="row">
+            @if($photoGallery->isEmpty())
+              <p>No photos available at this time.</p>
+            @else
+              @foreach($photoGallery->take(2) as $photo)
+                <div class="col-6 mb-3">
+                  <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
+                </div>
+              @endforeach
+            @endif
           </div>
-          <a href="#" class="btn btn-outline-primary btn-sm">View More</a>
+          <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
         </div>
       </div>
     </div>
-  </div>
+  </div> <!-- End of the first row -->
 
-  <!-- Bulletin Board -->
+  <!-- Separate Row for Bulletin Board -->
   <div class="row mt-4">
     <div class="col-md-12">
       <div class="card">
@@ -477,102 +775,185 @@ if ($hour < 12) {
           <i class="fas fa-thumbtack"></i> Bulletin Board
         </div>
         <div class="card-body">
-          <p><strong>March 25, 2025:</strong> Family Day Event - Don't forget to RSVP!</p>
-          <p><strong>April 10, 2025:</strong> Volunteer sign-ups are now open for the gardening club.</p>
-          <p><strong>April 30, 2025:</strong> Reminder: Monthly resident check-up schedule available.</p>
+          @if($bulletinBoard->isEmpty())
+            <p>No announcements at this time.</p>
+          @else
+            @foreach($bulletinBoard as $announcement)
+              <p>
+                <strong>{{ \Carbon\Carbon::parse($announcement->date)->format('M d, Y') }}:</strong>
+                {{ $announcement->message }}
+              </p>
+            @endforeach
+          @endif
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<div id="message" class="dashboard-section" style="display: none;">
+  <h1>Send Message</h1>
+  <p>Communicate with care home staff.</p>
+  
+  <form method="POST" action="{{ route('nextofkin.sendMessage') }}">
+    @csrf
+    <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea class="form-control" name="message" rows="3" placeholder="Type your message here..." required></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="recipient">Recipient</label>
+        <select class="form-control" name="recipient" required>
+            <option value="all">All Staff</option>
+            @if($resident && $resident->assignedCaregiver)
+                <option value="caregiver">{{ $resident->assignedCaregiver->firstname }} {{ $resident->assignedCaregiver->lastname }}</option>
+            @else
+                <option value="caregiver">No Caregiver Assigned</option>
+            @endif
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Send Message</button>
+  </form>
+</div>
+
+<div id="received-messages" class="dashboard-section" style="display: none;">
+  <h1>Received Messages</h1>
+  <p>Messages sent to you by care home staff:</p>
+  
+  @if($receivedMessages && $receivedMessages->count() > 0)
+    <ul class="list-group">
+      @foreach($receivedMessages as $message)
+        <li class="list-group-item">
+          <strong>{{ $message->sender }}</strong> ({{ $message->created_at->format('M d, Y H:i') }})
+          <p>{{ $message->message }}</p>
+        </li>
+      @endforeach
+    </ul>
+  @else
+    <div class="alert alert-info">No messages found.</div>
+  @endif
+</div>
+
+
 
         <div id="settings" class="dashboard-section" style="display: none;">
   <h1>Account Settings</h1>
-  <p>Manage your personal information and notification preferences.</p>
-
+  <p>Manage your notifications and account security settings.</p>
+  
   <div class="row">
-    <!-- Column 1: Profile Settings -->
+    <!-- Notification Preferences Section -->
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <i class="fas fa-user-cog"></i> Profile Settings
-        </div>
-        <div class="card-body">
-          <form method="POST" action="{{ route('nextofkin.settings.update') }}">
-            @csrf
-            <div class="mb-3">
-              <label for="name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', Auth::guard('nextofkin')->user()->firstname ?? '') }}">
-            </div>
-
-            <div class="mb-3">
-              <label for="email" class="form-label">Email Address</label>
-              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::guard('nextofkin')->user()->email ?? '') }}">
-            </div>
-
-            <div class="mb-3">
-              <label for="phone" class="form-label">Phone Number</label>
-              <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', Auth::guard('nextofkin')->user()->contactnumber ?? '') }}">
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Column 2: Notification Preferences -->
-    <div class="col-md-6">
-      <div class="card">
+      <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
           <i class="fas fa-bell"></i> Notification Preferences
         </div>
         <div class="card-body">
           <form method="POST" action="{{ route('nextofkin.notifications.update') }}">
             @csrf
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications">
-              <label class="form-check-label" for="email_notifications">Receive email notifications</label>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications"
+                     {{ Auth::guard('nextofkin')->user()->email_notifications ? 'checked' : '' }}>
+              <label class="form-check-label" for="email_notifications">
+                Receive Email Notifications
+              </label>
             </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications">
-              <label class="form-check-label" for="sms_notifications">Receive SMS alerts</label>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications"
+                     {{ Auth::guard('nextofkin')->user()->sms_notifications ? 'checked' : '' }}>
+              <label class="form-check-label" for="sms_notifications">
+                Receive SMS Alerts
+              </label>
             </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates">
-              <label class="form-check-label" for="carehome_updates">Receive care home updates</label>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates"
+                     {{ Auth::guard('nextofkin')->user()->carehome_updates ? 'checked' : '' }}>
+              <label class="form-check-label" for="carehome_updates">
+                Receive Care Home Updates
+              </label>
             </div>
-
             <button type="submit" class="btn btn-warning w-100 mt-3">Update Preferences</button>
           </form>
         </div>
       </div>
     </div>
+
+    <!-- Account Security (Password Update) Section -->
+          <div class="col-md-6">
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="fas fa-lock"></i> Account Security
+    </div>
+    <div class="card-body">
+      <!-- Display errors for the password update form here -->
+      @if($errors->has('current_password') || $errors->has('new_password'))
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            @if($errors->has('current_password'))
+              <li>{{ $errors->first('current_password') }}</li>
+            @endif
+            @if($errors->has('new_password'))
+              <li>{{ $errors->first('new_password') }}</li>
+            @endif
+          </ul>
+        </div>
+      @endif
+
+      <form method="POST" action="{{ route('nextofkin.password.update') }}">
+        @csrf
+        <div class="mb-3">
+          <label for="current_password" class="form-label">Current Password</label>
+          <input type="password" class="form-control" id="current_password" name="current_password" required>
+        </div>
+        <div class="mb-3">
+          <label for="new_password" class="form-label">New Password</label>
+          <input type="password" class="form-control" id="new_password" name="new_password" required>
+        </div>
+        <div class="mb-3">
+          <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+        </div>
+        <button type="submit" class="btn btn-secondary w-100">Change Password</button>
+      </form>
+    </div>
   </div>
 </div>
 
+
   <!-- JavaScript to handle section switching -->
   <script>
-    function showSection(sectionId, element) {
-      // Hide all sections
-      document.querySelectorAll('.dashboard-section').forEach(section => {
-        section.style.display = 'none';
-      });
+let appointmentsCalendar;
+let eventsCalendar;
 
-      // Show the selected section
-      document.getElementById(sectionId).style.display = 'block';
+function showSection(sectionId, element) {
+  // Hide all sections
+  document.querySelectorAll('.dashboard-section').forEach(section => {
+    section.style.display = 'none';
+  });
 
-      // Remove 'active' class from all sidebar links
-      document.querySelectorAll('.sidebar-link').forEach(link => {
-        link.classList.remove('active');
-      });
+  // Toggle notification bell visibility
+  document.getElementById('notification-tab').style.display = (sectionId === 'appointments' || sectionId === 'events') ? 'none' : 'block';
 
-      // Add 'active' class to the clicked sidebar link
-      element.classList.add('active');
-    }
+  // Show the selected section
+  const selectedSection = document.getElementById(sectionId);
+  selectedSection.style.display = 'block';
+
+  // Highlight the selected link
+  document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+  element.classList.add('active');
+
+  // Re-render calendar when needed
+  if (sectionId === 'appointments' && appointmentsCalendar) {
+    setTimeout(() => appointmentsCalendar.render(), 10); // delay ensures layout is ready
+  }
+
+  if (sectionId === 'events' && eventsCalendar) {
+    setTimeout(() => eventsCalendar.render(), 10);
+  }
+}
+
+
   </script>
 
   <!-- Bootstrap JS -->
@@ -581,49 +962,371 @@ if ($hour < 12) {
 
  <!-- Initialize FullCalendar for Appointments -->
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var appointmentsCalendarEl = document.getElementById('calendar');
-  if (appointmentsCalendarEl) {
-    var appointmentsCalendar = new FullCalendar.Calendar(appointmentsCalendarEl, {
-      initialView: 'dayGridMonth',
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      // Load appointments dynamically from the route:
-      events: '{{ route("appointments.fetch") }}',
-      eventClick: function(info) {
-        alert('Appointment: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
-    });
-    appointmentsCalendar.render();
-  }
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    if (calendarEl) {
+        appointmentsCalendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: '{{ route("appointments.fetch") }}',  // Fetch appointments
+            eventClick: function (info) {
+                // Show SweetAlert popup to confirm RSVP
+                Swal.fire({
+                    title: info.event.title,
+                    text: info.event.extendedProps.description,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'RSVP Yes',
+                    cancelButtonText: 'RSVP No',
+                    customClass: {
+                        popup: 'my-sweetalert-popup'
+                    }
+                }).then((result) => {
+                    let rsvpStatus = result.isConfirmed ? 'yes' : 'no';
+                    handleRSVP(info.event.id, rsvpStatus);  // Call RSVP handler with status
+                });
+            }
+        });
+
+        // Render calendar if visible
+        if (document.getElementById('appointments').style.display !== 'none') {
+            appointmentsCalendar.render();
+        }
+    }
 });
+
 </script>
 
 
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var eventsCalendarEl = document.getElementById('events-calendar');
-  if (eventsCalendarEl) {
-    var eventsCalendar = new FullCalendar.Calendar(eventsCalendarEl, {
+document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('events-calendar');
+  if (calendarEl) {
+    eventsCalendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      // Use Laravel route to fetch events
       events: '/fetch-events',
-      eventClick: function(info) {
-        alert('Event: ' + info.event.title + '\n' + info.event.extendedProps.description);
-      }
+      eventClick: function (info) {
+        Swal.fire({
+          title: info.event.title,
+          text: info.event.extendedProps.description,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'RSVP Yes',
+          cancelButtonText: 'RSVP No',
+          customClass: {
+            popup: 'my-sweetalert-popup'
+          }
+        }).then((result) => {
+          let rsvpStatus = result.isConfirmed ? 'yes' : 'no';
+          handleEventRSVP(info.event.id, rsvpStatus);
+        });
+      } // ✅ ← this closing brace was missing
     });
-    eventsCalendar.render();
+
+    if (document.getElementById('events').style.display !== 'none') {
+      eventsCalendar.render();
+    }
   }
 });
+
+      
+    
+      </script>
+<script>
+function handleEventRSVP(eventId, rsvpStatus) {
+  const nextOfKinId = {{ Auth::guard('nextofkin')->user()->id }};
+
+  fetch("{{ route('events.rsvp') }}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    body: JSON.stringify({
+      event_id: eventId,
+      nextofkin_id: nextOfKinId,
+      rsvp_status: rsvpStatus
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      Swal.fire('Thank you!', 'Your RSVP has been recorded.', 'success');
+    } else {
+      Swal.fire('Oops!', data.message || 'There was an error with your RSVP. Please try again.', 'error');
+    }
+  })
+  .catch(error => {
+    Swal.fire('Error!', 'Unable to send RSVP at the moment.', 'error');
+  });
+}
+
+      </script>
+<script>
+function handleRSVP(appointmentId, rsvpStatus) {
+    const nextOfKinId = {{ Auth::guard('nextofkin')->user()->id }};  // Get the logged-in Next of Kin's ID
+
+    // Send the RSVP data to the server
+    fetch("{{ route('appointments.rsvp') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"  // Laravel CSRF token for security
+        },
+        body: JSON.stringify({
+            appointment_id: appointmentId,
+            nextofkin_id: nextOfKinId,
+            rsvp_status: rsvpStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Thank you!', `Your RSVP status: ${rsvpStatus}`, 'success');
+        } else {
+            Swal.fire('Oops!', 'There was an error with your RSVP. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error!', 'Unable to send RSVP at the moment.', 'error');
+    });
+}
+
+      </script>
+
+<script>
+
+// Example to add a new notification dynamically
+function addNewNotification(message) {
+  var dropdown = document.getElementById('notification-dropdown');
+  var listItem = document.createElement('li');
+  listItem.classList.add('list-group-item');
+  listItem.textContent = message;
+  dropdown.querySelector('.list-group').appendChild(listItem);
+}
 </script>
+@if(session('active_tab') == 'settings')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var settingsLink = document.getElementById('settings-sidebar-link');
+    if (settingsLink) {
+        // Call the function to switch to the settings section
+        showSection('settings', settingsLink);
+    }
+});
+</script>
+@endif
+<script>
+  function fetchNotifications() {
+  fetch("{{ route('notifications.fetch') }}")
+    .then(response => response.json())
+    .then(data => {
+      const countElement = document.getElementById('notification-count');
+      const dropdownList = document.querySelector('#notification-dropdown .list-group');
+
+      // Update count
+      if (data.count > 0) {
+        countElement.textContent = data.count;
+        countElement.style.display = 'inline-block';
+        countElement.classList.add('bounce');
+      } else {
+        countElement.style.display = 'none';
+        countElement.classList.remove('bounce');
+        countElement.textContent = ''; // Optional: remove "0"
+      }
+
+      // Populate dropdown
+      dropdownList.innerHTML = '';
+      data.notifications.forEach(notification => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        if (!notification.is_read) {
+          li.classList.add('new-notification');
+        }
+        li.textContent = notification.message;
+        dropdownList.appendChild(li);
+      });
+    })
+    .catch(error => console.error('Fetch notifications failed:', error));
+}
+
+
+  
+
+  document.addEventListener('DOMContentLoaded', fetchNotifications);
+  setInterval(fetchNotifications, 30000); // Optional polling
+document.getElementById('notification-tab').addEventListener('click', function () {
+  const dropdown = document.getElementById('notification-dropdown');
+  const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+
+  // Toggle dropdown visibility
+  dropdown.style.display = isHidden ? 'block' : 'none';
+
+  if (isHidden) {
+    // Mark notifications as read when opening the dropdown
+    fetch("{{ route('notifications.markRead') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+      }
+    })
+    .then(() => {
+      document.getElementById('notification-count').textContent = '0';
+    })
+    .catch(err => console.error('Failed to mark as read:', err));
+  }
+});
+
+</script>
+
+<script>
+function fetchWeather() {
+  const apiKey = 'ee3f3a4d93e84548a5d204502250204'; // Your WeatherAPI.com key
+  const city = 'Dublin';
+  // WeatherAPI.com's endpoint for current weather data
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Weather data not available');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Access data using WeatherAPI.com's structure
+      const weatherInfo = document.getElementById('weather-info');
+      weatherInfo.innerHTML = `
+        <h6>Weather in ${data.location.name}</h6>
+        <p><strong>Temp:</strong> ${data.current.temp_c} °C</p>
+        <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+      `;
+    })
+    .catch(error => {
+      console.error('Error fetching weather data:', error);
+      document.getElementById('weather-info').innerHTML = '<p>Error loading weather data.</p>';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', fetchWeather);
+
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  fetch('/fitbit/data')
+    .then(response => response.json())
+    .then(data => {
+      const dataContainer = document.getElementById('fitbit-summary-data');
+      if (data.error) {
+        dataContainer.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        return;
+      }
+      dataContainer.innerHTML = `
+        <p><strong>Steps:</strong> ${data.steps}</p>
+        <p><strong>Calories Burned:</strong> ${data.calories}</p>
+        <p><strong>Sedentary Minutes:</strong> ${data.sedentary}</p>
+      `;
+    })
+    .catch(err => {
+      document.getElementById('fitbit-summary-data').innerHTML = '<p class="text-danger">Error loading Fitbit data.</p>';
+      console.error(err);
+    });
+});
+</script>
+
+<!-- Include Chart.js from CDN in your <head> or before the closing </body> -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Dummy Fitbit data for the last 7 days (for the chart)
+  const dummyFitbitData = [
+    { date: "2025-04-05", steps: 1200 },
+    { date: "2025-04-06", steps: 1500 },
+    { date: "2025-04-07", steps: 1000 },
+    { date: "2025-04-08", steps: 1300 },
+    { date: "2025-04-09", steps: 1700 },
+    { date: "2025-04-10", steps: 1600 },
+    { date: "2025-04-11", steps: 1900 }
+  ];
+
+  // Select the dedicated chart container.
+  const chartParent = document.getElementById('fitbit-summary-chart');
+
+  // Create a container for the small chart with fixed size.
+  const smallChartContainer = document.createElement('div');
+  smallChartContainer.style.width = "300px";
+  smallChartContainer.style.height = "200px";
+  smallChartContainer.style.marginTop = "20px"; // Add spacing
+
+  // Create and append the canvas for the chart.
+  const smallChartCanvas = document.createElement('canvas');
+  smallChartCanvas.id = "small-fitbit-chart";
+  smallChartContainer.appendChild(smallChartCanvas);
+  chartParent.appendChild(smallChartContainer);
+
+  // Prepare data for the chart.
+  const labels = dummyFitbitData.map(item => item.date);
+  const stepsData = dummyFitbitData.map(item => item.steps);
+
+  // Initialize the Chart.js line chart.
+  const ctx = document.getElementById("small-fitbit-chart").getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Steps',
+        data: stepsData,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.2,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,  // Use the container's dimensions
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Date'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Steps'
+          },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+});
+</script>
+
 
 
 </body>

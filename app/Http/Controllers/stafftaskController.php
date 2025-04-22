@@ -7,6 +7,9 @@ use App\Http\Requests\UpdatestafftaskRequest;
 use App\Repositories\stafftaskRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
+
 use Flash;
 use Response;
 
@@ -153,4 +156,38 @@ class stafftaskController extends AppBaseController
 
         return redirect(route('stafftasks.index'));
     }
+
+
+public function showTodayTasks()
+{
+    $staffId = Session::get('staff_id'); // or Auth::id()
+    $today = Carbon::today()->toDateString();
+
+    $tasks = \DB::table('stafftask')
+        ->where('staffmemberid', $staffId)
+        ->whereDate('startdate', $today)
+        ->get();
+
+        return view('stafftasks.today', compact('tasks'));
+
+}
+public function getMyTasksAsEvents()
+{
+    $staffId = session('staff_id'); // 🔐 Securely get logged-in staff
+
+    $tasks = \App\Models\StaffTask::where('staffmemberid', $staffId)->get();
+
+    $events = $tasks->map(function ($task) {
+        return [
+            'title' => $task->roleintask,
+            'start' => $task->startdate,
+            'end' => $task->enddate,
+            'allDay' => true
+        ];
+    });
+
+    return response()->json($events);
+}
+
+
 }

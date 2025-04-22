@@ -111,4 +111,8 @@ class StaffMember extends Model
     {
         return $this->hasMany(\App\Models\Standardtask::class, 'completedby');
     }
+    public function resident()
+    {
+        return $this->hasMany(Resident::class, 'assigned_staff_id');
+    }
 }

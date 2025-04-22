@@ -54,12 +54,17 @@ class AppointmentRsvp extends Model
         }
 
         // Create the RSVP
-        \App\Models\AppointmentRsvp::create([
-            'appointment_id' => $appointment->id,
-            'nextofkin_id'   => $nextOfKin->id,
-            'rsvp_status'    => $request->rsvp_status,
-            'comments'       => $request->comments,
-        ]);
+        \App\Models\AppointmentRsvp::updateOrCreate(
+    [
+        'appointment_id' => $appointment->id,
+        'nextofkin_id'   => $nextOfKin->id,
+    ],
+    [
+        'rsvp_status'    => $request->rsvp_status,
+        'comments'       => $request->comments,
+    ]
+);
+
 
         return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
     }

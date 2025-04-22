@@ -9,6 +9,14 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Resident;  // Add this line
+use App\Models\NextOfKin;
+use Illuminate\Support\Facades\Http;
+use App\Models\Message;
+
+
 
 class nextofkinController extends AppBaseController
 {
@@ -154,4 +162,102 @@ class nextofkinController extends AppBaseController
         return redirect(route('nextofkins.index'));
     }
     
+    public function updatePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|min:6|confirmed',
+    ]);
+
+    $user = Auth::guard('nextofkin')->user();
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return redirect()->back()
+            ->withErrors(['current_password' => 'Current password is incorrect'])
+            ->withInput()
+            ->with('active_tab', 'settings');
+    }
+
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    return redirect()->back()
+        ->with('success', 'Password updated successfully!')
+        ->with('active_tab', 'settings');
+}
+public function sendMessage(Request $request)
+{
+    $validated = $request->validate([
+        'message' => 'required|string',
+        'recipient' => 'required|in:caregiver,staff,all',
+    ]);
+
+    $nextofkin = auth()->guard('nextofkin')->user();
+    $nextofkinId = $nextofkin->id;
+    $sender = $nextofkin->firstname . ' ' . $nextofkin->lastname;
+
+    try {
+        if ($validated['recipient'] === 'all') {
+            Message::create([
+                'message' => $validated['message'],
+                'sender' => $sender,
+                'recipient' => 'all',
+                'nextofkin_id' => $nextofkinId,
+            ]);
+        } elseif ($validated['recipient'] === 'caregiver') {
+            if (!$nextofkin->resident) {
+                return redirect()->back()->with('error', 'No resident linked to your account.');
+            }
+
+            if (!$nextofkin->resident->assignedCaregiver) {
+                return redirect()->back()->with('error', 'No caregiver assigned to your resident.');
+            }
+
+            Message::create([
+                'message' => $validated['message'],
+                'sender' => $sender,
+                'recipient' => 'caregiver',
+                'caregiver_id' => $nextofkin->resident->assignedCaregiver->id,
+                'nextofkin_id' => $nextofkinId,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Message sent successfully!');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error sending message: ' . $e->getMessage());
+    }
+}
+public function showReceivedMessages()
+{
+    $nextofkinId = auth()->guard('nextofkin')->id();
+
+    $receivedMessages = Message::where('recipient', 'nextofkin')
+                              ->where('nextofkin_id', $nextofkinId)
+                              ->orderBy('created_at', 'desc')
+                              ->get();
+
+    return view('nextofkin.dashboard', compact('receivedMessages'));
+}
+
+public function profile()
+{
+    $nextOfKin = Auth::guard('nextofkin')->user(); // or however you authenticate next of kin
+
+    return view('nextofkins.profile', compact('nextOfKin'));
+}
+public function updateProfile(Request $request)
+{
+    $nextOfKin = Auth::guard('nextofkin')->user();
+
+    $nextOfKin->update($request->only([
+        'firstname',
+        'lastname',
+        'email',
+        // add other fields you're updating
+    ]));
+
+    return redirect()->back()->with('success', 'Profile updated successfully!');
+}
+
+   
 }

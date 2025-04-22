@@ -14,7 +14,7 @@ use App\Models\Resident;
 
 class residentController extends AppBaseController
 {
-    /** @var residentRepository $residentRepository*/
+    /** @var residentRepository $residentRepository */
     private $residentRepository;
 
     public function __construct(residentRepository $residentRepo)
@@ -22,38 +22,18 @@ class residentController extends AppBaseController
         $this->residentRepository = $residentRepo;
     }
 
-    /**
-     * Display a listing of the resident.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function index(Request $request)
     {
         $residents = $this->residentRepository->all();
 
-        return view('residents.index')
-            ->with('residents', $residents);
+        return view('residents.index')->with('residents', $residents);
     }
 
-    /**
-     * Show the form for creating a new resident.
-     *
-     * @return Response
-     */
     public function create()
     {
         return view('residents.create');
     }
 
-    /**
-     * Store a newly created resident in storage.
-     *
-     * @param CreateresidentRequest $request
-     *
-     * @return Response
-     */
     public function store(CreateresidentRequest $request)
     {
         $input = $request->all();
@@ -65,61 +45,36 @@ class residentController extends AppBaseController
         return redirect(route('residents.index'));
     }
 
-    /**
-     * Display the specified resident.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function show($id)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
         return view('residents.show')->with('resident', $resident);
     }
 
-    /**
-     * Show the form for editing the specified resident.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function edit($id)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
         return view('residents.edit')->with('resident', $resident);
     }
 
-    /**
-     * Update the specified resident in storage.
-     *
-     * @param int $id
-     * @param UpdateresidentRequest $request
-     *
-     * @return Response
-     */
     public function update($id, UpdateresidentRequest $request)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
@@ -130,22 +85,12 @@ class residentController extends AppBaseController
         return redirect(route('residents.index'));
     }
 
-    /**
-     * Remove the specified resident from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
     public function destroy($id)
     {
         $resident = $this->residentRepository->find($id);
 
         if (empty($resident)) {
             Flash::error('Resident not found');
-
             return redirect(route('residents.index'));
         }
 
@@ -156,63 +101,62 @@ class residentController extends AppBaseController
         return redirect(route('residents.index'));
     }
 
-    /**
-     * Show the profile of a resident.
-     *
-     * @param int $id
-     * @return Response
-     */
     public function profile($id)
     {
         $resident = Resident::with(['diagnoses'])->findOrFail($id);
         return view('residents.profile', compact('resident'));
     }
 
-    /**
-     * Show Resident Dashboard.
-     *
-     * @param int $residentId
-     * @return Response
-     */
     public function showResidentDashboard($residentId)
     {
-        // Fetch the resident data from the database
         $resident = Resident::find($residentId);
-        
+
         if (!$resident) {
             return redirect()->route('home')->with('error', 'Resident not found.');
         }
 
         return view('resident.dashboard', compact('resident'));
     }
+
     public function searchPage()
-{
-    return view('residents.search');
-}
+    {
+        return view('residents.search');
+    }
 
-public function searchResults(Request $request)
-{
-    $query = $request->input('query');
+    public function searchResults(Request $request)
+    {
+        $query = $request->input('query');
 
-    $results = Resident::where('firstname', 'LIKE', "%$query%")
-                ->orWhere('lastname', 'LIKE', "%$query%")
-                ->orWhere('roomnumber', 'LIKE', "%$query%")
-                ->orWhere('dateofbirth', 'LIKE', "%$query%")
-                ->get();
+        $results = Resident::where('firstname', 'LIKE', "%$query%")
+            ->orWhere('lastname', 'LIKE', "%$query%")
+            ->orWhere('roomnumber', 'LIKE', "%$query%")
+            ->orWhere('dateofbirth', 'LIKE', "%$query%")
+            ->get();
 
-    return view('residents.search', compact('results'));
-}
+        return view('residents.search', compact('results'));
+    }
 
+    public function showResidentHub()
+    {
+        $totalResidents = Resident::count();
+        $newThisWeek = Resident::where('admissiondate', '>=', Carbon::now()->subDays(7))->count();
+        $discharged = Resident::where('status', 'discharged')->count();
 
+        return view('residentHub', compact('totalResidents', 'newThisWeek', 'discharged'));
+    }
 
-public function showResidentHub()
-{
-    $totalResidents = Resident::count();
-    $newThisWeek = Resident::where('admissiondate', '>=', Carbon::now()->subDays(7))->count();
-    $discharged = Resident::where('status', 'discharged')->count();
+    public function updateMedications(Request $request, $id)
+    {
+        $request->validate([
+            'medications' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string|max:255',
+        ]);
 
-    return view('residentHub', compact('totalResidents', 'newThisWeek', 'discharged'));
-}
+        $resident = Resident::findOrFail($id);
+        $resident->medications = $request->medications;
+        $resident->allergies = $request->allergies;
+        $resident->save();
 
-
+        return back()->with('success', 'Resident details updated!');
+    }
 }

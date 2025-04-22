@@ -15,6 +15,7 @@ use App\Models\Staffmember;
 
 use Flash;
 use Response;
+use App\Models\AppointmentRsvp;
 
 class appointmentController extends AppBaseController
 {
@@ -116,6 +117,7 @@ class appointmentController extends AppBaseController
                 $start->setTimeFromTimeString($appointment->time);
             }
             return [
+                'id' => $appointment->id,
                 'title' => $appointment->reason,
                 'start' => $start->toIso8601String(),
                 'description' => $appointment->location ?? '',
@@ -143,27 +145,41 @@ class appointmentController extends AppBaseController
     }
 
     // ✅ Handle RSVP Submission
-    public function submitRsvp(Request $request)
-    {
-        $nextOfKin = Auth::guard('nextofkin')->user();
 
-        if (!$nextOfKin) {
-            return redirect()->route('appointments.rsvp.form')->with('error', 'You must be logged in to RSVP.');
-        }
+public function submitRsvp(Request $request)
+{
+    $nextOfKin = Auth::guard('nextofkin')->user();
 
-        $request->validate([
-            'appointment_id' => 'required|exists:appointment,id',
-            'rsvp_status' => 'required|in:yes,no,maybe',
-            'comments' => 'nullable|string|max:255',
-        ]);
-
-        $appointment = Appointment::findOrFail($request->appointment_id);
-        $appointment->rsvp_status = $request->rsvp_status;
-        $appointment->rsvp_comments = $request->comments;
-        $appointment->save();
-
-        return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
+    if (!$nextOfKin) {
+        return redirect()->route('appointments.rsvp.form')->with('error', 'You must be logged in to RSVP.');
     }
+
+    // Validate incoming request data.
+    $request->validate([
+        'appointment_id' => 'required|exists:appointments,id',
+        'rsvp_status'    => 'required|in:yes,no,maybe',
+        'comments'       => 'nullable|string|max:255',
+    ]);
+
+    // Find the appointment using the validated appointment_id.
+    $appointment = Appointment::findOrFail($request->appointment_id);
+
+    // Update the appointment's RSVP status and comments.
+    $appointment->rsvp_status = $request->rsvp_status;
+    $appointment->rsvp_comments = $request->comments;
+    $appointment->save();
+
+    // Create an AppointmentRsvp record for tracking the RSVP.
+    \App\Models\AppointmentRsvp::create([
+        'appointment_id' => $appointment->id,
+        'nextofkin_id'   => $nextOfKin->id,
+        'rsvp_status'    => $request->rsvp_status,
+        'comments'       => $request->comments,
+    ]);
+
+    return redirect()->route('appointments.rsvp.form')->with('success', 'RSVP submitted successfully.');
+}
+
     public function fetchStaffAppointments()
     {
         $staff = \App\Models\Staffmember::where('email', 'emma.kavanagh@example.com')->first(); // Or session('staff_email')
@@ -188,7 +204,52 @@ class appointmentController extends AppBaseController
         }));
     }
     
+ public function storeRSVP(Request $request)
+{
+    $validated = $request->validate([
+    'appointment_id' => 'required|exists:appointment,id',
+    'nextofkin_id'   => 'required|exists:nextofkin,id',
+    'rsvp_status'    => 'required|in:yes,no',
+]);
+
+
+    // Store the RSVP
+    $appointmentRSVP = AppointmentRSVP::create([
+        'appointment_id' => $validated['appointment_id'],
+        'nextofkin_id' => $validated['nextofkin_id'],
+        'rsvp_status' => $validated['rsvp_status']
+    ]);
+
+    if ($appointmentRSVP) {
+        return response()->json(['success' => true]);
+    } else {
+        return response()->json(['success' => false]);
+    }
+}
+public function handleRSVP(Request $request)
+{
+    // Validate the incoming data
+    $validated = $request->validate([
+        'appointment_id' => 'required|integer',
+        'nextofkin_id' => 'required|integer',
+        'rsvp_status' => 'required|in:yes,no',
+    ]);
     
+     // Update the appointment record with the new RSVP status
+    $appointment = Appointment::findOrFail($validated['appointment_id']);
+    $appointment->rsvp_status = $validated['rsvp_status'];
+    $appointment->save();
+    
+    // Store the RSVP status in the appointment_rsvps table
+    AppointmentRsvp::create([
+        'appointment_id' => $validated['appointment_id'],
+        'nextofkin_id' => $validated['nextofkin_id'],
+        'rsvp_status' => $validated['rsvp_status'],
+    ]);
+
+    return response()->json(['success' => true]);
+}
+   
     
 
 }

@@ -84,46 +84,40 @@
           <h1>Settings</h1>
           <p>Update your account information and preferences.</p>
 
-          <!-- Settings Card -->
           <div class="card settings-card">
-            <div class="card-body">
-              <h5 class="card-title"><i class="fas fa-user-cog"></i> Account Settings</h5>
+  <div class="card-body">
+    <h5 class="card-title"><i class="fas fa-bell"></i> Notification Preferences</h5>
+    <form method="POST" action="{{ route('nextofkin.notifications.update') }}">
+      @csrf
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications"
+               {{ Auth::guard('nextofkin')->user()->email_notifications ? 'checked' : '' }}>
+        <label class="form-check-label" for="email_notifications">
+          Receive email notifications
+        </label>
+      </div>
 
-              <!-- Update Profile -->
-              <form method="POST" action="{{ route('nextofkin.settings.update') }}">
-                @csrf
-                <div class="mb-3">
-                  <label for="name" class="form-label">Full Name</label>
-                  <input type="text" class="form-control" id="name" name="name" value="{{ old('name', Auth::guard('nextofkin')->user()->firstname ?? '') }}">
-                </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications"
+               {{ Auth::guard('nextofkin')->user()->sms_notifications ? 'checked' : '' }}>
+        <label class="form-check-label" for="sms_notifications">
+          Receive SMS alerts
+        </label>
+      </div>
 
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email Address</label>
-                  <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::guard('nextofkin')->user()->email ?? '') }}">
-                </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates"
+               {{ Auth::guard('nextofkin')->user()->carehome_updates ? 'checked' : '' }}>
+        <label class="form-check-label" for="carehome_updates">
+          Receive care home updates
+        </label>
+      </div>
 
-                <div class="mb-3">
-                  <label for="phone" class="form-label">Phone Number</label>
-                  <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', Auth::guard('nextofkin')->user()->contactnumber ?? '') }}">
-                </div>
+      <button type="submit" class="btn btn-warning w-100 mt-3">Update Preferences</button>
+    </form>
+  </div>
+</div>
 
-                <!-- Notification Preferences -->
-                <h5 class="mt-4"><i class="fas fa-bell"></i> Notification Preferences</h5>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications">
-                  <label class="form-check-label" for="email_notifications">Receive email notifications</label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications">
-                  <label class="form-check-label" for="sms_notifications">Receive SMS alerts</label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="carehome_updates" name="carehome_updates">
-                  <label class="form-check-label" for="carehome_updates">Receive care home updates</label>
-                </div>
 
                 <!-- Save Button -->
                 <button type="submit" class="btn btn-primary w-100 mt-3">Save Changes</button>

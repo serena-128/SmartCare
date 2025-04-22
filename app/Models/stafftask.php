@@ -88,4 +88,9 @@ class stafftask extends Model
     {
         return $this->belongsTo(\App\Models\Standardtask::class, 'taskid');
     }
+
+    public function staff() {
+        return $this->belongsTo(StaffMember::class, 'staffmemberid');
+    }
+    
 }

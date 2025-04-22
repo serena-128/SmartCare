@@ -12,12 +12,15 @@ class CreateMessagesTable extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('messages', function (Blueprint $table) {
+        $table->id();
+        $table->text('message');
+        $table->string('sender');
+        $table->enum('recipient', ['caregiver', 'staff', 'all']); // For specific staff or all staff
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

@@ -23,75 +23,108 @@
 </head>
 
 <body>
-    <!-- ✅ STAFF NAVBAR START -->
-    <nav class="navbar navbar-expand-lg shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('staffDashboard') }}">
-                <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
-            </a>
+<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<!-- ✅ Staff Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary py-1">
+    <div class="container-fluid">
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <!-- Residents Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">
-                        🏥 Residents
-                    </a>
+        <!-- Logo + Title -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ route('staffDashboard') }}" style="font-weight: normal;">
+            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="me-2" style="max-height: 40px;">
+            <span style="font-size: 1.2rem;">Staff Dashboard</span>
+        </a>
+
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Nav Items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center small">
+
+                <!-- Residents -->
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">🏥 Residents</a>
                     <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
-                    <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li> <!-- ✅ Added this -->
+                        <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
+                        <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📝 Care Plan Hub</a></li>
                     </ul>
                 </li>
 
-                    <!-- Medical Records Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="medicalDropdown" data-bs-toggle="dropdown">🩺 Residents Medical Information</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
-                            <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
-                        </ul>
-                    </li>
+                <!-- Medical -->
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="medicalDropdown" role="button" data-bs-toggle="dropdown">🩺 Medical Info</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
+                        <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
+                    </ul>
+                </li>
 
-                    <!-- Tasks -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="tasksDropdown" data-bs-toggle="dropdown">📅 Tasks & Appointments</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
-                            <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 Show my appointments</a></li>
-                        </ul>
-                    </li>
+                <!-- Tasks -->
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="tasksDropdown" role="button" data-bs-toggle="dropdown">📅 Tasks & Appointments</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
+                        <li><a class="dropdown-item" href="{{ route('appointments.create') }}">➕ Schedule Appointment</a></li>
+                        <li><a class="dropdown-item" href="{{ route('stafftasks.index') }}">🗓️ My Daily Tasks</a></li>
+                        <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 My Appointments</a></li>
+                    </ul>
+                </li>
 
-                    <!-- Alerts, Schedule, Profile -->
-                    <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Emergency Alerts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a></li>
-                    
+                <!-- Emergency Alerts -->
+                <li class="nav-item px-2">
+                    <a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Alerts</a>
+                </li>
 
-                    <!-- Profile -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown">
-                            👤 {{ session('staff_name') }}
-                        </a>
+                <!-- Schedule -->
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ route('schedules.calendar') }}">📆 My Schedule</a>
+                </li>
+
+                <!-- Management Tools -->
+                @php
+                    $staff = \App\Models\StaffMember::find(Session::get('staff_id'));
+                @endphp
+                @if($staff && in_array($staff->staff_role, ['Manager', 'HR Coordinator', 'Operations Manager']))
+                    <li class="nav-item dropdown px-2">
+                        <a class="nav-link dropdown-toggle text-warning" href="#" id="managementDropdown" role="button" data-bs-toggle="dropdown">⚙️ Management Tools</a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <a href="{{ route('my.profile') }}" class="nav-link">👤 My Profile</a>
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button class="dropdown-item text-danger" type="submit">🔓 Logout</button>
-                                </form>
-                            </li>
+                            @if($staff->staff_role === 'Manager')
+                                <li><a class="dropdown-item" href="{{ route('reports.overview') }}">📊 Reports</a></li>
+                                <li><a class="dropdown-item" href="{{ route('budget.manage') }}">💰 Budget</a></li>
+                            @elseif($staff->staff_role === 'HR Coordinator')
+                                <li><a class="dropdown-item" href="#">👥 Staff Profiles</a></li>
+                                <li><a class="dropdown-item" href="#">📝 Feedback</a></li>
+                            @elseif($staff->staff_role === 'Operations Manager')
+                                <li><a class="dropdown-item" href="{{ route('supplies.index') }}">📦 Supplies</a></li>
+                                <li><a class="dropdown-item" href="{{ route('facility.maintenance') }}">🛠️ Maintenance</a></li>
+                            @endif
                         </ul>
                     </li>
-                </ul>
-            </div>
+                @endif
+
+                <!-- Profile -->
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+                        👤 {{ session('staff_name') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a href="{{ route('my.profile') }}" class="dropdown-item">👤 My Profile</a></li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button class="dropdown-item text-danger" type="submit">🔓 Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
     <!-- ✅ STAFF NAVBAR END -->
 
     <!-- ✅ MAIN CONTENT WRAPPER -->
@@ -154,6 +187,8 @@
         }
     });
 </script>
+<script src="{{ mix('/js/app.js') }}" defer></script>
+
 
 
 

@@ -6,11 +6,10 @@ use App\Http\Requests\CreatescheduleRequest;
 use App\Http\Requests\UpdatescheduleRequest;
 use App\Repositories\ScheduleRepository;
 use App\Models\Schedule;
+use App\Models\StaffMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
-use App\Models\StaffMember;
-
 use Flash;
 use Response;
 
@@ -36,17 +35,14 @@ class ScheduleController extends AppBaseController
     /**
      * Show the form for creating a new schedule.
      */
-public function create()
-{
-    $staffMembers = StaffMember::all(); // Fetch all staff members
-    $schedule = new Schedule(); // Ensure schedule exists
-    $staffMember = StaffMember::find($schedule->staffmemberid); // Fetch assigned staff member
+    public function create()
+    {
+        $staffMembers = StaffMember::all();
+        $schedule = new Schedule();
+        $staffMember = StaffMember::find($schedule->staff_id); // Fixed column
 
-    return view('schedules.create', compact('schedule', 'staffMembers', 'staffMember'));
-}
-
-
-
+        return view('schedules.create', compact('schedule', 'staffMembers', 'staffMember'));
+    }
 
     /**
      * Store a newly created schedule in storage.
@@ -55,6 +51,7 @@ public function create()
     {
         $input = $request->all();
         $schedule = $this->scheduleRepository->create($input);
+
         Flash::success('Schedule saved successfully.');
         return redirect(route('schedules.index'));
     }
@@ -65,10 +62,12 @@ public function create()
     public function show($id)
     {
         $schedule = $this->scheduleRepository->find($id);
+
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
+
         return view('schedules.show')->with('schedule', $schedule);
     }
 
@@ -78,10 +77,12 @@ public function create()
     public function edit($id)
     {
         $schedule = $this->scheduleRepository->find($id);
+
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
+
         return view('schedules.edit')->with('schedule', $schedule);
     }
 
@@ -91,11 +92,14 @@ public function create()
     public function update($id, UpdatescheduleRequest $request)
     {
         $schedule = $this->scheduleRepository->find($id);
+
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
-        $schedule = $this->scheduleRepository->update($request->all(), $id);
+
+        $this->scheduleRepository->update($request->all(), $id);
+
         Flash::success('Schedule updated successfully.');
         return redirect(route('schedules.index'));
     }
@@ -106,11 +110,14 @@ public function create()
     public function destroy($id)
     {
         $schedule = $this->scheduleRepository->find($id);
+
         if (empty($schedule)) {
             Flash::error('Schedule not found');
             return redirect(route('schedules.index'));
         }
+
         $this->scheduleRepository->delete($id);
+
         Flash::success('Schedule deleted successfully.');
         return redirect(route('schedules.index'));
     }
@@ -127,15 +134,13 @@ public function create()
     /**
      * Handle Shift Change Request.
      */
-public function requestChange(Request $request, $id)
-{
-    $schedule = Schedule::findOrFail($id);
-    $staffMember = StaffMember::find($schedule->staffmemberid); // Fetch assigned staff member
+    public function requestChange(Request $request, $id)
+    {
+        $schedule = Schedule::findOrFail($id);
+        $staffMember = StaffMember::find($schedule->staff_id); // Fixed column
 
-    return view('schedules.request_change', compact('schedule', 'staffMember'));
-}
-
-
+        return view('schedules.request_change', compact('schedule', 'staffMember'));
+    }
 
     /**
      * Approve Shift Change.
@@ -173,32 +178,54 @@ public function requestChange(Request $request, $id)
             return redirect()->route('login')->with('error', 'Please log in to view your schedule.');
         }
 
-        // Get staff ID from session
         $staffId = Session::get('staff_id');
-
-        // Fetch staff details
         $staffMember = StaffMember::find($staffId);
 
         if (!$staffMember) {
             return redirect()->route('login')->with('error', 'No schedule found.');
         }
 
-        // Fetch only the logged-in staff member's schedule
-        $schedules = Schedule::where('staffmemberid', $staffId)->get();
+        $schedules = Schedule::where('staff_id', $staffId)->get(); // Fixed column
 
         return view('schedules.staff_schedule', compact('schedules'));
     }
-public function showRequestDayOffForm($id)
+
+    /**
+     * Show the Request Day Off Form.
+     */
+    public function showRequestDayOffForm($id)
+    {
+        $schedule = Schedule::findOrFail($id);
+        return view('schedules.request_day_off', compact('schedule'));
+    }
+
+    /**
+     * Submit Day Off Request.
+     */
+    public function submitDayOffRequest(Request $request, $id)
+    {
+        return view('schedules.done');
+    }
+    public function calendarView()
 {
-    $schedule = Schedule::findOrFail($id);
-    return view('schedules.request_day_off', compact('schedule'));
-}
-public function submitDayOffRequest(Request $request, $id)
-{
-    // Redirect to a new page that displays "Done"
-    return view('schedules.done');
+    return view('schedules.calendar');
 }
 
+public function getMyScheduleEvents()
+{
+    $staffId = Session::get('staff_id'); // Or Auth::id() if using login auth
 
+    $schedules = Schedule::where('staff_id', $staffId)->get();
+
+    $events = $schedules->map(function ($schedule) {
+        return [
+            'title' => $schedule->shift_type . ' (' . $schedule->shift_status . ')',
+            'start' => $schedule->shift_date . 'T' . $schedule->start_time,
+            'end' => $schedule->shift_date . 'T' . $schedule->end_time,
+        ];
+    });
+
+    return response()->json($events);
+}
 
 }

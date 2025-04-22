@@ -14,10 +14,11 @@ class AlterNotificationsTable extends Migration
     public function up()
 {
     Schema::table('notifications', function (Blueprint $table) {
-        // Example: Adding a foreign key
-        $table->foreign('nextofkin_id')->references('id')->on('nextofkin')->onDelete('cascade');
+        // Commenting this out to avoid duplicate FK error
+        // $table->foreign('nextofkin_id')->references('id')->on('nextofkin')->onDelete('cascade');
     });
 }
+
 
 public function down()
 {

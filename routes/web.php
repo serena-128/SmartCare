@@ -252,6 +252,7 @@ Route::get('/careplan-hub', function () {
 })->name('careplan.hub');
 
 
+Route::get('/staff/manage', [StaffMemberController::class, 'manage'])->name('staff.manage');
 
 
 
@@ -267,6 +268,17 @@ Route::get('/emergency-alerts-hub', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/staff/notifications', [StaffNotificationController::class, 'index'])->name('staff.notifications');
 });
+
+Route::get('/my-schedule', [ScheduleController::class, 'calendarView'])->name('schedules.calendar');
+Route::get('/my-schedule/events', [ScheduleController::class, 'getMyScheduleEvents'])->name('schedules.events');
+
+// Resident Appointments assigned to staff
+Route::get('/my-appointments', [ScheduleController::class, 'appointmentCalendar'])->name('appointments.staff');
+Route::get('/my-appointments/events', [ScheduleController::class, 'getMyAppointments'])->name('appointments.staff.events');
+
+Route::get('/my-daily-tasks/events', [StaffTaskController::class, 'getMyTasksAsEvents'])->name('tasks.json');
+
+
 
 
 Route::get('/resident-hub', function () {

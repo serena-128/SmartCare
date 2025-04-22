@@ -9,6 +9,9 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\Message;
+
+
 
 class StaffMemberController extends AppBaseController
 {
@@ -158,4 +161,70 @@ class StaffMemberController extends AppBaseController
     {
         return view('staffmember.profile');
     }
+
+    
+   public function viewMessages($messageId = null)
+{
+    // Fetch received messages
+    $messages = Message::where('recipient', 'all')
+                        ->orWhere('recipient', 'caregiver')
+                        ->where('caregiver_id', auth()->user()->id) // Only show if the staff is the caregiver
+                        ->get();
+
+    // Fetch sent messages
+    $sentMessages = Message::where('sender', auth()->user()->email)
+                            ->get();
+
+    // If no message ID is passed, get the first message
+    $currentMessage = $messageId ? Message::findOrFail($messageId) : $messages->first();
+
+    // Get the previous and next messages
+    $previousMessage = $messages->where('id', '<', $currentMessage->id)->last();
+    $nextMessage = $messages->where('id', '>', $currentMessage->id)->first();
+
+    return view('staff.messages', compact('currentMessage', 'previousMessage', 'nextMessage', 'sentMessages'));
 }
+
+
+ public function reply(Request $request, $messageId)
+    {
+        // Find the message by ID
+        $message = Message::findOrFail($messageId);
+
+        // Get the Next of Kin's email (assuming `nextOfKin` is a relationship on the `Message` model)
+        $nextOfKinEmail = $message->nextOfKin->email;
+
+        // Create a new reply message
+        $replyMessage = new Message();
+        $replyMessage->message = $request->input('reply');
+        $replyMessage->recipient = 'nextofkin';
+        $replyMessage->caregiver_id = auth()->user()->id;
+        $replyMessage->nextofkin_id = $message->nextofkin_id; // ✅ correct column name
+        $replyMessage->sender = auth()->user()->firstname . ' ' . auth()->user()->lastname;
+        $replyMessage->parent_id = $message->id;
+        $replyMessage->save();
+
+
+    
+
+        return redirect()->route('staff.messages')->with('success', 'Reply sent successfully.');
+    }
+
+    public function redirectTo()
+{
+    $role = auth()->user()->staff_role;
+
+    if (in_array($role, ['Manager', 'HR Coordinator', 'Operations Manager'])) {
+        return '/management-dashboard';
+    }
+
+    // other redirects
+}
+public function manage()
+{
+    $staffMembers = \App\Models\StaffMember::all();
+    return view('staff.manage', compact('staffMembers'));
+}
+
+}
+
