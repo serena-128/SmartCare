@@ -20,6 +20,9 @@
         background-color: #ffc107;
         color: #000;
     }
+    .swal-actions-spaced button {
+        margin: 5px;
+    }
 </style>
 
 <section class="content-header">
@@ -162,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             footer: `<button id="inline-edit-btn" class="btn btn-sm btn-primary">✏️ Edit this Alert</button>`,
             customClass: {
+                actions: 'swal-actions-spaced',
                 confirmButton: 'btn btn-success',
                 denyButton: 'btn btn-danger',
                 cancelButton: 'btn btn-secondary'
