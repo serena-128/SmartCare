@@ -48,11 +48,11 @@
         <tbody>
             @foreach($emergencyalerts as $alert)
                 <tr>
-                    <td>{{ $alert->resident->firstname ?? 'N/A' }}</td>
+                    <td>{{ $alert->resident->firstname ?? 'N/A' }} {{ $alert->resident->lastname ?? '' }}</td>
                     <td>{{ $alert->alerttype }}</td>
                     <td>{{ $alert->urgency }}</td>
                     <td>{{ $alert->details }}</td>
-                    <td>{{ $alert->triggeredBy->firstname ?? 'N/A' }}</td>
+                    <td>{{ $alert->triggeredBy->firstname ?? 'N/A' }} {{ $alert->triggeredBy->lastname ?? '' }}</td>
                     <td>{{ $alert->alerttimestamp }}</td>
                     
                     <!-- Status with styled badge -->
@@ -66,7 +66,7 @@
                         @endif
                     </td>
 
-                    <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }}</td>
+                   <td>{{ $alert->resolvedBy->firstname ?? 'N/A' }} {{ $alert->resolvedBy->lastname ?? '' }}</td>
                         <td>
                             <button class="btn btn-info btn-sm alert-options-btn"
                             data-id="{{ $alert->id }}"
