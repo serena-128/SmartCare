@@ -273,7 +273,7 @@
               <img
                 src="{{ $food['image_front_small_url'] }}"
                 class="card-img-top"
-                alt="{{ $food['product_name'] }}"
+                alt="{{ $food['product_name'] ?? 'No name' }}"
                 style="height:150px; object-fit:contain; cursor:pointer;"
                 onclick="toggleDetails({{ $i }})"
               >
@@ -337,8 +337,8 @@
         </div>
       @endforeach
     </div>
-  @else
-    <p class="text-muted">No food items found.</p>
+    @elseif(request()->has('food_item') && request('food_item') !== '')
+    <p class="text-muted">No food items found for “{{ request('food_item') }}”.</p>
   @endif
 </div>
 
