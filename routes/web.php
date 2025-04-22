@@ -48,7 +48,7 @@ use App\Models\StaffMember;
 use App\Http\Controllers\ResidentMedicationOrderController;
 use App\Http\Controllers\ResidentPharmacyController;
 use App\Http\Controllers\DietaryController;
-
+use App\Http\Controllers\StaffEventController;
 
 /*
 |---------------------------------------------------------------------- 
@@ -408,3 +408,9 @@ Route::post('/stafftasks/update-status/{id}', [App\Http\Controllers\stafftaskCon
 Route::get('/stafftasks/json', [App\Http\Controllers\stafftaskController::class, 'getTasksJson']);
 Route::post('/emergencyalerts/{id}/resolve', [EmergencyAlertController::class, 'resolve']);
 
+Route::get('/staff/resident-events', function () {
+    return view('staff.resident-upcoming-events');
+})->name('resident.upcomingEvents');
+
+Route::get('/staff/events/json', [StaffEventController::class, 'fetchEvents']);
+Route::post('/staff/events', [StaffEventController::class, 'store']);

@@ -47,7 +47,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
                             <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">🩺 Care Plan Hub</a></li>
-                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📆 Upcoming events</a></li>
+                            <li><a class="dropdown-item" href="{{ route('resident.upcomingEvents') }}">📆 Upcoming events</a></li>
                             <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">📸 Photo Gallery</a></li>
                         </ul>
                     </li>
