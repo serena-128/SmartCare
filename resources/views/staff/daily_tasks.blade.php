@@ -12,6 +12,12 @@
     <h3 class="mb-4">🗓️ My Daily Tasks</h3>
     <div id="dailyTaskCalendar"></div>
 </div>
+<div class="mt-4">
+    <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px;">Completed</span>
+    <span style="background-color: #ffc107; padding: 4px 8px; border-radius: 4px;">In Progress</span>
+    <span style="background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px;">Uncompleted</span>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -87,6 +93,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 },
+        eventDidMount: function (info) {
+    const status = info.event.extendedProps.status;
+
+    if (status === 'Completed') {
+        info.el.style.backgroundColor = '#28a745'; // green
+        info.el.style.borderColor = '#28a745';
+        info.el.style.color = 'white';
+    } else if (status === 'In Progress') {
+        info.el.style.backgroundColor = '#ffc107'; // yellow
+        info.el.style.borderColor = '#ffc107';
+        info.el.style.color = 'black';
+    } else {
+        info.el.style.backgroundColor = '#dc3545'; // red for Uncompleted
+        info.el.style.borderColor = '#dc3545';
+        info.el.style.color = 'white';
+    }
+}
+
 
     });
 

@@ -67,6 +67,7 @@ public function daily()
         'title' => $task->description ?? 'Task',
         'start' => $task->date . 'T' . $task->time,
         'end'   => $task->date . 'T' . date('H:i', strtotime($task->time . ' +1 hour')),
+        'status' => $task->status, // ✅ THIS IS CRUCIAL
     ];
 });
 
