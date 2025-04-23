@@ -21,6 +21,16 @@ class Diagnosis extends Model
         'notes',
         'lastupdatedby'
     ];
+    public static $rules = [
+    'residentid'     => 'required|exists:resident,id',
+    'diagnosis'      => 'required|string|max:255',
+    'vitalsigns'     => 'nullable|string|max:255',
+    'treatment'      => 'nullable|string|max:255',
+    'testresults'    => 'nullable|string|max:255',
+    'notes'          => 'nullable|string|max:1000',
+    'lastupdatedby'  => 'required|exists:staffmember,id'
+];
+
 
     public function resident()
     {

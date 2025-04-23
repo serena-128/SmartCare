@@ -28,11 +28,34 @@ class diagnosisController extends AppBaseController
      *
      * @return Response
      */
-    public function index()
-    {
-        $diagnoses = Diagnosis::with('resident')->get();
-        return view('diagnoses.index')->with('diagnoses', $diagnoses);
+    public function index(Request $request)
+{
+    $query = Diagnosis::with(['resident', 'lastUpdatedBy']);
+
+    // Search by resident name
+    if ($request->filled('resident_name')) {
+        $query->whereHas('resident', function ($q) use ($request) {
+            $q->where('firstname', 'LIKE', '%' . $request->resident_name . '%')
+              ->orWhere('lastname', 'LIKE', '%' . $request->resident_name . '%');
+        });
     }
+
+    // Filter by diagnosis type
+    if ($request->filled('diagnosis_type')) {
+        $query->where('diagnosis', 'LIKE', '%' . $request->diagnosis_type . '%');
+    }
+
+    // Filter by staff member
+    if ($request->filled('staff_id')) {
+        $query->where('lastupdatedby', $request->staff_id);
+    }
+
+    $diagnoses = $query->paginate(10)->appends($request->all());
+    $staffMembers = \App\Models\Staffmember::all();
+
+    return view('diagnoses.index', compact('diagnoses', 'staffMembers'));
+}
+
 
     /**
      * Show the form for creating a new diagnosis.
