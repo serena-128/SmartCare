@@ -1,23 +1,57 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            StaffMember
-        </h1>
-    </section>
-    <div class="content">
-       @include('basic-template::common.errors')
-       <div class="box box-primary">
-           <div class="box-body">
-               <div class="row">
-                   {!! Form::model($staffMember, ['route' => ['staffMembers.update', $staffMember->id], 'method' => 'patch']) !!}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-purple text-white text-center">
+            <h4><i class="fas fa-user-edit me-2"></i>Edit Staff Member</h4>
+        </div>
+        <div class="card-body">
 
-                        @include('staffMembers.fields')
+            {!! Form::model($staffMember, ['route' => ['staffmembers.update', $staffMember->id], 'method' => 'patch']) !!}
 
-                   {!! Form::close() !!}
-               </div>
-           </div>
-       </div>
+            <div class="mb-3">
+                {!! Form::label('reportsto', 'Supervisor ID:') !!}
+                {!! Form::number('reportsto', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="mb-3">
+                {!! Form::label('firstname', 'First Name:') !!}
+                {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="mb-3">
+                {!! Form::label('lastname', 'Last Name:') !!}
+                {!! Form::text('lastname', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="mb-3">
+                {!! Form::label('staff_role', 'Staff Role:') !!}
+                {!! Form::text('staff_role', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="mb-3">
+                {!! Form::label('contactnumber', 'Contact Number:') !!}
+                {!! Form::text('contactnumber', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="mb-3">
+                {!! Form::label('email', 'Email:') !!}
+                {!! Form::email('email', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="mb-3">
+                {!! Form::label('startdate', 'Start Date:') !!}
+                {!! Form::date('startdate', \Carbon\Carbon::parse($staffMember->startdate), ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="d-flex justify-content-start gap-2">
+                {!! Form::submit('Update', ['class' => 'btn btn-purple']) !!}
+                <a href="{{ route('staffmembers.index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+
+            {!! Form::close() !!}
+        </div>
     </div>
+</div>
 @endsection

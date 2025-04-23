@@ -115,4 +115,13 @@ class StaffMember extends Model
     {
         return $this->hasMany(Resident::class, 'assigned_staff_id');
     }
+    public function getFullnameAttribute()
+{
+    return $this->firstname . ' ' . $this->lastname;
+}
+public function supervisor()
+{
+    return $this->belongsTo(StaffMember::class, 'reportsto');
+}
+
 }

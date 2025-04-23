@@ -1,6 +1,6 @@
 <table class="table table-responsive" id="staffMembers-table">
     <thead>
-        <th>Reports To</th>
+        <th>Supervisor</th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>Staff Role</th>
@@ -11,18 +11,24 @@
     </thead>
     <tbody>
     @foreach($staffMembers as $staffMember)
+
         <tr>
-            <td>{{ $staffMember->reportsto }}</td>
+        <td>
+    {{ optional($staffMember->supervisor)->firstname ?? 'N/A' }}
+    {{ optional($staffMember->supervisor)->lastname ?? '' }}
+</td>
+
+
             <td>{{ $staffMember->firstname }}</td>
             <td>{{ $staffMember->lastname }}</td>
             <td>{{ $staffMember->staff_role }}</td>
             <td>{{ $staffMember->contactnumber }}</td>
             <td>{{ $staffMember->email }}</td>
-            <td>{{ $staffMember->startdate }}</td>
+            <td>{{ \Carbon\Carbon::parse($staffMember->startdate)->format('Y-m-d') }}</td>
             <td>
                 {!! Form::open(['route' => ['staffmembers.destroy', $staffMember->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
-                    <a href="{{ route('staffmembers.show', $staffMember->id) }}" class='btn btn-default btn-xs'>
+                    <a href="{{ route('staff.profile.show', $staffMember->id) }}" class='btn btn-default btn-xs'>
                         <i class="far fa-eye"></i>
                     </a>
                     <a href="{{ route('staffmembers.edit', $staffMember->id) }}" class='btn btn-default btn-xs'>

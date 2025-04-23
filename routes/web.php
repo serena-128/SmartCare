@@ -252,7 +252,16 @@ Route::get('/careplan-hub', function () {
 })->name('careplan.hub');
 
 
-Route::get('/staff/manage', [StaffMemberController::class, 'manage'])->name('staff.manage');
+Route::get('/staff/manage', [App\Http\Controllers\StaffMemberController::class, 'searchPage'])->name('staff.manage');
+Route::get('/staff/search-results', [App\Http\Controllers\StaffMemberController::class, 'searchResults'])->name('staff.searchResults');
+
+    Route::get('/staffmembers', [App\Http\Controllers\StaffMemberController::class, 'index'])->name('staffmembers.index');
+    Route::get('/staffmembers/create', [App\Http\Controllers\StaffMemberController::class, 'create'])->name('staffmembers.create');
+    Route::post('/staffmembers', [App\Http\Controllers\StaffMemberController::class, 'store'])->name('staffmembers.store');
+    Route::get('/staffmembers/{id}/profile', [StaffMemberController::class, 'show'])->name('staff.profile.show');
+    Route::resource('staffmembers', StaffMemberController::class);
+    Route::resource('staffmembers', App\Http\Controllers\StaffMemberController::class);
+
 
 
 
