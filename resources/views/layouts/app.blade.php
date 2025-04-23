@@ -5,18 +5,16 @@
     <title>{{ config('app.name', 'SmartCare') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- ✅ Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- FullCalendar -->
+    <!-- ✅ FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 
-    <!-- Font Awesome -->
+    <!-- ✅ Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous"/>
 
-    <!-- Custom Styles -->
+    <!-- ✅ Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 
@@ -28,12 +26,12 @@
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- ✅ Navbar -->
     <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('staffDashboard') }}">
                 <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo">
-                Staff Dashboard
+                Management Dashboard
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -42,7 +40,6 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-
                     <!-- Residents -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">🏥 Residents</a>
@@ -95,10 +92,10 @@
                         <a class="nav-link" href="{{ route('resident_care_dashboard') }}">📊 Dashboard</a>
                     </li>
 
-                    <!-- Profile -->
+                    <!-- Profile Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            👤 {{ session('staff_name') }}
+                            👤 {{ session('staff_name') ?? 'Account' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{{ route('staff.profile') }}">⚙️ Settings</a></li>
@@ -110,13 +107,12 @@
                             </li>
                         </ul>
                     </li>
-
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Page Content -->
+    <!-- ✅ Main Content -->
     <main class="py-4">
         <div class="container">
             @yield('content')
@@ -124,6 +120,12 @@
     </main>
 
     @include('layouts.footer')
+
+    <!-- ✅ Bootstrap Bundle (includes Popper for dropdowns/modals) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ✅ FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 
     @stack('scripts')
 </body>

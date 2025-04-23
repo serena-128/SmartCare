@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ShiftController extends Controller
 {
+    // View shifts & form
     public function index()
     {
         $shifts = Shift::with('staffMember')->orderBy('shift_date')->get();
@@ -15,6 +16,7 @@ class ShiftController extends Controller
         return view('shifts.index', compact('shifts', 'staff'));
     }
 
+    // Store new shift
     public function store(Request $request)
     {
         $request->validate([
@@ -44,6 +46,7 @@ class ShiftController extends Controller
         return redirect()->back()->with('success', 'Shift assigned successfully!');
     }
 
+    // Edit form
     public function edit($id)
     {
         $shift = Shift::findOrFail($id);
@@ -51,6 +54,7 @@ class ShiftController extends Controller
         return view('shifts.edit', compact('shift', 'staff'));
     }
 
+    // Update shift
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -64,5 +68,14 @@ class ShiftController extends Controller
         $shift->update($request->all());
 
         return redirect()->route('shifts.index')->with('success', 'Shift updated successfully!');
+    }
+
+    // ✅ Only ONE destroy method
+    public function destroy($id)
+    {
+        $shift = Shift::findOrFail($id);
+        $shift->delete();
+
+        return redirect()->route('shifts.index')->with('success', 'Shift deleted successfully!');
     }
 }

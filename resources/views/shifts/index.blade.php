@@ -29,21 +29,21 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label">Date:</label>
-                        <input type="date" name="shift_date" class="form-control" required value="{{ old('shift_date') }}">
+                        <input type="date" name="shift_date" class="form-control" value="{{ old('shift_date') }}" required>
                         @error('shift_date')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Start Time:</label>
-                        <input type="time" name="start_time" class="form-control" required value="{{ old('start_time') }}">
+                        <input type="time" name="start_time" class="form-control" value="{{ old('start_time') }}" required>
                         @error('start_time')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">End Time:</label>
-                        <input type="time" name="end_time" class="form-control" required value="{{ old('end_time') }}">
+                        <input type="time" name="end_time" class="form-control" value="{{ old('end_time') }}" required>
                         @error('end_time')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -89,14 +89,16 @@
                                 <td>{{ \Carbon\Carbon::parse($shift->start_time)->format('H:i') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($shift->end_time)->format('H:i') }}</td>
                                 <td>
+                                    <!-- Edit -->
                                     <a href="{{ route('shifts.edit', $shift->id) }}" class="btn btn-sm btn-primary">✏️ Edit</a>
 
-                                    <!-- Delete Button -->
+                                    <!-- Delete Button triggers Modal -->
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $shift->id }}">
                                         🗑️ Delete
                                     </button>
 
-                                    <form action="{{ route('shifts.destroy', $shift->id) }}" method="POST" style="display:none;" id="deleteForm{{ $shift->id }}">
+                                    <!-- Hidden Form -->
+                                    <form id="deleteForm{{ $shift->id }}" action="{{ route('shifts.destroy', $shift->id) }}" method="POST" style="display: none;">
                                         @csrf
                                         @method('DELETE')
                                     </form>
@@ -131,11 +133,11 @@
 
 </div>
 
-{{-- Optional: Auto-close alerts --}}
 @push('scripts')
 <script>
+    // Auto-hide alerts after 4 seconds
     setTimeout(() => {
-        document.querySelectorAll('.alert').forEach(el => el.remove());
+        document.querySelectorAll('.alert').forEach(alert => alert.remove());
     }, 4000);
 </script>
 @endpush

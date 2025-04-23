@@ -22,3 +22,4 @@ class Shift extends Model
         return $this->belongsTo(StaffMember::class, 'staff_member_id');
     }
 }
+

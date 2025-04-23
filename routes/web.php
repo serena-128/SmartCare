@@ -160,16 +160,24 @@ Route::resource('residents', ResidentController::class);
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\StaffShiftController;
 
-// ✅ Manager: Manage Shifts
-Route::middleware(['auth', 'role:Manager'])->group(function () {
-    Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
-    Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
-    Route::get('/shifts/{shift}/edit', [ShiftController::class, 'edit'])->name('shifts.edit');
-    Route::put('/shifts/{shift}', [ShiftController::class, 'update'])->name('shifts.update');
-    Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
-});
+// 🟢 Public: No auth required for shift management
+Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
+Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
+Route::get('/shifts/{shift}/edit', [ShiftController::class, 'edit'])->name('shifts.edit');
+Route::put('/shifts/{shift}', [ShiftController::class, 'update'])->name('shifts.update');
+Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 
-// ✅ Staff: View Own Schedule
+// ✅ Staff: View Own Schedule (still protected)
 Route::middleware(['auth', 'role:Nurse|Caregiver|Doctor'])->group(function () {
     Route::get('/my-schedule', [StaffShiftController::class, 'index'])->name('staff.schedule');
 });
+use App\Http\Controllers\SupplyController;
+use App\Http\Controllers\MaintenanceRequestController;
+
+Route::middleware(['auth', 'role:Operational Manager'])->group(function () {
+    Route::resource('supplies', SupplyController::class);
+    Route::resource('maintenance-requests', MaintenanceRequestController::class);
+});
+
+
+Route::resource('supplies', \App\Http\Controllers\SupplyController::class);
