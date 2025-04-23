@@ -66,7 +66,11 @@
                             <td>{{ $diagnosis->treatment }}</td>
                             <td>{{ $diagnosis->testresults }}</td>
                             <td>{{ $diagnosis->notes }}</td>
-                            <td>{{ optional($diagnosis->lastUpdatedBy)->firstname }} {{ optional($diagnosis->lastUpdatedBy)->lastname }}</td>
+                            <td>
+                            {{ optional($diagnosis->lastUpdatedBy)->firstname }} {{ optional($diagnosis->lastUpdatedBy)->lastname }}
+                        </td>
+
+
                             <td class="text-center">
                                 <div class="btn-group">
                                     <a href="{{ route('diagnoses.show', $diagnosis->id) }}" class="btn btn-outline-info btn-sm"><i class="fas fa-eye"></i></a>

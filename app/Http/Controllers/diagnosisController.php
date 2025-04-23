@@ -9,8 +9,9 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\Diagnosis;
 use App\Models\Resident;
-
+use App\Models\Staffmember;
 use Flash;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class diagnosisController extends AppBaseController
@@ -73,13 +74,27 @@ class diagnosisController extends AppBaseController
      * @param CreatediagnosisRequest $request
      * @return Response
      */
-    public function store(CreatediagnosisRequest $request)
-    {
-        $input = $request->all();
-        $diagnosis = $this->diagnosisRepository->create($input);
-        Flash::success('Diagnosis saved successfully.');
-        return redirect(route('diagnoses.index'));
+   public function store(CreatediagnosisRequest $request)
+{
+    $input = $request->all();
+
+    // 🔐 Use session-based login since you're not using Laravel Auth
+    $staffId = session('staff_id'); // Laravel-friendly way to get session variable
+    $staff = Staffmember::find($staffId);
+
+    if ($staff) {
+        $input['lastupdatedby'] = $staff->id;
+    } else {
+        Flash::error('No staff member found in session.');
+        return redirect()->back();
     }
+
+    $this->diagnosisRepository->create($input);
+
+    Flash::success('Diagnosis saved successfully.');
+    return redirect(route('diagnoses.index'));
+}
+
 
     /**
      * Display the specified diagnosis.

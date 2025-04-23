@@ -46,4 +46,4 @@ class User extends Authenticatable
 {
     return $this->hasOne(\App\Models\StaffMember::class, 'email', 'email');
 }
-
+}

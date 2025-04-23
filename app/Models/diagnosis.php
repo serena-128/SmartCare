@@ -38,8 +38,9 @@ class Diagnosis extends Model
     }
 
     public function lastUpdatedBy()
-    {
-        return $this->belongsTo(StaffMember::class, 'lastupdatedby');
-    }
+{
+    return $this->belongsTo(\App\Models\Staffmember::class, 'lastupdatedby');
+}
+
 }
 
