@@ -305,3 +305,5 @@ Route::get('/residents/search', [ResidentController::class, 'searchPage'])->name
 Route::get('/residents/search-results', [ResidentController::class, 'searchResults'])->name('residents.searchResults');
 
 Route::resource('residents', ResidentController::class); // <-- Leave this below
+
+Route::resource('feedback', App\Http\Controllers\feedbackController::class);

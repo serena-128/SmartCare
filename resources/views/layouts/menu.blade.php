@@ -111,3 +111,11 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('feedback.index') }}"
+       class="nav-link {{ Request::is('feedback*') ? 'active' : '' }}">
+        <p>Feedback</p>
+    </a>
+</li>
+
+
