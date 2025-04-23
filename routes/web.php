@@ -171,13 +171,15 @@ Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shi
 Route::middleware(['auth', 'role:Nurse|Caregiver|Doctor'])->group(function () {
     Route::get('/my-schedule', [StaffShiftController::class, 'index'])->name('staff.schedule');
 });
+
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\MaintenanceRequestController;
 
+// ✅ Protected routes for Operational Manager
 Route::middleware(['auth', 'role:Operational Manager'])->group(function () {
     Route::resource('supplies', SupplyController::class);
     Route::resource('maintenance-requests', MaintenanceRequestController::class);
+    
+    // Excel export for supplies (only accessible to Operational Manager)
+    Route::get('/supplies/export/excel', [SupplyController::class, 'exportExcel'])->name('supplies.export.excel');
 });
-
-
-Route::resource('supplies', \App\Http\Controllers\SupplyController::class);
