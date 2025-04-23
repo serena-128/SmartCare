@@ -77,14 +77,20 @@ class StaffMemberController extends AppBaseController
     public function edit($id)
     {
         $staffMember = $this->staffMemberRepository->find($id);
-
+    
         if (empty($staffMember)) {
             Flash::error('Staff Member not found');
             return redirect(route('staffmembers.index'));
         }
-
-        return view('staffmembers.edit')->with('staffMember', $staffMember);
+    
+        // Build full name for dropdown
+        $supervisors = \App\Models\StaffMember::all()->mapWithKeys(function ($staff) {
+            return [$staff->id => $staff->firstname . ' ' . $staff->lastname];
+        });
+    
+        return view('staffmembers.edit', compact('staffMember', 'supervisors'));
     }
+    
 
     public function update($id, UpdateStaffMemberRequest $request)
     {
@@ -182,9 +188,6 @@ class StaffMemberController extends AppBaseController
 
         return view('staffmembers.staff_profile')->with('staffMember', $staff);
     }
-    public function supervisor()
-{
-    return $this->belongsTo(StaffMember::class, 'reportsto');
-}
+
 
 }

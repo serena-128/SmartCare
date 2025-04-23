@@ -10,10 +10,13 @@
 
             {!! Form::model($staffMember, ['route' => ['staffmembers.update', $staffMember->id], 'method' => 'patch']) !!}
 
+
             <div class="mb-3">
-                {!! Form::label('reportsto', 'Supervisor ID:') !!}
-                {!! Form::number('reportsto', null, ['class' => 'form-control']) !!}
-            </div>
+    {!! Form::label('reportsto', 'Supervisor:') !!}
+    {!! Form::select('reportsto', $supervisors, null, ['class' => 'form-select', 'placeholder' => 'Select Supervisor']) !!}
+</div>
+
+
 
             <div class="mb-3">
                 {!! Form::label('firstname', 'First Name:') !!}
