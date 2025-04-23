@@ -176,10 +176,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire({
                         title: 'Edit Alert Details',
                         html: `
-                            <input id="edit-alerttype" class="swal2-input" placeholder="Alert Type" value="${alertType}">
-                            <input id="edit-urgency" class="swal2-input" placeholder="Urgency" value="${urgency}">
-                            <textarea id="edit-details" class="swal2-textarea" placeholder="Details">${details}</textarea>
-                        `,
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <input id="edit-alerttype" class="swal2-input" placeholder="Alert Type" value="${alertType}">
+
+                        <select id="edit-urgency" class="swal2-select">
+                            <option value="High" ${urgency === 'High' ? 'selected' : ''}>🔴 High</option>
+                            <option value="Medium" ${urgency === 'Medium' ? 'selected' : ''}>🟠 Medium</option>
+                            <option value="Low" ${urgency === 'Low' ? 'selected' : ''}>🟡 Low</option>
+                        </select>
+
+                        <textarea id="edit-details" class="swal2-textarea" placeholder="Details">${details}</textarea>
+                    </div>
+                `,
+
                         focusConfirm: false,
                         showCancelButton: true,
                         confirmButtonText: 'Save Changes',
