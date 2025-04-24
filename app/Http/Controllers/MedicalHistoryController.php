@@ -34,14 +34,16 @@ class MedicalHistoryController extends Controller
         return view('medical_history.index', compact('histories', 'residentId'));
     }
     
-    public function overview(Request $request)
+ public function overview(Request $request)
 {
     $type = $request->query('type');
     $search = $request->query('search');
     $from = $request->query('from');
     $to = $request->query('to');
 
-    $residents = Resident::whereHas('medicalHistories', function ($query) use ($type, $from, $to) {
+    // Fetch all residents and eager load their medical histories
+    $residents = Resident::with(['medicalHistories' => function ($query) use ($type, $from, $to) {
+        // Apply filters to medical histories if provided
         if ($type) {
             $query->where('type', $type);
         }
@@ -51,20 +53,11 @@ class MedicalHistoryController extends Controller
         if ($to) {
             $query->whereDate('diagnosed_at', '<=', $to);
         }
-    })
-    ->with(['medicalHistories' => function ($query) use ($type, $from, $to) {
-        if ($type) {
-            $query->where('type', $type);
-        }
-        if ($from) {
-            $query->whereDate('diagnosed_at', '>=', $from);
-        }
-        if ($to) {
-            $query->whereDate('diagnosed_at', '<=', $to);
-        }
+        // Order medical histories by diagnosed date descending to get the most recent one
         $query->orderByDesc('diagnosed_at');
     }])
     ->when($search, function ($query, $search) {
+        // Apply search filter by resident name
         $query->where(function ($q) use ($search) {
             $q->where('firstname', 'like', "%$search%")
               ->orWhere('lastname', 'like', "%$search%");
