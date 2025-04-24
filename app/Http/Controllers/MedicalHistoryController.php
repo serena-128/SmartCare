@@ -34,11 +34,28 @@ class MedicalHistoryController extends Controller
         return view('medical_history.index', compact('histories', 'residentId'));
     }
     
-    public function overview()
+    public function overview(Request $request)
 {
-    $residents = Resident::with(['medicalHistories'])->get(); // eager load histories
-    return view('medical_history.overview', compact('residents'));
+    $type = $request->query('type');
+    $search = $request->query('search');
+
+    $residents = \App\Models\Resident::with(['medicalHistories' => function ($query) use ($type) {
+        if ($type) {
+            $query->where('type', $type);
+        }
+        $query->orderByDesc('diagnosed_at');
+    }])
+    ->when($search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('firstname', 'like', "%$search%")
+              ->orWhere('lastname', 'like', "%$search%");
+        });
+    })
+    ->get();
+
+    return view('medical_history.overview', compact('residents', 'type', 'search'));
 }
+
     public function timeline($id)
 {
     $resident = Resident::with(['medicalHistories' => function($q) {
