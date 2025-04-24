@@ -50,6 +50,7 @@ use App\Http\Controllers\ResidentPharmacyController;
 use App\Http\Controllers\DietaryController;
 use App\Http\Controllers\StaffEventController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\MedicalHistoryController;
 /*
 |---------------------------------------------------------------------- 
 | Web Routes
@@ -417,3 +418,9 @@ Route::post('/staff/events', [StaffEventController::class, 'store']);
 Route::get('/staff/photo-gallery', [StaffController::class, 'photoGallery'])->name('staff.photoGallery');
 
 Route::post('/emergencyalerts/{id}/progress', [emergencyalertController::class, 'markInProgress']);
+Route::middleware(['auth:staff'])->group(function () {
+    Route::post('/medical-history/store', [MedicalHistoryController::class, 'store'])->name('medical-history.store');
+    Route::get('/resident/{residentId}/medical-history', [MedicalHistoryController::class, 'index'])->name('medical-history.index');
+});
+
+Route::get('/medical-history', [MedicalHistoryController::class, 'overview'])->name('medical-history.overview');

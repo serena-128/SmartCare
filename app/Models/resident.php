@@ -108,6 +108,8 @@ public function dietaryRestrictions()
 {
     return $this->hasOne(DietaryRestriction::class, 'residentid');
 }
-
+public function medicalHistories() {
+    return $this->hasMany(MedicalHistory::class);
+}
 
 }

@@ -54,42 +54,57 @@
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    @foreach($diagnoses as $diagnosis)
-                        @php
-                            $urgentConditions = ['Hypertension', 'Anemia', 'Heart Failure', 'Stroke'];
-                        @endphp
-                        <tr class="{{ in_array($diagnosis->diagnosis, $urgentConditions) ? 'table-danger' : '' }}">
-                            <td>{{ optional($diagnosis->resident)->firstname }} {{ optional($diagnosis->resident)->lastname }}</td>
-                            <td>{{ $diagnosis->diagnosis }}</td>
-                            <td>{{ $diagnosis->vitalsigns }}</td>
-                            <td>{{ $diagnosis->treatment }}</td>
-                            <td>{{ $diagnosis->testresults }}</td>
-                            <td>{{ $diagnosis->notes }}</td>
-                            <td>
-                            {{ optional($diagnosis->lastUpdatedBy)->firstname }} {{ optional($diagnosis->lastUpdatedBy)->lastname }}
-                        </td>
+<tbody>
+@foreach($diagnoses as $residentId => $residentDiagnoses)
+    @php
+        $resident = $residentDiagnoses->first()->resident;
+    @endphp
+    <tr class="table-primary">
+        <td colspan="8">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>{{ $resident->firstname }} {{ $resident->lastname }}</strong>
+                <button class="btn btn-sm btn-outline-secondary" type="button"
+                        onclick="toggleRows('{{ $residentId }}')">
+                    Toggle Diagnoses
+                </button>
+            </div>
+        </td>
+    </tr>
+
+    @foreach($residentDiagnoses as $diagnosis)
+    <tr class="resident-rows-{{ $residentId }}">
+        <td></td> <!-- Empty since name is above -->
+        <td>{{ $diagnosis->diagnosis }}</td>
+        <td>{{ $diagnosis->vitalsigns }}</td>
+        <td>{{ $diagnosis->treatment }}</td>
+        <td>{{ $diagnosis->testresults }}</td>
+        <td>{{ $diagnosis->notes }}</td>
+        <td>{{ optional($diagnosis->lastUpdatedBy)->firstname }} {{ optional($diagnosis->lastUpdatedBy)->lastname }}</td>
+        <td class="text-center">
+            <button class="btn btn-sm btn-warning edit-btn"
+    data-id="{{ $diagnosis->id }}"
+    data-resident="{{ $diagnosis->resident->firstname }}"
+    data-diagnosis="{{ $diagnosis->diagnosis }}"
+    data-vitalsigns="{{ $diagnosis->vitalsigns }}"
+    data-treatment="{{ $diagnosis->treatment }}"
+    data-testresults="{{ $diagnosis->testresults }}"
+    data-notes="{{ $diagnosis->notes }}">
+    Edit
+</button>
+
+        </td>
+    </tr>
+    @endforeach
+@endforeach
+</tbody>
 
 
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="{{ route('diagnoses.show', $diagnosis->id) }}" class="btn btn-outline-info btn-sm"><i class="fas fa-eye"></i></a>
-                                    <a href="{{ route('diagnoses.edit', $diagnosis->id) }}" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <button class="btn btn-outline-danger btn-sm delete-btn" data-id="{{ $diagnosis->id }}"><i class="fas fa-trash-alt"></i></button>
-                                    <form id="delete-form-{{ $diagnosis->id }}" action="{{ route('diagnoses.destroy', $diagnosis->id) }}" method="POST" style="display: none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
+
+
                 </table>
             </div>
 
-            <!-- Pagination -->
-            {{ $diagnoses->appends(request()->query())->links() }}
+            
 
             @else
                 <p class="text-center text-muted">No diagnoses found.</p>
@@ -149,6 +164,47 @@
     </div>
   </div>
 </div>
+<!-- Shared Edit Diagnosis Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form method="POST" id="editDiagnosisForm">
+      @csrf
+      @method('PUT')
+      <div class="modal-content shadow">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="editModalLabel">Edit Diagnosis</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Diagnosis</label>
+            <input type="text" name="diagnosis" id="edit-diagnosis" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Vital Signs</label>
+            <input type="text" name="vitalsigns" id="edit-vitalsigns" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Treatment</label>
+            <input type="text" name="treatment" id="edit-treatment" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Test Results</label>
+            <input type="text" name="testresults" id="edit-testresults" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Notes</label>
+            <textarea name="notes" id="edit-notes" class="form-control"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 @endsection
 
@@ -174,4 +230,35 @@
         });
     });
 </script>
+<script>
+function toggleRows(residentId) {
+    document.querySelectorAll('.resident-rows-' + residentId).forEach(row => {
+        row.style.display = row.style.display === 'none' ? '' : 'none';
+    });
+}
+</script>
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const form = document.getElementById('editDiagnosisForm');
+            form.action = `/diagnoses/${id}`;
+
+            // Fill modal inputs
+            document.getElementById('edit-diagnosis').value = this.dataset.diagnosis;
+            document.getElementById('edit-vitalsigns').value = this.dataset.vitalsigns;
+            document.getElementById('edit-treatment').value = this.dataset.treatment;
+            document.getElementById('edit-testresults').value = this.dataset.testresults;
+            document.getElementById('edit-notes').value = this.dataset.notes;
+
+            // Optional: Update title with resident name
+            document.getElementById('editModalLabel').innerText = `Edit Diagnosis for ${this.dataset.resident}`;
+
+            // Open modal programmatically
+            const modal = new bootstrap.Modal(document.getElementById('editModal'));
+            modal.show();
+        });
+    });
+</script>
+
 @endpush

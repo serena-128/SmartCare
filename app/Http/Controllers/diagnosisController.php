@@ -29,7 +29,7 @@ class diagnosisController extends AppBaseController
      *
      * @return Response
      */
-    public function index(Request $request)
+  public function index(Request $request)
 {
     $query = Diagnosis::with(['resident', 'lastUpdatedBy']);
 
@@ -51,7 +51,10 @@ class diagnosisController extends AppBaseController
         $query->where('lastupdatedby', $request->staff_id);
     }
 
-    $diagnoses = $query->paginate(10)->appends($request->all());
+    // 👉 Get all and group by resident
+    $allDiagnoses = $query->orderBy('residentid')->get();
+    $diagnoses = $allDiagnoses->groupBy('residentid');
+
     $staffMembers = \App\Models\Staffmember::all();
 
     return view('diagnoses.index', compact('diagnoses', 'staffMembers'));
@@ -140,18 +143,20 @@ class diagnosisController extends AppBaseController
      * @return Response
      */
     public function update($id, UpdatediagnosisRequest $request)
-    {
-        $diagnosis = $this->diagnosisRepository->find($id);
+{
+    $diagnosis = Diagnosis::find($id);
 
-        if (empty($diagnosis)) {
-            Flash::error('Diagnosis not found');
-            return redirect(route('diagnoses.index'));
-        }
-
-        $diagnosis = $this->diagnosisRepository->update($request->all(), $id);
-        Flash::success('Diagnosis updated successfully.');
+    if (!$diagnosis) {
+        Flash::error('Diagnosis not found.');
         return redirect(route('diagnoses.index'));
     }
+
+    $diagnosis->update($request->all());
+
+    Flash::success('Diagnosis updated successfully.');
+    return redirect(route('diagnoses.index'));
+}
+
 
     /**
      * Remove the specified diagnosis from storage.
