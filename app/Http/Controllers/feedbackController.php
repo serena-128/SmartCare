@@ -29,11 +29,10 @@ class feedbackController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $feedback = $this->feedbackRepository->all();
-
-        return view('feedback.index')
-            ->with('feedback', $feedback);
+        $feedback = \App\Models\Feedback::orderBy('created_at', 'desc')->paginate(10);
+        return view('feedback.index', compact('feedback'));
     }
+    
 
     /**
      * Show the form for creating a new feedback.
@@ -55,13 +54,23 @@ class feedbackController extends AppBaseController
     public function store(CreatefeedbackRequest $request)
     {
         $input = $request->all();
-
-        $feedback = $this->feedbackRepository->create($input);
-
-        Flash::success('Feedback saved successfully.');
-
+    
+        // Check for anonymity
+        $input['staff_id'] = $request->has('is_anonymous') ? null : auth()->user()->id;
+        $input['is_anonymous'] = $request->has('is_anonymous') ? true : false;
+    
+        // Handle file upload
+        if ($request->hasFile('attachment')) {
+            $path = $request->file('attachment')->store('feedback_files', 'public');
+            $input['attachment'] = $path;
+        }
+    
+        $this->feedbackRepository->create($input);
+    
+        Flash::success('Feedback submitted successfully.');
         return redirect(route('feedback.index'));
     }
+    
 
     /**
      * Display the specified feedback.

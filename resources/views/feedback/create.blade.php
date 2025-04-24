@@ -12,6 +12,8 @@
 
             <div class="box-body">
                 <div class="row">
+                {!! Form::open(['route' => 'feedback.store', 'files' => true]) !!}
+
                     {!! Form::open(['route' => 'feedback.store']) !!}
 
                         @include('feedback.fields')
