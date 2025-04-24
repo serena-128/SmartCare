@@ -54,7 +54,7 @@
         };
     @endphp
 
-    <div class="card mb-4 shadow-sm border-0">
+    <div class="card mb-4 shadow-sm border-0" data-bs-toggle="modal" data-bs-target="#residentModal{{ $resident->id }}">
         <div class="card-body">
             <h5 class="fw-bold mb-1">{{ $resident->firstname }} {{ $resident->lastname }}</h5>
             <p class="text-muted mb-1">🛏️ Room {{ $resident->roomnumber ?? 'N/A' }}</p>
@@ -67,27 +67,54 @@
                 <div class="bg-light p-3 rounded">
                     <p class="mb-1">
                         {{ $typeIcon }} <strong>{{ $recentEntry->title }}</strong>
-                        <small class="text-muted">({{ ucfirst($recentEntry->type) }}, 
+                        <small class="text-muted">({{ ucfirst($recentEntry->type) }} | 
                         {{ \Carbon\Carbon::parse($recentEntry->diagnosed_at)->format('M Y') }})</small>
                     </p>
                     <p class="text-muted small mb-0">{{ Str::limit($recentEntry->description, 100) }}</p>
                 </div>
             @endif
-
-            <div class="d-flex justify-content-end gap-2 mt-3">
-                <a href="{{ route('medical-history.index', $resident->id) }}" class="btn btn-sm btn-outline-secondary">
-                    📄 View Details
-                </a>
-                <a href="{{ route('medical-history.timeline', $resident->id) }}" class="btn btn-sm btn-outline-dark">
-                    🗓️ View Timeline
-                </a>
-                <!-- Add the PDF export button -->
-                <a href="{{ route('medical-history.export-pdf', $resident->id) }}" class="btn btn-outline-primary btn-sm">
-                📥 Export to PDF
-            </a>
-                    </div>
         </div>
     </div>
+
+    <!-- Buttons to View Timeline and Export PDF -->
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <a href="{{ route('medical-history.timeline', $resident->id) }}" class="btn btn-sm btn-outline-dark">
+            🗓️ View Timeline
+        </a>
+        <!-- Add the PDF export button -->
+        <a href="{{ route('medical-history.export-pdf', $resident->id) }}" class="btn btn-outline-primary btn-sm">
+            📥 Export to PDF
+        </a>
+    </div>
+
+    <!-- Modal for Resident Details -->
+    <div class="modal fade" id="residentModal{{ $resident->id }}" tabindex="-1" aria-labelledby="residentModalLabel{{ $resident->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="residentModalLabel{{ $resident->id }}">Recent Medical History - {{ $resident->firstname }} {{ $resident->lastname }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if ($recentEntry)
+                        <p><strong>Title:</strong> {{ $recentEntry->title }}</p>
+                        <p><strong>Type:</strong> {{ ucfirst($recentEntry->type) }}</p>
+                        <p><strong>Description:</strong> {{ $recentEntry->description }}</p>
+                        <p><strong>Diagnosed At:</strong> {{ \Carbon\Carbon::parse($recentEntry->diagnosed_at)->format('M Y') }}</p>
+                    @else
+                        <p>No recent medical history found.</p>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ route('medical-history.export-pdf', $resident->id) }}" class="btn btn-outline-primary btn-sm">
+                        📥 Export to PDF
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @empty
     <div class="alert alert-warning">No residents found.</div>
 @endforelse

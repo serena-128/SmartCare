@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Event;
 use App\Observers\EventObserver;
-use App\Models\Appointment;
 use App\Observers\AppointmentObserver;
 use App\Models\News;
 use App\Observers\NewsObserver;
@@ -34,8 +33,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-       Event::observe(EventObserver::class);
-       Appointment::observe(AppointmentObserver::class); 
+       Event::observe(EventObserver::class); 
         News::observe(NewsObserver::class);
         Bulletin::observe(BulletinObserver::class);
         Photo::observe(PhotoObserver::class);

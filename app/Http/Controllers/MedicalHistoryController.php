@@ -102,17 +102,58 @@ public function exportPdf($residentId)
 
     // Prepare the HTML content for the PDF
     ob_start();
-    echo '<h1>Medical History of ' . $residentFullName . '</h1>';
+
+    // Start the HTML content with a title
+    echo '<h1 style="text-align: center;">Medical History of ' . $residentFullName . '</h1>';
+
+    // Adding some styling to the table
+    echo '<style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            table, th, td {
+                border: 1px solid black;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .divider {
+                border-top: 2px solid #000;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+        </style>';
+
+    // Table Header
     echo '<table>';
+    echo '<thead>';
     echo '<tr><th>Title</th><th>Type</th><th>Description</th><th>Diagnosed At</th></tr>';
-    foreach ($medicalHistories as $entry) {
+    echo '</thead>';
+    echo '<tbody>';
+
+    // Loop through the medical histories and populate the table
+    foreach ($medicalHistories as $index => $entry) {
         echo '<tr>';
         echo '<td>' . $entry->title . '</td>';
         echo '<td>' . $entry->type . '</td>';
         echo '<td>' . $entry->description . '</td>';
         echo '<td>' . \Carbon\Carbon::parse($entry->diagnosed_at)->format('M Y') . '</td>';
         echo '</tr>';
+
+        // Add a divider after each medical history entry
+        if ($index < count($medicalHistories) - 1) {
+            echo '<tr><td colspan="4" class="divider"></td></tr>';
+        }
     }
+
+    // Close table tags
+    echo '</tbody>';
     echo '</table>';
 
     // Get the HTML content
@@ -134,6 +175,7 @@ public function exportPdf($residentId)
         ->header('Content-Type', 'application/pdf')
         ->header('Content-Disposition', 'attachment; filename="' . $pdfFilename . '"');
 }
+
 
 
 }
