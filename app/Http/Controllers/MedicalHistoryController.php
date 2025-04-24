@@ -91,20 +91,20 @@ class MedicalHistoryController extends Controller
 
     return view('medical_history.timeline', compact('resident'));
 }
- public function exportPdf($residentId)
+public function exportPdf($residentId)
 {
     // Fetch the medical histories for the resident
     $medicalHistories = MedicalHistory::where('resident_id', $residentId)->get();
-    $resident = Resident::findOrFail($residentId);
+    $resident = Resident::findOrFail($residentId); // Fetch resident details
 
-    // Start the output buffer to capture the PDF content
+    // Fetch the full name of the resident
+    $residentFullName = $resident->firstname . ' ' . $resident->lastname;
+
+    // Prepare the HTML content for the PDF
     ob_start();
-
-    // Create a basic HTML content for the PDF
-    echo '<h1>Medical History for ' . $resident->firstname . ' ' . $resident->lastname . '</h1>';
-    echo '<table border="1">';
+    echo '<h1>Medical History of ' . $residentFullName . '</h1>';
+    echo '<table>';
     echo '<tr><th>Title</th><th>Type</th><th>Description</th><th>Diagnosed At</th></tr>';
-
     foreach ($medicalHistories as $entry) {
         echo '<tr>';
         echo '<td>' . $entry->title . '</td>';
@@ -113,22 +113,26 @@ class MedicalHistoryController extends Controller
         echo '<td>' . \Carbon\Carbon::parse($entry->diagnosed_at)->format('M Y') . '</td>';
         echo '</tr>';
     }
-
     echo '</table>';
 
     // Get the HTML content
     $htmlContent = ob_get_clean();
 
-    // Use PHP to generate the PDF (No extra packages required)
-    $pdf = new \TCPDF();  // TCPDF should be available by default in the Laravel project.
+    // Use TCPDF to generate the PDF
+    $pdf = new TCPDF();
     $pdf->AddPage();
     $pdf->writeHTML($htmlContent);  // Write the HTML content as PDF
-    $pdfOutput = $pdf->Output('medical_history_' . $residentId . '.pdf', 'S'); // 'S' means output as string
 
-    // Return the PDF file as a download
+    // Set the filename dynamically based on the resident's full name
+    $pdfFilename = 'medical_history_' . $residentFullName . '.pdf';
+
+    // Output the PDF to the browser for download
+    $pdfOutput = $pdf->Output($pdfFilename, 'S'); // 'S' means output as a string
+
+    // Return the PDF file as a download with the resident's name in the filename
     return response($pdfOutput, 200)
         ->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'attachment; filename="medical_history_' . $residentId . '.pdf"');
+        ->header('Content-Disposition', 'attachment; filename="' . $pdfFilename . '"');
 }
 
 
