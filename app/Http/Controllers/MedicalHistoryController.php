@@ -39,4 +39,12 @@ class MedicalHistoryController extends Controller
     $residents = Resident::with(['medicalHistories'])->get(); // eager load histories
     return view('medical_history.overview', compact('residents'));
 }
+    public function timeline($id)
+{
+    $resident = Resident::with(['medicalHistories' => function($q) {
+        $q->orderBy('diagnosed_at', 'desc');
+    }])->findOrFail($id);
+
+    return view('medical_history.timeline', compact('resident'));
+}
 }

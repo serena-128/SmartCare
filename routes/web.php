@@ -424,3 +424,4 @@ Route::middleware(['auth:staff'])->group(function () {
 });
 
 Route::get('/medical-history', [MedicalHistoryController::class, 'overview'])->name('medical-history.overview');
+Route::get('/resident/{id}/medical-history/timeline', [MedicalHistoryController::class, 'timeline'])->name('medical-history.timeline');
