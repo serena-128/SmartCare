@@ -81,7 +81,11 @@
                 <a href="{{ route('medical-history.timeline', $resident->id) }}" class="btn btn-sm btn-outline-dark">
                     🗓️ View Timeline
                 </a>
-            </div>
+                <!-- Add the PDF export button -->
+                <a href="{{ route('medical-history.export-pdf', $resident->id) }}" class="btn btn-outline-primary btn-sm">
+                📥 Export to PDF
+            </a>
+                    </div>
         </div>
     </div>
 @empty

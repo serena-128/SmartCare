@@ -51,6 +51,7 @@ use App\Http\Controllers\DietaryController;
 use App\Http\Controllers\StaffEventController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\MedicalHistoryController;
+
 /*
 |---------------------------------------------------------------------- 
 | Web Routes
@@ -425,3 +426,4 @@ Route::middleware(['auth:staff'])->group(function () {
 
 Route::get('/medical-history', [MedicalHistoryController::class, 'overview'])->name('medical-history.overview');
 Route::get('/resident/{id}/medical-history/timeline', [MedicalHistoryController::class, 'timeline'])->name('medical-history.timeline');
+Route::get('/medical-history/{residentId}/export-pdf', [MedicalHistoryController::class, 'exportPdf'])->name('medical-history.export-pdf');

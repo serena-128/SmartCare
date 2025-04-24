@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MedicalHistory;
 use Illuminate\Http\Request;
 use App\Models\Resident;
+use TCPDF;
 
 class MedicalHistoryController extends Controller
 {
@@ -90,4 +91,45 @@ class MedicalHistoryController extends Controller
 
     return view('medical_history.timeline', compact('resident'));
 }
+ public function exportPdf($residentId)
+{
+    // Fetch the medical histories for the resident
+    $medicalHistories = MedicalHistory::where('resident_id', $residentId)->get();
+    $resident = Resident::findOrFail($residentId);
+
+    // Start the output buffer to capture the PDF content
+    ob_start();
+
+    // Create a basic HTML content for the PDF
+    echo '<h1>Medical History for ' . $resident->firstname . ' ' . $resident->lastname . '</h1>';
+    echo '<table border="1">';
+    echo '<tr><th>Title</th><th>Type</th><th>Description</th><th>Diagnosed At</th></tr>';
+
+    foreach ($medicalHistories as $entry) {
+        echo '<tr>';
+        echo '<td>' . $entry->title . '</td>';
+        echo '<td>' . $entry->type . '</td>';
+        echo '<td>' . $entry->description . '</td>';
+        echo '<td>' . \Carbon\Carbon::parse($entry->diagnosed_at)->format('M Y') . '</td>';
+        echo '</tr>';
+    }
+
+    echo '</table>';
+
+    // Get the HTML content
+    $htmlContent = ob_get_clean();
+
+    // Use PHP to generate the PDF (No extra packages required)
+    $pdf = new \TCPDF();  // TCPDF should be available by default in the Laravel project.
+    $pdf->AddPage();
+    $pdf->writeHTML($htmlContent);  // Write the HTML content as PDF
+    $pdfOutput = $pdf->Output('medical_history_' . $residentId . '.pdf', 'S'); // 'S' means output as string
+
+    // Return the PDF file as a download
+    return response($pdfOutput, 200)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'attachment; filename="medical_history_' . $residentId . '.pdf"');
+}
+
+
 }
