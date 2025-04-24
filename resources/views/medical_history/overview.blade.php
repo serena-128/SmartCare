@@ -6,7 +6,7 @@
 
     <!-- 🔍 Filter + Search Form -->
     <form method="GET" action="{{ route('medical-history.overview') }}" class="row g-3 align-items-end mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="type" class="form-label fw-bold">Filter by Type</label>
             <select name="type" id="type" class="form-select">
                 <option value="">All Types</option>
@@ -16,14 +16,26 @@
                 <option value="allergy" {{ request('type') == 'allergy' ? 'selected' : '' }}>🌿 Allergy</option>
             </select>
         </div>
-        <div class="col-md-4">
+
+        <div class="col-md-3">
             <label for="search" class="form-label fw-bold">Search by Name</label>
             <input type="text" name="search" id="search" class="form-control" value="{{ request('search') }}" placeholder="e.g. John, Smith...">
         </div>
-        <div class="col-md-4 d-flex justify-content-start gap-2">
-            <button type="submit" class="btn btn-primary mt-4">Apply Filters</button>
-            @if(request('type') || request('search'))
-                <a href="{{ route('medical-history.overview') }}" class="btn btn-outline-secondary mt-4">Reset</a>
+
+        <div class="col-md-3">
+            <label for="from" class="form-label fw-bold">From Date</label>
+            <input type="date" name="from" id="from" class="form-control" value="{{ request('from') }}">
+        </div>
+
+        <div class="col-md-3">
+            <label for="to" class="form-label fw-bold">To Date</label>
+            <input type="date" name="to" id="to" class="form-control" value="{{ request('to') }}">
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-start gap-2 mt-2">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            @if(request()->anyFilled(['type', 'search', 'from', 'to']))
+                <a href="{{ route('medical-history.overview') }}" class="btn btn-outline-secondary">Reset</a>
             @endif
         </div>
     </form>
@@ -31,11 +43,7 @@
     <!-- 🔁 Resident Cards -->
     @forelse ($residents as $resident)
         @php
-            $recentEntry = $resident->medicalHistories
-                ->where('diagnosed_at', '>=', now()->subYears(10))
-                ->sortByDesc('diagnosed_at')
-                ->first();
-
+            $recentEntry = $resident->medicalHistories->first();
             $typeIcon = match(optional($recentEntry)->type) {
                 'illness' => '🧪',
                 'surgery' => '🛠️',
@@ -63,8 +71,6 @@
                         </p>
                         <p class="text-muted small mb-0">{{ Str::limit($recentEntry->description, 100) }}</p>
                     </div>
-                @else
-                    <p class="text-muted">No medical history in the past 10 years.</p>
                 @endif
 
                 <div class="d-flex justify-content-end gap-2 mt-3">

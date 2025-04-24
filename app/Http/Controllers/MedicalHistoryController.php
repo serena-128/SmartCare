@@ -38,10 +38,29 @@ class MedicalHistoryController extends Controller
 {
     $type = $request->query('type');
     $search = $request->query('search');
+    $from = $request->query('from');
+    $to = $request->query('to');
 
-    $residents = \App\Models\Resident::with(['medicalHistories' => function ($query) use ($type) {
+    $residents = Resident::whereHas('medicalHistories', function ($query) use ($type, $from, $to) {
         if ($type) {
             $query->where('type', $type);
+        }
+        if ($from) {
+            $query->whereDate('diagnosed_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('diagnosed_at', '<=', $to);
+        }
+    })
+    ->with(['medicalHistories' => function ($query) use ($type, $from, $to) {
+        if ($type) {
+            $query->where('type', $type);
+        }
+        if ($from) {
+            $query->whereDate('diagnosed_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('diagnosed_at', '<=', $to);
         }
         $query->orderByDesc('diagnosed_at');
     }])
@@ -53,7 +72,7 @@ class MedicalHistoryController extends Controller
     })
     ->get();
 
-    return view('medical_history.overview', compact('residents', 'type', 'search'));
+    return view('medical_history.overview', compact('residents', 'type', 'search', 'from', 'to'));
 }
 
     public function timeline($id)
