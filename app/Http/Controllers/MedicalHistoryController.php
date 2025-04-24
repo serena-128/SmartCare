@@ -41,8 +41,21 @@ class MedicalHistoryController extends Controller
     $from = $request->query('from');
     $to = $request->query('to');
 
-    // Fetch all residents and eager load their medical histories
-    $residents = Resident::with(['medicalHistories' => function ($query) use ($type, $from, $to) {
+    // Fetch all residents that have medical histories within the date range
+    $residents = Resident::whereHas('medicalHistories', function ($query) use ($type, $from, $to) {
+        // Apply filters to medical histories if provided
+        if ($type) {
+            $query->where('type', $type);
+        }
+        if ($from) {
+            $query->whereDate('diagnosed_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('diagnosed_at', '<=', $to);
+        }
+        // Only consider medical histories with relevant date range
+    })
+    ->with(['medicalHistories' => function ($query) use ($type, $from, $to) {
         // Apply filters to medical histories if provided
         if ($type) {
             $query->where('type', $type);
@@ -67,6 +80,7 @@ class MedicalHistoryController extends Controller
 
     return view('medical_history.overview', compact('residents', 'type', 'search', 'from', 'to'));
 }
+
 
     public function timeline($id)
 {
