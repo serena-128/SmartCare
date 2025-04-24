@@ -4,7 +4,9 @@
 <div class="container">
     <h2 class="mb-4">
         🧬 Medical Timeline: {{ $resident->firstname }} {{ $resident->lastname }}
-        <a href="{{ route('medical-history.index', $resident->id) }}" class="btn btn-outline-secondary btn-sm float-end">← Back to Medical History</a>
+        <a href="{{ route('medical-history.overview') }}" class="btn btn-outline-secondary btn-sm float-end">← Back to Medical History</a>
+
+
     </h2>
 
     @if ($resident->medicalHistories->isEmpty())
@@ -21,7 +23,9 @@
                         <span class="badge bg-info text-dark mb-2">{{ ucfirst($entry->type) }}</span>
                         <p class="mb-1">{{ $entry->description }}</p>
                         <small class="text-muted">
-                            Source: {{ $entry->source ?? 'N/A' }} | Visibility: {{ $entry->visibility }}
+                            Source: {{ $entry->source ?? 'N/A' }}
+                            <!-- Visibility is hidden, so this line is removed or commented out -->
+                            <!-- | Visibility: {{ $entry->visibility }} -->
                         </small>
                     </div>
                 </div>
