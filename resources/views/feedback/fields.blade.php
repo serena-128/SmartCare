@@ -1,53 +1,67 @@
-<!-- Staff Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('staff_id', 'Staff Id:') !!}
-    {!! Form::number('staff_id', null, ['class' => 'form-control']) !!}
+<!-- STAFF NAME (Read-only) -->
+<div class="mb-3">
+    <label class="form-label fw-bold text-purple">👤 Staff Name:</label>
+    <input type="text" class="form-control bg-light"
+       value="{{ $staff ? $staff->firstname . ' ' . $staff->lastname : 'Unknown Staff' }}"
+       disabled>
+<input type="hidden" name="staff_id" value="{{ $staff ? $staff->id : '' }}">
+
 </div>
 
-<!-- Category Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('category', 'Category:') !!}
-    {!! Form::text('category', null, ['class' => 'form-control']) !!}
+<!-- CATEGORY -->
+<div class="mb-3">
+    <label for="category" class="form-label fw-bold text-purple">📝 Feedback Category:</label>
+    <select name="category" id="category" class="form-select" required>
+        <option value="" disabled selected>Select a category</option>
+        <option value="Facility & Environment">Facility & Environment</option>
+        <option value="Staff & Service">Staff & Service</option>
+        <option value="Technology & Equipment">Technology & Equipment</option>
+        <option value="Other">Other (Please Specify)</option>
+    </select>
 </div>
 
-<!-- Subject Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('subject', 'Subject:') !!}
-    {!! Form::text('subject', null, ['class' => 'form-control']) !!}
+
+<!-- SUBJECT -->
+<div class="mb-3">
+    <label class="form-label fw-bold text-purple">📨 Subject:</label>
+    <input type="text" name="subject" class="form-control" placeholder="Enter subject" required>
 </div>
 
-<!-- Message Field -->
-<div class="form-group col-sm-12 col-lg-12">
-    {!! Form::label('message', 'Message:') !!}
-    {!! Form::textarea('message', null, ['class' => 'form-control']) !!}
+<!-- MESSAGE -->
+<div class="mb-3">
+    <label class="form-label fw-bold text-purple">💬 Message:</label>
+    <textarea name="message" class="form-control" rows="5" placeholder="Enter your feedback" required></textarea>
 </div>
 
-<!-- Rating Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('rating', 'Rating:') !!}
-    <label class="checkbox-inline">
-        {!! Form::hidden('rating', false) !!}
-        {!! Form::checkbox('rating', 1, null) !!} $VALUE$
+<!-- RATING -->
+<div class="mb-3">
+    <label class="form-label fw-bold text-purple">⭐ Rating (1-5):</label>
+    <select name="rating" class="form-select">
+        <option value="">Optional</option>
+        @for ($i = 1; $i <= 5; $i++)
+            <option value="{{ $i }}">{{ $i }}</option>
+        @endfor
+    </select>
+</div>
+
+<!-- ATTACHMENT -->
+<div class="mb-3">
+    <label class="form-label fw-bold text-purple">📎 Attachment (optional):</label>
+    <input type="file" name="attachment" class="form-control">
+</div>
+
+<!-- ANONYMOUS -->
+<div class="form-check mb-4">
+    <input class="form-check-input" type="checkbox" name="is_anonymous" id="anonymousCheck">
+    <label class="form-check-label" for="anonymousCheck">
+        Submit anonymously
     </label>
 </div>
 
-<!-- Attachment Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('attachment', 'Attachment:') !!}
-    {!! Form::text('attachment', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Is Anonymous Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('is_anonymous', 'Is Anonymous:') !!}
-    <label class="checkbox-inline">
-        {!! Form::hidden('is_anonymous', false) !!}
-        {!! Form::checkbox('is_anonymous', 1, null) !!} $VALUE$
-    </label>
-</div>
-
-<!-- Submit Field -->
-<div class="form-group col-sm-12">
-    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('feedback.index') !!}" class="btn btn-default">Cancel</a>
+<!-- SUBMIT BUTTON -->
+<div class="d-flex justify-content-start gap-3">
+    <button type="submit" class="btn btn-purple fw-bold">
+        <i class="fas fa-paper-plane"></i> Submit Feedback
+    </button>
+    <a href="{{ route('feedback.index') }}" class="btn btn-outline-secondary">Cancel</a>
 </div>

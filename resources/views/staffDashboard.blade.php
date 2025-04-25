@@ -82,7 +82,7 @@
                                 <li><a class="dropdown-item" href="{{ route('budget.manage') }}">💰 Budget</a></li>
                             @elseif($staff->staff_role === 'HR Coordinator')
                                 <li><a class="dropdown-item" href="{{ route('staffmembers.index') }}">👥 Staff Profiles</a></li>
-                                <li><a class="dropdown-item" href="#">📝 Feedback</a></li>
+                                <li><a class="dropdown-item" href="{{ route('feedback.index') }}">📝 Feedback</a></li>
                             @elseif($staff->staff_role === 'Operations Manager')
                                 <li><a class="dropdown-item" href="{{ route('supplies.index') }}">📦 Supplies</a></li>
                                 <li><a class="dropdown-item" href="{{ route('facility.maintenance') }}">🛠️ Maintenance</a></li>

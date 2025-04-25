@@ -2,9 +2,11 @@
 
 @section('content')
     <section class="content-header">
-        <h1>
-            feedback
-        </h1>
+    <div class="d-flex align-items-center mb-4">
+    <span style="font-size: 2rem; margin-right: 10px;">📩</span>
+    <h2 class="mb-0 fw-bold">Feedback</h2>
+</div>
+
     </section>
     <div class="content">
         @include('basic-template::common.errors')

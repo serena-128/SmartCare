@@ -41,9 +41,10 @@ class feedbackController extends AppBaseController
      */
     public function create()
     {
-        return view('feedback.create');
+        $staff = \App\Models\StaffMember::find(session('staff_id'));
+        return view('feedback.create', compact('staff'));
     }
-
+    
     /**
      * Store a newly created feedback in storage.
      *
