@@ -239,5 +239,38 @@ public function showReceivedMessages()
     return view('nextofkin.dashboard', compact('receivedMessages'));
 }
 
-    
+    // In app/Http/Controllers/nextofkinController.php
+
+public function staffViewNextOfKin()
+{
+    $nextOfKinData = NextOfKin::with('resident')->get();
+    $residents = \App\Models\Resident::all(); // Needed for the dropdown
+
+    return view('staff.nextofkin.index', compact('nextOfKinData', 'residents'));
+}
+
+    public function editFromStaffView($id)
+{
+    $kin = NextOfKin::findOrFail($id);
+    $residents = \App\Models\Resident::all(); // for dropdown if needed
+
+    return view('staff.nextofkin.edit', compact('kin', 'residents'));
+}
+    public function staffUpdateNextOfKin(Request $request, $id)
+{
+    $kin = NextOfKin::findOrFail($id);
+
+    $kin->update([
+        'firstname' => $request->firstname,
+        'lastname' => $request->lastname,
+        'relationshiptoresident' => $request->relationshiptoresident,
+        'contactnumber' => $request->contactnumber,
+        'resident_id' => $request->resident_id,
+    ]);
+
+    return response()->json(['message' => 'Next of Kin updated successfully!']);
+
+}
+
+
 }

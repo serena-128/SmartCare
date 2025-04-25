@@ -16,7 +16,9 @@ class CreateEventRsvpsTable extends Migration
         Schema::create('event_rsvps', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->foreignId('nextofkin_id')->constrained('nextofkin')->onDelete('cascade');
+            $table->unsignedInteger('nextofkin_id');
+            $table->foreign('nextofkin_id')->references('id')->on('nextofkin')->onDelete('cascade');
+
             // New columns for additional details:
             $table->string('event_title')->nullable();
             $table->string('nextofkin_name')->nullable();

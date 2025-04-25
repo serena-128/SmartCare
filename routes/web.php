@@ -427,3 +427,9 @@ Route::middleware(['auth:staff'])->group(function () {
 Route::get('/medical-history', [MedicalHistoryController::class, 'overview'])->name('medical-history.overview');
 Route::get('/resident/{id}/medical-history/timeline', [MedicalHistoryController::class, 'timeline'])->name('medical-history.timeline');
 Route::get('/medical-history/{residentId}/export-pdf', [MedicalHistoryController::class, 'exportPdf'])->name('medical-history.export-pdf');
+
+Route::get('/staff/nextofkin', [NextofkinController::class, 'staffViewNextOfKin'])->name('nextofkin.index');
+Route::get('/staff/nextofkin/{id}/edit', [NextofkinController::class, 'editFromStaffView'])->name('nextofkin.edit');
+Route::put('/staff/nextofkin/{id}/update', [nextofkinController::class, 'staffUpdateNextOfKin'])->name('staff.nextofkin.update');
+
+

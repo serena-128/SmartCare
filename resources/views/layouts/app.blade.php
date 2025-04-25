@@ -59,7 +59,7 @@
                             <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
                             <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
                             <li><a class="dropdown-item" href="{{ route('medical-history.overview') }}">📜 Medical History</a></li>
-                            <li><a class="dropdown-item" href="{{ route('dietary.index') }}">🧑‍🤝‍🧑 Next of Kin Information</a></li>
+                            <li><a class="dropdown-item" href="{{ route('nextofkin.index') }}">🧑‍🤝‍🧑 Next of Kin Information</a></li>
                             <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}"> 💊Medication Center</a></li>
                             <li><a class="dropdown-item" href="{{ route('dietary.index') }}">🍽️ Dietary</a></li>
                         </ul>

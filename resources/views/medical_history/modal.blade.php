@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg">
     <form method="POST" action="{{ route('medical-history.store') }}">
       @csrf
-      <input type="hidden" name="resident_id" value="{{ $residentId }}">
+      <input type="hidden" name="residentid" value="{{ $residentId }}">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add Medical History</h5>
