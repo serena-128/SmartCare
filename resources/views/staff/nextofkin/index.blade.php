@@ -63,6 +63,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     $('.editNextOfKinForm').on('submit', function(e) {
@@ -83,12 +84,21 @@ $(document).ready(function() {
     // Hide the modal after success
     form.closest('.modal').modal('hide');
 
-    // Show success message
-    alert(response.message);
+    // Show SweetAlert popup
+    Swal.fire({
+        icon: 'success',
+        title: 'Updated!',
+        text: response.message,
+        showConfirmButton: false,
+        timer: 2000
+    });
 
-    // Reload the page to refresh the table
-    location.reload();
+    // Reload the page after a small delay so user sees the message
+    setTimeout(function() {
+        location.reload();
+    }, 2100); // wait a little after SweetAlert closes
 },
+
 
             error: function(xhr) {
                 console.log(xhr.responseText);
