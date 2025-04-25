@@ -69,6 +69,10 @@
                     <a class="nav-link" href="{{ route('schedules.calendar') }}">📆 My Schedule</a>
                 </li>
 
+                <li class="nav-item px-2">
+    <a class="nav-link text-white" href="{{ route('feedback.create') }}">📩 Submit Feedback</a>
+</li>
+
                 <!-- Management Tools -->
                 @php
                     $staff = \App\Models\StaffMember::find(Session::get('staff_id'));
@@ -236,6 +240,8 @@
         </table>
     </div>
 </div>
+
+
 
 
 

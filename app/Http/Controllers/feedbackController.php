@@ -163,4 +163,10 @@ class feedbackController extends AppBaseController
 
         return redirect(route('feedback.index'));
     }
+    // Feedback.php (Model)
+public function staff()
+{
+    return $this->belongsTo(\App\Models\StaffMember::class, 'staff_id');
+}
+
 }

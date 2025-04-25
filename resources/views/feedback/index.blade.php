@@ -13,10 +13,10 @@
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-light">
                 <tr>
+                    <th>Staff</th>
                     <th>Category</th>
                     <th>Subject</th>
                     <th>Rating</th>
-                    <th>Anonymous</th>
                     <th>Submitted At</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -24,8 +24,20 @@
             <tbody>
                 @forelse($feedback as $item)
                     <tr>
+                        <!-- ✅ Staff Name or Anonymous -->
+                        <td>
+                            @if($item->is_anonymous || $item->staff == null)
+                                Anonymous
+                            @else
+                                {{ $item->staff->firstname }} {{ $item->staff->lastname }}
+                            @endif
+                        </td>
+
                         <td>{{ $item->category }}</td>
+
                         <td>{{ $item->subject }}</td>
+
+                        <!-- ✅ Star Rating -->
                         <td>
                             @if($item->rating)
                                 @for ($i = 0; $i < $item->rating; $i++)
@@ -35,14 +47,15 @@
                                 N/A
                             @endif
                         </td>
-                        <td>{{ $item->is_anonymous ? 'Yes' : 'No' }}</td>
+
                         <td>{{ $item->created_at->format('Y-m-d H:i') }}</td>
+
                         <td class="text-center">
                             <a href="{{ route('feedback.show', $item->id) }}" class="btn btn-sm btn-outline-primary me-1" title="View">
                                 <i class="fas fa-eye"></i>
                             </a>
                             {!! Form::open(['route' => ['feedback.destroy', $item->id], 'method' => 'delete', 'style' => 'display:inline']) !!}
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this feedback?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this feedback?')">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             {!! Form::close() !!}
