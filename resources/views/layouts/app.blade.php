@@ -81,7 +81,10 @@
 
                     <!-- Alerts, Schedule, Profile -->
                     <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Emergency Alerts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a></li>
+                    <li class="nav-item">
+    <a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a>
+</li>
+
 
                     <!-- Profile -->
                     <li class="nav-item dropdown">

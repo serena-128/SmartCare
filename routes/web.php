@@ -432,4 +432,8 @@ Route::get('/staff/nextofkin', [NextofkinController::class, 'staffViewNextOfKin'
 Route::get('/staff/nextofkin/{id}/edit', [NextofkinController::class, 'editFromStaffView'])->name('nextofkin.edit');
 Route::put('/staff/nextofkin/{id}/update', [nextofkinController::class, 'staffUpdateNextOfKin'])->name('staff.nextofkin.update');
 
+//appt staff calendar
+Route::get('/staff/simple-calendar', [App\Http\Controllers\StaffScheduleController::class, 'showTuiCalendar'])->name('staff.simpleCalendar');
 
+// Staff Schedule Page
+Route::get('/staff/schedule', [App\Http\Controllers\StaffScheduleController::class, 'index'])->name('staff.schedule');
