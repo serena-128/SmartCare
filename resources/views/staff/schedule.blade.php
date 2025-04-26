@@ -121,6 +121,12 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="text-center mb-4">
+                    <button class="btn btn-outline-primary" onclick="openShiftChangeModal('{{ $date }}')">
+                        📝 Request Shift Change
+                    </button>
+                </div>
+
                     </div>
                 @endforeach
 
