@@ -9,19 +9,17 @@ class Schedule extends Model
 {
     use HasFactory;
 
-    protected $table = 'schedule'; // ✅ your table is called schedule
+    protected $table = 'schedule'; // ✅ or 'schedules' depending on your table
 
     protected $fillable = [
-        'roleid',
         'staffmemberid',
         'shiftdate',
         'starttime',
         'endtime',
         'shifttype',
-        'requested_shift_id',
         'shift_status',
+        'requested_shift_id',
         'request_reason',
-        'approved_by',
     ];
 
     public function staff()
