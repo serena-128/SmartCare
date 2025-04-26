@@ -437,3 +437,4 @@ Route::get('/staff/simple-calendar', [App\Http\Controllers\StaffScheduleControll
 
 // Staff Schedule Page
 Route::get('/staff/schedule', [App\Http\Controllers\StaffScheduleController::class, 'index'])->name('staff.schedule');
+Route::get('/staff/available-shifts', [App\Http\Controllers\StaffScheduleController::class, 'getAvailableShifts']);

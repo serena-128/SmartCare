@@ -136,3 +136,97 @@
 </div>
 
 @endsection
+<!-- Shift Change Modal -->
+<div class="modal fade" id="shiftChangeModal" tabindex="-1" aria-labelledby="shiftChangeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="shiftChangeForm">
+      @csrf
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="shiftChangeModalLabel">Request Shift Change</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" id="currentShiftDate" name="currentShiftDate">
+
+          <div class="mb-3">
+            <label for="requestedShiftId" class="form-label">Select New Shift</label>
+            <select class="form-select" id="requestedShiftId" name="requestedShiftId" required>
+              <option value="">Loading available shifts...</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="requestReason" class="form-label">Reason for Change</label>
+            <textarea class="form-control" id="requestReason" name="requestReason" rows="3" required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit Request</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@push('scripts')
+<script>
+ function openShiftChangeModal(date) {
+    document.getElementById('currentShiftDate').value = date;
+
+    // Fetch available shifts from the server
+    fetch(`/staff/available-shifts?date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+            let select = document.getElementById('requestedShiftId');
+            select.innerHTML = '';
+
+            if (data.length === 0) {
+                select.innerHTML = '<option value="">No available shifts</option>';
+            } else {
+                select.innerHTML = '<option value="">-- Select Shift --</option>';
+                data.forEach(function(shift) {
+                    select.innerHTML += `<option value="${shift.id}">
+                        ${shift.date} (${shift.start} - ${shift.end})
+                    </option>`;
+                });
+            }
+        });
+
+    var myModal = new bootstrap.Modal(document.getElementById('shiftChangeModal'));
+    myModal.show();
+}
+
+document.getElementById('shiftChangeForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    
+    const formData = {
+        _token: '{{ csrf_token() }}',
+        currentShiftDate: document.getElementById('currentShiftDate').value,
+        requestedShiftId: document.getElementById('requestedShiftId').value,
+        requestReason: document.getElementById('requestReason').value
+    };
+
+    fetch('/staff/request-shift-change', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': formData._token,
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Success', 'Shift change request sent!', 'success')
+                .then(() => location.reload());
+        } else {
+            Swal.fire('Error', 'Something went wrong.', 'error');
+        }
+    });
+});
+   
+</script>
+@endpush
