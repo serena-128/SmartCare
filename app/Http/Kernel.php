@@ -52,3 +52,9 @@ class Kernel extends HttpKernel
         'role_or_permission' => RoleOrPermissionMiddleware::class,
     ];
 }
+
+
+    protected $routeMiddleware = [
+    // other middlewares...
+    'role' => \App\Http\Middleware\RoleMiddleware::class,
+];
