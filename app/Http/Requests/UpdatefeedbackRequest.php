@@ -24,8 +24,15 @@ class UpdatefeedbackRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = feedback::$rules;
-        
-        return $rules;
+        return [
+            'staff_id' => 'nullable|exists:staffmember,id',
+            'category' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+            'rating' => 'nullable|integer|between:1,5',  // ⭐ Rating is number 1-5
+            'attachment' => 'nullable|file|max:2048',    // Optional file upload
+            'is_anonymous' => 'nullable|boolean',        // ✅ True or False
+        ];
     }
+    
 }

@@ -169,4 +169,17 @@ public function staff()
     return $this->belongsTo(\App\Models\StaffMember::class, 'staff_id');
 }
 
+public function manage()
+{
+    $feedback = Feedback::latest()->paginate(10);
+
+    // Insights
+    $totalFeedback = Feedback::count();
+    $anonymousCount = Feedback::where('is_anonymous', 1)->count();
+    $averageRating = Feedback::whereNotNull('rating')->avg('rating');
+
+    return view('feedback.manage', compact('feedback', 'totalFeedback', 'anonymousCount', 'averageRating'));
+}
+
+
 }

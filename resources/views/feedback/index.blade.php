@@ -2,8 +2,13 @@
 
 @section('content')
 <div class="container mt-4">
+
+    <!-- ✅ Feedback Section Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>📬 Staff Feedback</h2>
+        <div class="d-flex align-items-center">
+            <span style="font-size: 2rem; margin-right: 10px;">📬</span>
+            <h2 class="mb-0">Staff Feedback</h2>
+        </div>
         <a href="{{ route('feedback.create') }}" class="btn btn-purple">➕ Submit Feedback</a>
     </div>
 

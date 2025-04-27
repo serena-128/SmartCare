@@ -261,6 +261,9 @@ Route::get('/staff/search-results', [App\Http\Controllers\StaffMemberController:
     Route::get('/staffmembers/{id}/profile', [StaffMemberController::class, 'show'])->name('staff.profile.show');
     Route::resource('staffmembers', StaffMemberController::class);
     Route::resource('staffmembers', App\Http\Controllers\StaffMemberController::class);
+    Route::get('/feedback/manage', [App\Http\Controllers\FeedbackController::class, 'manage'])
+    ->name('feedback.manage')
+    ->middleware('auth');
 
 
 

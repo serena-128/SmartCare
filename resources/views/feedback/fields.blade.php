@@ -50,13 +50,15 @@
     <input type="file" name="attachment" class="form-control">
 </div>
 
-<!-- ANONYMOUS -->
-<div class="form-check mb-4">
-    <input class="form-check-input" type="checkbox" name="is_anonymous" id="anonymousCheck">
-    <label class="form-check-label" for="anonymousCheck">
-        Submit anonymously
-    </label>
+<!-- Force is_anonymous to false if checkbox is not checked -->
+<input type="hidden" name="is_anonymous" value="0">
+
+<!-- Anonymous Checkbox -->
+<div class="form-group mb-3">
+    <label class="form-label fw-bold text-purple">🙈 Submit Anonymously:</label><br>
+    <input type="checkbox" name="is_anonymous" value="1">
 </div>
+
 
 <!-- SUBMIT BUTTON -->
 <div class="d-flex justify-content-start gap-3">
