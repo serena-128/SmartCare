@@ -183,3 +183,7 @@ Route::middleware(['auth', 'role:Operational Manager'])->group(function () {
     // Excel export for supplies (only accessible to Operational Manager)
     Route::get('/supplies/export/excel', [SupplyController::class, 'exportExcel'])->name('supplies.export.excel');
 });
+
+Route::middleware(['auth', 'role:Operational Manager'])->group(function () {
+    Route::resource('supplies', SupplyController::class);
+});
