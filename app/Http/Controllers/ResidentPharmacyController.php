@@ -159,41 +159,38 @@ public function store(Request $request)
     return back()->with('success', 'Resident medication order placed successfully!');
 }
 
+
 public function addToCart(Request $request)
-    {
-        $request->validate([
-            'resident_id' => 'required|exists:residents,id',
-            'product_id'  => 'required|exists:products,id',
-            'quantity'    => 'required|integer|min:1',
-        ]);
+{
+    $request->validate([
+        'resident_id' => 'required|exists:residents,id',
+        'product_id'  => 'required|exists:products,id',
+        'quantity'    => 'required|integer|min:1',
+    ]);
 
-        $cart = Session::get('resident_cart', []);
+    $cart = Session::get('resident_cart', []);
+    $product = Product::findOrFail($request->product_id);
 
-        $id       = $request->product_id;
-        $quantity = $request->quantity;
+    // Unique key to handle same product for different residents
+    $key = $request->resident_id . '-' . $request->product_id;
 
-        // load product once for name & price
-        $product = Product::findOrFail($id);
-
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] += $quantity;
-        } else {
-            $cart[$id] = [
-                'id'       => $id,
-                'name'     => $product->name,
-                'price'    => $product->price,
-                'quantity' => $quantity,
-            ];
-        }
-
-        Session::put('resident_cart', $cart);
-
-        // return new count and simple HTML for sidebar
-        $html = view('partials.resident_cart', ['items' => $cart])->render();
-
-        return response()->json([
-            'count' => count($cart),
-            'html'  => $html,
-        ]);
+    if (isset($cart[$key])) {
+        $cart[$key]['quantity'] += $request->quantity;
+    } else {
+        $cart[$key] = [
+            'resident_id' => $request->resident_id,
+            'product_id'  => $product->id,
+            'name'        => $product->name,
+            'price'       => $product->price,
+            'quantity'    => $request->quantity,
+        ];
     }
+
+    Session::put('resident_cart', $cart);
+
+    return response()->json([
+        'count' => count($cart),
+        'html'  => view('partials.resident_cart', ['cart' => $cart])->render(),
+    ]);
+}
 }

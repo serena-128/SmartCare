@@ -8,44 +8,46 @@ use App\Models\Staffmember;
 use App\Models\EmergencyAlert;
 use App\Models\CarePlan;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
-    {
-        // ✅ Safely get the logged-in user's email or fallback
-        $staffEmail = auth()->check() ? auth()->user()->email : 'emma.kavanagh@example.com';
+{
+    $staffId = session('staff_id'); // ✅ Use session directly
 
-        // ✅ Find the staff member by email
-        $staff = Staffmember::where('email', $staffEmail)->first();
-        $staffId = $staff ? $staff->id : null;
+    // Fetch assigned residents
+    $assignedResidents = \App\Models\Resident::where('assigned_staff_id', $staffId)->get();
 
-        // ✅ Upcoming Appointments for this staff
-        $upcomingAppointments = \App\Models\Appointment::with('resident')
-            ->where('staffmemberid', $staffId)
-            ->whereDate('date', '>=', now())
-            ->orderBy('date')
-            ->limit(5)
-            ->get();
+    // Fetch care plans
+    $carePlans = \App\Models\CarePlan::with('resident')->get();
 
-        // ✅ Assigned residents for this staff
-        $assignedResidents = Resident::where('assigned_staff_id', $staffId)->get();
+    // Upcoming appointments
+    $upcomingAppointments = \App\Models\Appointment::with('resident')
+        ->where('staffmemberid', $staffId)
+        ->whereBetween('date', [now()->toDateString(), now()->addDays(7)->toDateString()])
+        ->orderBy('date')
+        ->get();
 
-        return view('staffDashboard', [
-            'residentCount' => Resident::count(),
-            'staffCount' => Staffmember::count(),
-            'emergencyAlertCount' => EmergencyAlert::where('status', 'Pending')->count(),
-            'carePlanCount' => CarePlan::count(),
-            'recentAlerts' => EmergencyAlert::latest()->take(5)->get(),
-            'onDutyStaff' => Staffmember::where('staff_role', 'LIKE', '%Nurse%')->get(),
-            'assignedResidents' => $assignedResidents,
-            'carePlans' => CarePlan::with('resident')->get(),
-            'upcomingAppointments' => $upcomingAppointments,
-        ]);
-    }
+    return view('staffDashboard', [
+        'residentCount' => \App\Models\Resident::count(),
+        'staffCount' => \App\Models\Staffmember::count(),
+        'emergencyAlertCount' => \App\Models\EmergencyAlert::where('status', 'Pending')->count(),
+        'carePlanCount' => \App\Models\CarePlan::count(),
+        'recentAlerts' => \App\Models\EmergencyAlert::latest()->take(5)->get(),
+        'onDutyStaff' => Staffmember::whereIn('role', ['Nurse', 'Doctor'])->get(),
+
+        'assignedResidents' => $assignedResidents,
+        'carePlans' => $carePlans,
+        'upcomingAppointments' => $upcomingAppointments,
+    ]);
+}
     public function calendarView()
 {
-    return view('staff.calendar');
+    $currentMonth = Carbon::now()->format('Y-m'); // or any month you want to display
+
+    return view('staff.calendar', compact('currentMonth'));
 }
+
 
 }

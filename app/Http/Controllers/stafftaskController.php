@@ -94,4 +94,33 @@ public function updateStatus(Request $request, $id)
     return response()->json(['success' => true]);
 }
 
+    // GET: Return task as JSON for the modal
+public function edit($id)
+{
+    $task = Stafftask::findOrFail($id);
+    return response()->json($task);
+}
+
+// PUT/PATCH: Update task via AJAX
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'date' => 'required|date',
+        'time' => 'required',
+        'description' => 'nullable|string',
+    ]);
+
+    $task = Stafftask::findOrFail($id);
+    $task->update($request->only(['date', 'time', 'description']));
+
+    return response()->json(['success' => true]);
+}
+public function destroy($id)
+{
+    $task = Stafftask::findOrFail($id);
+    $task->delete();
+
+    return response()->json(['success' => true]);
+}
+
 }

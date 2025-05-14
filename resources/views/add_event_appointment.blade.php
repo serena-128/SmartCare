@@ -22,7 +22,7 @@
             align-items: center;
             justify-content: center;
             font-family: 'Poppins', sans-serif;
-            padding-top: 50px;
+            padding-top: 40px;
         }
 
         .container {

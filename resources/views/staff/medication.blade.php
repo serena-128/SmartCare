@@ -511,6 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
+        credentials: 'include',
       body: JSON.stringify({
         resident_id: residentId,
         product_id:  productId,
@@ -615,11 +616,14 @@ document.addEventListener('DOMContentLoaded', function () {
     <button class="btn-close position-absolute top-0 end-0 m-2" id="closeCart" aria-label="Close"></button>
     <h5 class="mb-3">🛒 Cart Items</h5>
 
+    
     <form method="POST" action="{{ route('pharmacy.checkout') }}" class="ajax-checkout-form">
 
         @csrf
         <div id="cartContent">
             @if(session('cart'))
+        
+
                 <ul class="list-group">
                     @php $total = 0; @endphp
                     @foreach(session('cart') as $item)
@@ -816,6 +820,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
+
+
 <script>
 function updateResidentCartSidebar() {
     const content = document.getElementById('residentCartContent');
@@ -919,4 +925,5 @@ function updateResidentCartSidebar() {
       if (select.value) select.dispatchEvent(new Event('change'));
     });
     </script>
+
 @endsection

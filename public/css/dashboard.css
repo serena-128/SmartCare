@@ -47,7 +47,7 @@ body {
 
 /* Fix Page Content to Not Be Hidden Under Navbar */
 .container {
-    padding-top: 80px; /* Push content below fixed navbar */
+    padding-top: 60px; /* Push content below fixed navbar */
 }
 
 /* Dropdown Menu Fix */
@@ -91,10 +91,7 @@ body {
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Soft Shadow & Padding */
-.container {
-    padding-top: 100px;
-}
+
 
 .card-body {
     text-align: center;

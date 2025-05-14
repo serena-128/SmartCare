@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container mt-4 pt-4">
 <style>
     .badge {
         font-size: 0.9rem;

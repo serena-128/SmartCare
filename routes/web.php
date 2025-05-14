@@ -51,7 +51,7 @@ use App\Http\Controllers\DietaryController;
 use App\Http\Controllers\StaffEventController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\MedicalHistoryController;
-
+use Carbon\Carbon;
 /*
 |---------------------------------------------------------------------- 
 | Web Routes
@@ -71,7 +71,7 @@ Route::post('/login', [StaffAuthController::class, 'login'])->name('staff.login'
 Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/staffDashboard', [DashboardController::class, 'index'])->name('staffDashboard');
+    Route::get('/staffDashboard', [StaffDashboardController::class, 'index'])->name('staffDashboard');
 });
 
 // Resource Routes for Other Entities
@@ -185,9 +185,8 @@ Route::get('/fetch-appointments', [AppointmentController::class, 'fetchAppointme
 
 Route::resource('diagnosistypes', App\Http\Controllers\diagnosistypeController::class);
 
-Route::get('/staff/calendar', function () {
-    return view('staff.calendar');
-})->name('staff.calendar');
+Route::get('/staff/calendar', [DashboardController::class, 'calendarView'])->name('staff.calendar');
+
 
 Route::get('/staff/appointments/json', [App\Http\Controllers\appointmentController::class, 'fetchStaffAppointments'])->name('appointments.json');
 
@@ -205,7 +204,7 @@ Route::get('/notifications/count', [NotificationController::class, 'fetch'])->na
 Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
 Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
 Route::get('staff/schedule', [StaffScheduleController::class, 'showSchedule'])->name('staffmembers.schedule');
-Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+//Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 // And the route from the other branch:
 Route::get('/staff/birthdays', function () {
@@ -221,7 +220,7 @@ Route::post('appointments/rsvp', [AppointmentController::class, 'handleRSVP'])->
 
 Route::post('/events/rsvp', [EventController::class, 'handleRSVP'])->name('events.rsvp');
 
-Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+//Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 Route::post('/nextofkin/send-message', [NextOfKinController::class, 'sendMessage'])->name('nextofkin.sendMessage');
 
@@ -328,7 +327,6 @@ Route::get('/resident-pharmacy', [ResidentPharmacyController::class, 'index'])->
 Route::post('/resident-pharmacy/order', [ResidentPharmacyController::class, 'placeOrder'])->name('resident.pharmacy.order');
 
 Route::get('/staff/resident-pharmacy', [ResidentPharmacyController::class, 'index'])->name('resident.pharmacy');
-Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'placeOrder'])->name('resident.pharmacy.order');
 
 Route::post('/staff/resident-pharmacy/order', [ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');
 Route::post('/staff/resident-pharmacy/order', [App\Http\Controllers\ResidentPharmacyController::class, 'store'])->name('residentPharmacy.order');
@@ -438,3 +436,19 @@ Route::get('/staff/simple-calendar', [App\Http\Controllers\StaffScheduleControll
 // Staff Schedule Page
 Route::get('/staff/schedule', [App\Http\Controllers\StaffScheduleController::class, 'index'])->name('staff.schedule');
 Route::get('/staff/available-shifts', [App\Http\Controllers\StaffScheduleController::class, 'getAvailableShifts']);
+Route::post('/staff/request-shift-change', [StaffScheduleController::class, 'requestShiftChange'])
+    ->name('staff.request-shift-change');
+//dietary meal history
+
+Route::get('/dietary/meal-history-entry/check', [DietaryController::class, 'checkMealHistory']);
+
+//staff appts
+Route::get('/staff/appointments/json', [AppointmentController::class, 'fetchStaffAppointments'])->name('appointments.json');
+
+//get rsvp event 
+Route::get('/get-rsvp-status/{eventId}', [EventController::class, 'getRSVPStatus']);
+
+//next of kin dashboard recent appt
+Route::get('/nextofkin/recent-appointment', [NextofkinController::class, 'getRecentAppointment']);
+
+Route::post('/staff/events', [EventController::class, 'store'])->name('staff.events.store');

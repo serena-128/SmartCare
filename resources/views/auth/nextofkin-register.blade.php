@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Next of Kin Register - SmartCare</title>
-  
+  <link rel="icon" type="image/png" href="{{ asset('pictures/carehome_logo.png') }}">
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   
@@ -32,14 +33,15 @@
     }
 
     .register-container {
-      background-color: #fff;
-      padding: 1.5rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-      width: 400px;
-      text-align: center;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 700px; /* Wider layout */
+  text-align: center;
+}
 
-    }
       .logo {
           max-width: 120px; /* Limits width to 120px */
           height: auto; /* Maintains aspect ratio */
@@ -47,7 +49,7 @@
           margin: 0 auto 1rem auto; /* Centers the image */
         }
 
-
+      
       </style>
     </head>
    <body>
@@ -60,15 +62,17 @@
       <form method="POST" action="{{ route('nextofkin.register.submit') }}" enctype="multipart/form-data">
 
         @csrf
-        <div class="mb-3 text-start">
-          <label for="firstname" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="firstname" name="firstname" required>
-        </div>
+        <div class="row mb-3 text-start">
+  <div class="col-md-6">
+    <label for="firstname" class="form-label">First Name</label>
+    <input type="text" class="form-control" id="firstname" name="firstname" required>
+  </div>
+  <div class="col-md-6">
+    <label for="lastname" class="form-label">Last Name</label>
+    <input type="text" class="form-control" id="lastname" name="lastname" required>
+  </div>
+</div>
 
-        <div class="mb-3 text-start">
-          <label for="lastname" class="form-label">Last Name</label>
-          <input type="text" class="form-control" id="lastname" name="lastname" required>
-        </div>
           <div class="mb-3 text-start">
     <label for="resident_id" class="form-label">Select Resident</label>
     <select name="resident_id" id="resident_id" class="form-control" required>
@@ -90,15 +94,17 @@
           <input type="email" class="form-control" id="email" name="email" required>
         </div>
 
-        <div class="mb-3 text-start">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" name="password" required>
-        </div>
+        <div class="row mb-3 text-start">
+  <div class="col-md-6">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" name="password" required>
+  </div>
+  <div class="col-md-6">
+    <label for="password_confirmation" class="form-label">Confirm Password</label>
+    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+  </div>
+</div>
 
-        <div class="mb-3 text-start">
-          <label for="password_confirmation" class="form-label">Confirm Password</label>
-          <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-        </div>
 
         <button type="submit" class="btn btn-primary w-100">Register</button>
 

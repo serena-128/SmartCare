@@ -8,6 +8,7 @@ class MealPlanEntry extends Model
     protected $fillable = [
     'meal_plan_id',
     'resident_id',
+    'actual_time',
     'time',
     'consumed',
     'notes',

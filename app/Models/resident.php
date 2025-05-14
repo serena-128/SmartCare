@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -111,5 +112,16 @@ public function dietaryRestrictions()
 public function medicalHistories() {
     return $this->hasMany(MedicalHistory::class);
 }
+
+public function appointments()
+{
+    return $this->hasMany(\App\Models\Appointment::class, 'residentid');
+}
+
+public function assignedStaff()
+{
+    return $this->belongsTo(StaffMember::class, 'assigned_staff_id');
+}
+
 
 }

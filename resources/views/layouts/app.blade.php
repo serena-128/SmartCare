@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name') }}</title>
+    <title>@yield('title', 'Staff Management')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{{ asset('pictures/carehome_logo.png') }}">
+
     <!-- FullCalendar CSS -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
-
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
           integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
@@ -28,87 +30,94 @@
 <body>
     <!-- ✅ STAFF NAVBAR START -->
     <nav class="navbar navbar-expand-lg shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('staffDashboard') }}">
-                <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo"> Staff Dashboard
+<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+    <!-- LEFT: Logo & title -->
+    <div class="d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="{{ route('staffDashboard') }}">
+            <img src="{{ asset('images/carehome_logo.png') }}" alt="Care Home Logo" class="logo me-2">
+            <span>Staff Dashboard</span>
+        </a>
+    </div>
+
+    <!-- CENTER: Main Nav -->
+    <ul class="navbar-nav mx-auto">
+        <!-- Residents Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">
+                🏥 Residents
             </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
+                <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">🩺 Care Plan Hub</a></li>
+                <li><a class="dropdown-item" href="{{ route('resident.upcomingEvents') }}">📆 Upcoming Events</a></li>
+                <li><a class="dropdown-item" href="{{ route('staff.photoGallery') }}">📸 Photo Gallery</a></li>
+            </ul>
+        </li>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <!-- Medical Records Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="medicalDropdown" data-bs-toggle="dropdown">🩺 Medical Information</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
+                <li><a class="dropdown-item" href="{{ route('medical-history.overview') }}">📜 Medical History</a></li>
+                <li><a class="dropdown-item" href="{{ route('nextofkin.index') }}">🧑‍🤝‍🧑 Next of Kin Info</a></li>
+                <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}">💊 Medication Center</a></li>
+                <li><a class="dropdown-item" href="{{ route('dietary.index') }}">🍽️ Dietary</a></li>
+            </ul>
+        </li>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <!-- Residents Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="residentDropdown" role="button" data-bs-toggle="dropdown">
-                            🏥 Residents
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('resident.hub') }}">📋 Resident Management</a></li>
-                            <li><a class="dropdown-item" href="{{ route('careplan.hub') }}">🩺 Care Plan Hub</a></li>
-                            <li><a class="dropdown-item" href="{{ route('resident.upcomingEvents') }}">📆 Upcoming events</a></li>
-                            <li><a class="dropdown-item" href="{{ route('staff.photoGallery') }}">📸 Photo Gallery</a></li>
-                        </ul>
-                    </li>
+        <!-- Tasks -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="tasksDropdown" data-bs-toggle="dropdown">📅 Tasks & Appts</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
+                <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
+                <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 My Appointments</a></li>
+                <li><a class="dropdown-item" href="{{ route('stafftasks.daily') }}">📌 My Daily Tasks</a></li>
+            </ul>
+        </li>
 
-                    <!-- Medical Records Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="medicalDropdown" data-bs-toggle="dropdown">🩺 Residents Medical Information</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('diagnoses.index') }}">📋 View Diagnoses</a></li>
-                            <li><a class="dropdown-item" href="{{ route('diagnoses.searchPage') }}">🔍 Search Diagnoses</a></li>
-                            <li><a class="dropdown-item" href="{{ route('medical-history.overview') }}">📜 Medical History</a></li>
-                            <li><a class="dropdown-item" href="{{ route('nextofkin.index') }}">🧑‍🤝‍🧑 Next of Kin Information</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/staff/medication-search') }}"> 💊Medication Center</a></li>
-                            <li><a class="dropdown-item" href="{{ route('dietary.index') }}">🍽️ Dietary</a></li>
-                        </ul>
-                    </li>
+        <!-- Add New -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="addNewDropdown" data-bs-toggle="dropdown">➕ Add New</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('photo.create') }}">🖼️ Add Photo</a></li>
+                <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">📆 Add Event/Appointment</a></li>
+                <li><a class="dropdown-item" href="{{ route('news.create') }}">📰 Post News </a></li>
+                <li><a class="dropdown-item" href="{{ route('bulletin.create') }}">📢 Create bulletin </a></li>
+            </ul>
+        </li>
 
-                    <!-- Tasks -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="tasksDropdown" data-bs-toggle="dropdown">📅 Tasks & Appointments</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('appointments.index') }}">📅 View Appointments</a></li>
-                            <li><a class="dropdown-item" href="{{ route('stafftasks.create') }}">✅ Assign Task</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/staff/calendar') }}">📅 My Appointments</a></li>
-                            <li><a class="dropdown-item" href="{{ route('stafftasks.daily') }}">📌 My Daily Tasks</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ route('photo.create') }}">🖼️ Add Photos</a></li>
-                            <li><a class="dropdown-item" href="{{ route('eventAppointment.create') }}">➕ Add Event/Appointment</a></li>
-                        </ul>
-                    </li>
+        <!-- Alerts & Schedule -->
+        <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Alerts</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('staff.schedule') }}">📅 Schedule</a></li>
+    </ul>
 
-                    <!-- Alerts, Schedule, Profile -->
-                    <li class="nav-item"><a class="nav-link text-danger" href="{{ route('emergencyalerts.hub') }}">🚨 Emergency Alerts</a></li>
-                    <li class="nav-item">
-    <a class="nav-link" href="{{ route('staff.schedule') }}">📅 My Schedule</a>
-</li>
+    <!-- RIGHT: Profile -->
+    <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown">
+                👤 {{ session('staff_name') }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a href="{{ route('my.profile') }}" class="dropdown-item">👤 My Profile</a></li>
+                <li>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="dropdown-item text-danger" type="submit">🔓 Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
 
-
-                    <!-- Profile -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown">
-                            👤 {{ session('staff_name') }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <a href="{{ route('my.profile') }}" class="nav-link">👤 My Profile</a>
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button class="dropdown-item text-danger" type="submit">🔓 Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
     <!-- ✅ STAFF NAVBAR END -->
 
-    <!-- ✅ MAIN CONTENT WRAPPER -->
-    <main class="py-4">
+   
+
         <div class="container">
             @yield('content')
         </div>
@@ -174,6 +183,12 @@
             max-height: 50px;
             margin-right: 10px;
         }
+        
+        .navbar .nav-link {
+  font-size: 1.1rem; /* Or try 1.2rem or 18px */
+  font-weight: 500;  /* Optional: makes it bolder */
+}
+
     </style>
 
     @stack('scripts')

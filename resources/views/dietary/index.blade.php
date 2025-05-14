@@ -201,6 +201,12 @@
 <div class="tab-pane fade {{ $active==='meal-plan'?'show active':'' }}"
      id="meal-plan" role="tabpanel" aria-labelledby="meal-plan-tab">
 
+ <h5 class="mb-1">Meal Plan</h5>
+<p class="text-muted mb-3">
+  <em>Daily meals scheduled for each resident including time, type, and quantity.</em>
+</p>
+
+
   <div class="mb-3 d-flex align-items-center">
     <label for="residentSelect" class="me-2">Resident:</label>
     <select id="residentSelect" class="form-select w-auto">
@@ -522,7 +528,10 @@
      id="meal-history"
      role="tabpanel"
      aria-labelledby="meal-history-tab">
-  <h5 class="mb-3">Meal History</h5>
+  <h5 class="mb-1">Meal History</h5>
+<p class="text-muted mb-3">
+  <em>Record what the resident actually consumed — status, time eaten, and notes.</em>
+</p>
 
   <div class="mb-3 d-flex align-items-center">
     <label for="historyResidentSelect" class="me-2">Resident:</label>
@@ -590,6 +599,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modalResident').value = residentId;
         document.getElementById('modalDate').value = info.dateStr;
         form.reset();
+          document.getElementById('mealId').value = '';
+  document.querySelector('#addMealForm button[type="submit"]').textContent = 'Add';
         toggleQtyField();
         addModal.show();
       },
@@ -644,7 +655,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('modalTime').value = meal.time || '';
   document.getElementById('modalQty').value = meal.quantity || 1;
   document.getElementById('mealId').value = info.event.id;
-
+        
+document.querySelector('#addMealForm button[type="submit"]').textContent = 'Update';
+        
   toggleQtyField(); // Update quantity visibility based on category
 
   addModal.show(); // Open the modal
@@ -696,7 +709,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initCalendar(e.target.value);
   });
 
-  initCalendar(document.getElementById('residentSelect').value);
+  const initialMealId = document.getElementById('residentSelect').value;
+if (initialMealId) initCalendar(initialMealId);
+
 
  form.addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -793,50 +808,76 @@ document.addEventListener('DOMContentLoaded', function () {
         const category = info.event.extendedProps.category;
         info.el.style.backgroundColor = colors[category] || '#f8f9fa';
       },
-        eventClick: function(info) {
+eventClick: function(info) {
   const meal = info.event.extendedProps;
 
-  Swal.fire({
-    title: `${info.event.title} (${meal.category})`,
-    html: `
-      <label for="consumedStatus" class="form-label">Consumption Status:</label>
-      <select id="consumedStatus" class="form-select mb-2">
-      <option value="all">Eaten</option>
-      <option value="some">Partially Eaten</option>
-      <option value="none">Not Eaten</option>
-    </select>
+  // 🔽 NEW: Check if an entry already exists
+  fetch(`/dietary/meal-history-entry/check?meal_plan_id=${info.event.id}&resident_id=${meal.resident_id}&time=${meal.time || '00:00'}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.exists) {
+        // 🔹 Show read-only entry if already exists
+        Swal.fire({
+          title: info.event.title,
+          html: `
+            <p><strong>Scheduled Time:</strong> ${meal.time || 'N/A'}</p>
+            <p><strong>Status:</strong> ${data.entry.consumed}</p>
+            <p><strong>Actual Time:</strong> ${data.entry.actual_time || 'N/A'}</p>
+            <p><strong>Notes:</strong> ${data.entry.notes || 'None'}</p>
+          `
+        });
+      } else {
+        // 🔹 Show form if no entry yet
+        Swal.fire({
+          title: `${info.event.title}`, // e.g. "Breakfast: Tea, Toast"
+          html: `
+            <p><strong>Scheduled Time:</strong> ${meal.time || 'N/A'}</p>
 
-      <label for="mealNote" class="form-label mt-2">Notes:</label>
-      <textarea id="mealNote" class="form-control" rows="3" placeholder="Any notes..."></textarea>
-    `,
-    confirmButtonText: 'Save Entry',
-    showCancelButton: true,
-    preConfirm: () => {
-      return {
-        consumed: document.getElementById('consumedStatus').value,
-        notes: document.getElementById('mealNote').value
+            <label for="consumedStatus" class="form-label">Consumption Status:</label>
+            <select id="consumedStatus" class="form-select mb-2">
+              <option value="all">Eaten</option>
+              <option value="some">Partially Eaten</option>
+              <option value="none">Not Eaten</option>
+            </select>
+            
+            <label for="actualTime" class="form-label mt-2">Actual Time Eaten:</label>
+            <input type="time" id="actualTime" class="form-control mb-2" />
+
+            <label for="mealNote" class="form-label mt-2">Notes:</label>
+            <textarea id="mealNote" class="form-control" rows="3" placeholder="Any notes..."></textarea>
+          `,
+          confirmButtonText: 'Save Entry',
+          showCancelButton: true,
+          preConfirm: () => {
+            return {
+              consumed: document.getElementById('consumedStatus').value,
+              notes: document.getElementById('mealNote').value
+            };
+          }
+        }).then(result => {
+          if (result.isConfirmed) {
+            fetch(`/dietary/meal-history-entry/${info.event.id}`, {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                consumed: result.value.consumed,
+                notes: result.value.notes,
+                actual_time: document.getElementById('actualTime').value || null,
+                time: meal.time || '00:00',
+                resident_id: meal.resident_id
+              })
+            })
+              .then(res => res.ok ? Swal.fire('Saved!', '', 'success') : Swal.fire('Error saving', '', 'error'))
+              .catch(() => Swal.fire('Error', 'Something went wrong', 'error'));
+          }
+        });
       }
-    }
-  }).then(result => {
-    if (result.isConfirmed) {
-      fetch(`/dietary/meal-history-entry/${info.event.id}`, {
-        method: 'POST',
-        headers: {
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          consumed: result.value.consumed,
-          notes: result.value.notes,
-          time: meal.time || '00:00',
-          resident_id: meal.resident_id
-        })
-      })
-      .then(res => res.ok ? Swal.fire('Saved!', '', 'success') : Swal.fire('Error saving', '', 'error'))
-      .catch(() => Swal.fire('Error', 'Something went wrong', 'error'));
-    }
-  });
+    });
 }
+
 
     });
 

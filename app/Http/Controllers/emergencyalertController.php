@@ -190,11 +190,15 @@ public function store(CreateemergencyalertRequest $request)
 public function showEmergencyAlertsHub()
 {
     $totalAlerts = EmergencyAlert::count();
-    $activeAlerts = EmergencyAlert::where('status', 'active')->count();
-    $resolvedAlerts = EmergencyAlert::where('status', 'resolved')->count(); // Ensure this is calculated and passed
+
+    // ✅ Count alerts that are not resolved
+    $activeAlerts = EmergencyAlert::whereIn('status', ['Pending', 'In Progress', 'Unresolved'])->count();
+
+    $resolvedAlerts = EmergencyAlert::where('status', 'Resolved')->count();
 
     return view('emergencyalertshub', compact('totalAlerts', 'activeAlerts', 'resolvedAlerts'));
 }
+
 
 public function resolve($id, Request $request)
 {

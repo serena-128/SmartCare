@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
+<div class="container mt-1">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg border-0 rounded-lg">
@@ -12,22 +12,24 @@
                 <form action="{{ route('residents.store') }}" method="POST">
     @csrf
 
-    <div class="mb-3">
+    <div class="row mb-3">
+    <div class="col-md-6">
         <label for="firstname" class="form-label"><i class="fas fa-user"></i> First Name</label>
         <input type="text" class="form-control" name="firstname" required>
     </div>
-
-    <div class="mb-3">
+    <div class="col-md-6">
         <label for="lastname" class="form-label"><i class="fas fa-user"></i> Last Name</label>
         <input type="text" class="form-control" name="lastname" required>
     </div>
+</div>
 
-    <div class="mb-3">
+
+    <div class="row mb-3">
+    <div class="col-md-6">
         <label for="dateofbirth" class="form-label"><i class="fas fa-calendar"></i> Date of Birth</label>
         <input type="date" class="form-control" name="dateofbirth" required>
     </div>
-
-    <div class="mb-3">
+    <div class="col-md-6">
         <label for="gender" class="form-label"><i class="fas fa-venus-mars"></i> Gender</label>
         <select class="form-select" name="gender" required>
             <option value="">Select Gender</option>
@@ -35,16 +37,20 @@
             <option value="Female">Female</option>
         </select>
     </div>
+</div>
 
-    <div class="mb-3">
+
+    <div class="row mb-3">
+    <div class="col-md-6">
         <label for="roomnumber" class="form-label"><i class="fas fa-door-closed"></i> Room Number</label>
         <input type="number" class="form-control" name="roomnumber" required>
     </div>
-
-    <div class="mb-3">
+    <div class="col-md-6">
         <label for="admissiondate" class="form-label"><i class="fas fa-calendar-plus"></i> Admission Date</label>
         <input type="date" class="form-control" name="admissiondate" required>
     </div>
+</div>
+
 
     <div class="d-grid">
         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Resident</button>

@@ -142,19 +142,21 @@ class diagnosisController extends AppBaseController
      * @param UpdatediagnosisRequest $request
      * @return Response
      */
-    public function update($id, UpdatediagnosisRequest $request)
+    public function update(Request $request, $id)
 {
-    $diagnosis = Diagnosis::find($id);
+    $validated = $request->validate([
+        'diagnosis' => 'required|string',
+        'vitalsigns' => 'nullable|string',
+        'treatment' => 'nullable|string',
+        'testresults' => 'nullable|string',
+        'notes' => 'nullable|string',
+    ]);
 
-    if (!$diagnosis) {
-        Flash::error('Diagnosis not found.');
-        return redirect(route('diagnoses.index'));
-    }
-
-    $diagnosis->update($request->all());
+    $diagnosis = Diagnosis::findOrFail($id);
+    $diagnosis->update($validated);
 
     Flash::success('Diagnosis updated successfully.');
-    return redirect(route('diagnoses.index'));
+    return redirect()->route('diagnoses.index');
 }
 
 

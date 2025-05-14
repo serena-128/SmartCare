@@ -1,52 +1,52 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            Assign Task to Staff
-        </h1>
-    </section>
-    <div class="content">
-        @include('basic-template::common.errors')
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'stafftasks.store']) !!}
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">📝 Assign Task to Staff</h2>
+        <p class="text-muted">Fill in the task details below and assign it to a team member.</p>
+    </div>
 
-                    <!-- Staff Name Dropdown -->
-                    <div class="form-group col-sm-6">
-                        {!! Form::label('staff_id', 'Staff Member:') !!}
-                       {!! Form::select('staff_id', $staffMembers, null, ['class' => 'form-control', 'placeholder' => 'Select Staff']) !!}
+    @include('basic-template::common.errors')
 
-                    </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            {!! Form::open(['route' => 'stafftasks.store']) !!}
 
-                    <!-- Date -->
-                    <div class="form-group col-sm-6">
-                        {!! Form::label('date', 'Date:') !!}
-                        {!! Form::date('date', \Carbon\Carbon::now(), ['class' => 'form-control']) !!}
-                    </div>
+            <div class="row g-3">
+                <!-- Staff Member -->
+                <div class="col-md-6">
+                    {!! Form::label('staff_id', '👤 Staff Member', ['class' => 'form-label fw-semibold']) !!}
+                    {!! Form::select('staff_id', $staffMembers, null, ['class' => 'form-select', 'placeholder' => 'Select Staff']) !!}
+                </div>
 
-                    <!-- Time -->
-                    <div class="form-group col-sm-6">
-                        {!! Form::label('time', 'Time:') !!}
-                        {!! Form::time('time', \Carbon\Carbon::now()->format('H:i'), ['class' => 'form-control']) !!}
-                    </div>
+                <!-- Date -->
+                <div class="col-md-3">
+                    {!! Form::label('date', '📅 Date', ['class' => 'form-label fw-semibold']) !!}
+                    {!! Form::date('date', \Carbon\Carbon::now(), ['class' => 'form-control']) !!}
+                </div>
 
-                    <!-- Description -->
-                    <div class="form-group col-sm-12">
-                        {!! Form::label('description', 'Task Description:') !!}
-                        {!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 4]) !!}
-                    </div>
+                <!-- Time -->
+                <div class="col-md-3">
+                    {!! Form::label('time', '⏰ Time', ['class' => 'form-label fw-semibold']) !!}
+                    {!! Form::time('time', \Carbon\Carbon::now()->format('H:i'), ['class' => 'form-control']) !!}
+                </div>
 
-                    <!-- Submit -->
-                    <div class="form-group col-sm-12">
-                        {!! Form::submit('Save Task', ['class' => 'btn btn-primary']) !!}
-                        <a href="{{ route('stafftasks.index') }}" class="btn btn-default">Cancel</a>
-                    </div>
+                <!-- Description -->
+                <div class="col-12">
+                    {!! Form::label('description', '📝 Task Description', ['class' => 'form-label fw-semibold']) !!}
+                    {!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 4, 'placeholder' => 'Describe the task clearly...']) !!}
+                </div>
 
-                    {!! Form::close() !!}
+                <!-- Actions -->
+                <div class="col-12 text-end mt-3">
+                    {!! Form::submit('✅ Save Task', ['class' => 'btn btn-success me-2']) !!}
+                    <a href="{{ route('stafftasks.index') }}" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </div>
+
+            {!! Form::close() !!}
         </div>
     </div>
+</div>
 @endsection

@@ -9,7 +9,7 @@ class Schedule extends Model
 {
     use HasFactory;
 
-    protected $table = 'schedule'; // ✅ or 'schedules' depending on your table
+    protected $table = 'schedule'; // ✅ Your table name
 
     protected $fillable = [
         'staffmemberid',
@@ -22,8 +22,10 @@ class Schedule extends Model
         'request_reason',
     ];
 
+    public $timestamps = false; // 👈 Add this if your table has no created_at/updated_at
+
     public function staff()
     {
-        return $this->belongsTo(\App\Models\StaffMember::class, 'staffmemberid');
+        return $this->belongsTo(StaffMember::class, 'staffmemberid');
     }
 }

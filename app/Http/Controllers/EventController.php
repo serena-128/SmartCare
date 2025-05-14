@@ -44,23 +44,30 @@ class EventController extends Controller
 {
     $validated = $request->validate([
         'event_id' => 'required|exists:events,id',
-        'nextofkin_id' => 'required|exists:next_of_kin,id',
+        'nextofkin_id' => 'required|exists:nextofkin,id',
         'rsvp_status' => 'required|in:yes,no'
     ]);
 
     try {
         // Store the RSVP in your database
-        DB::table('event_rsvps')->updateOrInsert(
-            [
-                'event_id' => $validated['event_id'],
-                'nextofkin_id' => $validated['nextofkin_id']
-            ],
-            [
-                'status' => $validated['rsvp_status'],
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        );
+        // Fetch event and next of kin
+$event = Event::find($validated['event_id']);
+$nextofkin = DB::table('nextofkin')->where('id', $validated['nextofkin_id'])->first();
+
+DB::table('event_rsvps')->updateOrInsert(
+    [
+        'event_id' => $validated['event_id'],
+        'nextofkin_id' => $validated['nextofkin_id']
+    ],
+    [
+        'status' => $validated['rsvp_status'],
+        'event_title' => $event->title ?? null,
+        'nextofkin_name' => $nextofkin ? trim($nextofkin->firstname . ' ' . $nextofkin->lastname) : null,
+        'created_at' => now(),
+        'updated_at' => now()
+    ]
+);
+
 
         return response()->json([
             'success' => true,
@@ -74,4 +81,19 @@ class EventController extends Controller
         ], 500);
     }
 }
+  
+    public function getRSVPStatus($eventId)
+{
+    $nextOfKinId = auth()->guard('nextofkin')->id();
+    
+    $rsvp = DB::table('event_rsvps')
+        ->where('event_id', $eventId)
+        ->where('nextofkin_id', $nextOfKinId)
+        ->first();
+
+    return response()->json([
+        'status' => $rsvp->status ?? null
+    ]);
+}
+
 }

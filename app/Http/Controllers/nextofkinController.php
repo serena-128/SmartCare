@@ -15,6 +15,7 @@ use App\Models\Resident;  // Add this line
 use App\Models\NextOfKin;
 use Illuminate\Support\Facades\Http;
 use App\Models\Message;
+use Carbon\Carbon;
 
 
 
@@ -270,6 +271,26 @@ public function staffViewNextOfKin()
 
     return response()->json(['message' => 'Next of Kin updated successfully!']);
 
+}
+//remove the messaging part failed to work
+public function getRecentAppointment()
+{
+    $nextOfKin = auth()->guard('nextofkin')->user();
+    $resident = $nextOfKin->resident;
+
+    $appointment = $resident->appointments()
+        ->orderBy('date', 'desc')
+        ->first();
+
+    if ($appointment) {
+        return response()->json([
+            'date' => \Carbon\Carbon::parse($appointment->date)->format('d M Y'),
+            'time' => \Carbon\Carbon::parse($appointment->time)->format('H:i'),
+            'reason' => $appointment->reason ?? 'General Appointment',
+        ]);
+    }
+
+    return response()->json(null);
 }
 
 

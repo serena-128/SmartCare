@@ -13,7 +13,8 @@ if ($hour < 12) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Next of Kin Home - SmartCare</title>
+  <title>Next of Kin Dashboard</title>
+    <link rel="icon" type="image/png" href="{{ asset('pictures/carehome_logo.png') }}">
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -355,6 +356,7 @@ if ($hour < 12) {
   font-weight: bold;
 }
 
+      
 
   </style>
 </head>
@@ -385,10 +387,6 @@ if ($hour < 12) {
         <a href="#" class="sidebar-link" onclick="showSection('appointments', this)"><i class="fas fa-calendar-check"></i> Appointments</a>
         <a href="#" class="sidebar-link" onclick="showSection('events', this)"><i class="fas fa-calendar-alt"></i> Events</a>
         <a href="#" class="sidebar-link" onclick="showSection('news', this)"><i class="fas fa-newspaper"></i> News</a>
-        <a href="#" class="sidebar-link" onclick="showSection('message', this)"><i class="fas fa-comment-alt"></i> Send Message </a>
-          <a href="#" class="sidebar-link" onclick="showSection('received-messages', this)">
-          <i class="fas fa-envelope-open-text"></i> Received Messages
-        </a>
         <a href="#" id="settings-sidebar-link" class="sidebar-link" onclick="showSection('settings', this); return false;">
         <i class="fas fa-cog"></i> Settings
          </a>
@@ -564,111 +562,139 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
         <div id="resident" class="dashboard-section" style="display: none;">
   <h1 class="text-center mb-4">Resident Overview</h1>
 
-  <div class="row">
-    <!-- Column 1: Resident Information -->
-    <div class="col-md-6">
-      <div class="card shadow-lg mb-4">
-        <div class="card-header bg-primary text-white">
-          <h3>Resident Information</h3>
-        </div>
-        <div class="card-body">
-          <h5>Full Name: {{ $resident->firstname ?? 'John Doe' }} {{ $resident->lastname ?? '' }}</h5>
-          <p><strong>Room Number:</strong> {{ $resident->room_number ?? '101' }}</p>
-          <p><strong>Current Care Level:</strong> {{ $resident->care_level ?? 'N/A' }}</p>
-          <p><strong>Current Status:</strong> {{ $resident->status ?? 'N/A' }}</p>
-          <p><strong>Assigned Caregiver:</strong> {{ $resident->caregiver_name ?? 'Emma Kavanagh' }}</p>
-          <p><strong>Care Plan Status:</strong> {{ $resident->care_plan_status ?? 'Active' }}</p>
-        </div>
+<div class="row">
+  <!-- Column 1: Resident Information -->
+  <div class="col-md-6 d-flex">
+    <div class="card shadow-lg mb-4 w-100">
+      <div class="card-header bg-primary text-white">
+        <h3>Resident Information</h3>
       </div>
-    </div>
+       <div class="card-body fs-5">
+        <h5 class="mb-3">
+  <strong>Full Name:</strong> {{ $resident->firstname ?? 'John Doe' }} {{ $resident->lastname ?? '' }}
+</h5>
 
-    <!-- Column 2: Health Overview & Emergency Contact -->
-    <div class="col-md-6">
-      <div class="card shadow-lg mb-4">
-        <div class="card-header bg-success text-white">
-          <h3>General Health Overview & Emergency Contact</h3>
-        </div>
-        <div class="card-body">
-          <p><strong>Recent Checkups:</strong> {{ $resident->recent_checkups ?? 'Routine Checkup' }}</p>
-          <p><strong>Health Notes:</strong> {{ $resident->health_notes ?? 'N/A' }}</p>
-          <hr>
-          <p><strong>Emergency Contact Name:</strong> {{ $resident->emergency_contact_name ?? 'Care home' }}</p>
-          <p><strong>Emergency Contact Number:</strong> {{ $resident->emergency_contact_phone ?? '01 234 4354' }}</p>
-            <a href="#" class="btn btn-success mt-3">Download Report</a>
-        </div>
+        <p><strong>Room Number:</strong> {{ $resident->room_number ?? '101' }}</p>
+
+        @php
+          $caregiver = $resident->assignedStaff;
+          $latestDiagnosis = $resident->diagnoses->sortByDesc('created_at')->first();
+        @endphp
+
+        <p><strong>Assigned Caregiver:</strong> 
+          {{ $caregiver ? $caregiver->firstname . ' ' . $caregiver->lastname : 'Not assigned' }}
+        </p>
+
+        @if($latestDiagnosis)
+          <p><strong>Latest Diagnosis:</strong> {{ $latestDiagnosis->diagnosis }}</p>
+          <p><strong>Treatment:</strong> {{ $latestDiagnosis->treatment }}</p>
+        @else
+          <p><strong>Diagnosis:</strong> N/A</p>
+          <p><strong>Treatment:</strong> N/A</p>
+        @endif
       </div>
     </div>
   </div>
 
-<!-- Fitbit Summary -->
-<div class="card shadow-lg mb-4" id="fitbit-summary-card">
-  <div class="card-header bg-info text-white">
-    <h3><i class="fas fa-walking"></i> Fitbit Health Summary</h3>
-  </div>
-  <div class="card-body" id="fitbit-summary-content">
-    <!-- Data will be loaded here -->
-    <div id="fitbit-summary-data">
-      <p>Loading Fitbit data...</p>
+  <!-- Column 2: Health Overview & Emergency Contact -->
+  <div class="col-md-6 d-flex">
+    <div class="card shadow-lg mb-4 w-100">
+      <div class="card-header bg-success text-white">
+        <h3>General Health Overview & Emergency Contact</h3>
+      </div>
+      <div class="card-body">
+        @php
+          $latestAppointment = $resident->appointments->sortByDesc('date')->first();
+        @endphp
+
+        <p><strong>Recent Checkup:</strong>
+          @if($latestAppointment)
+            {{ \Carbon\Carbon::parse($latestAppointment->date)->format('M d, Y') }}<br>
+            <span class="text-muted">Reason: {{ $latestAppointment->reason }}</span><br>
+            <span class="text-muted">Location: {{ $latestAppointment->location }}</span>
+          @else
+            No recent appointments.
+          @endif
+        </p>
+
+        <p><strong>Health Notes:</strong> {{ $resident->doctor_notes ?? 'N/A' }}</p>
+        <hr>
+        <p><strong>Emergency Contact Name:</strong> {{ $resident->emergency_contact_name ?? 'Care home' }}</p>
+        <p><strong>Emergency Contact Number:</strong> {{ $resident->emergency_contact_phone ?? '01 234 4354' }}</p>
+      </div>
     </div>
-    <!-- Chart will be appended here -->
-    <div id="fitbit-summary-chart"></div>
   </div>
 </div>
 
-<hr>
-<div class="card shadow-lg mb-4">
-  <div class="card-header bg-purple text-black">
-    <h4><i class="fas fa-shoe-prints"></i> Activity Insights</h4>
-  </div>
-  <div class="card-body">
-    {{-- Activity Status Badge --}}
-    @if($data['steps'] > 1500)
-        <span class="badge bg-success">Active</span>
-    @elseif($data['steps'] > 800)
-        <span class="badge bg-warning">Moderately Active</span>
-    @else
-        <span class="badge bg-danger">Low Activity</span>
-    @endif
 
-    {{-- Encouragement Message --}}
-    <div class="mt-2">
-      @if($data['sedentary'] > 600)
-          <p class="text-warning">They’ve been sitting a lot — maybe encourage some gentle movement!</p>
-      @elseif($data['steps'] > 1000)
-          <p class="text-success">More active than usual — that's great!</p>
-      @else
-          <p class="text-info">A calm day so far – might just be a rest day.</p>
-      @endif
-    </div>
 
-    {{-- Daily vs Average --}}
-    @php $avgSteps = 600; @endphp
-    <p><strong>Today:</strong> {{ $data['steps'] }} steps</p>
-    <p><strong>Avg:</strong> {{ $avgSteps }} steps</p>
-
-    @if($data['steps'] > $avgSteps)
-        <p class="text-success">They’ve gone above their usual activity today!</p>
-    @else
-        <p class="text-muted">Below average – could just be taking it easy.</p>
-    @endif
-
-    {{-- Goal Achieved --}}
-    @if($data['steps'] >= 1500)
-        <div class="alert alert-success mt-3">
-            🎉 They reached their step goal today!
+<div class="row">
+  <!-- Fitbit Summary -->
+  <div class="col-md-6">
+    <div class="card shadow-lg mb-4" id="fitbit-summary-card">
+      <div class="card-header bg-info text-white">
+        <h3><i class="fas fa-walking"></i> Fitbit Health Summary</h3>
+      </div>
+      <div class="card-body" id="fitbit-summary-content">
+        <div id="fitbit-summary-data">
+          <p>Loading Fitbit data...</p>
         </div>
-    @endif
+        <div id="fitbit-summary-chart" style="max-width: 300px; margin: 20px auto;"></div>
+      </div>
+    </div>
+  </div>
 
-    {{-- Mood Suggestion --}}
-    <div class="mt-2">
-      @if($data['steps'] > 1000)
-          <p>They might be feeling energized! 🌞</p>
-      @elseif($data['sedentary'] > 600)
-          <p>Probably resting more today — maybe a relaxed mood. ☕</p>
-      @endif
+  <!-- Activity Insights -->
+  <div class="col-md-6">
+    <div class="card shadow-lg mb-4" id="activity-insights-card">
+      <div class="card-header bg-light">
+        <h4><i class="fas fa-shoe-prints"></i> Activity Insights</h4>
+      </div>
+      <div class="card-body">
+        {{-- Activity content --}}
+        @if($data['steps'] > 1500)
+            <span class="badge bg-success">Active</span>
+        @elseif($data['steps'] > 800)
+            <span class="badge bg-warning">Moderately Active</span>
+        @else
+            <span class="badge bg-danger">Low Activity</span>
+        @endif
+
+        <div class="mt-2">
+          @if($data['sedentary'] > 600)
+              <p class="text-warning">They’ve been sitting a lot — maybe encourage some gentle movement!</p>
+          @elseif($data['steps'] > 1000)
+              <p class="text-success">More active than usual — that's great!</p>
+          @else
+              <p class="text-info">A calm day so far – might just be a rest day.</p>
+          @endif
+        </div>
+
+        <p><strong>Today:</strong> {{ $data['steps'] }} steps</p>
+        <p><strong>Avg:</strong> 600 steps</p>
+
+        @if($data['steps'] > 600)
+            <p class="text-success">They’ve gone above their usual activity today!</p>
+        @else
+            <p class="text-muted">Below average – could just be taking it easy.</p>
+        @endif
+
+        @if($data['steps'] >= 1500)
+            <div class="alert alert-success mt-3">🎉 They reached their step goal today!</div>
+        @endif
+
+        <div class="mt-2">
+          @if($data['steps'] > 1000)
+              <p>They might be feeling energized! 🌞</p>
+          @elseif($data['sedentary'] > 600)
+              <p>Probably resting more today — maybe a relaxed mood. ☕</p>
+          @endif
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
 
 
 
@@ -676,38 +702,26 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
 
 
         <div id="appointments" class="dashboard-section" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Upcoming Appointments</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-2">Upcoming Appointments</h1>
         
-    <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="appointments-search" placeholder="Search appointments..." style="width: 250px; margin-right: 15px;">
-        </div>
-        <a href="{{ route('rsvp.form') }}" class="btn btn-primary">
-            <i class="fas fa-check-circle"></i> RSVP to Appointment
-        </a>
+
     </div>
     
-    <p>View and manage upcoming appointments.</p>
+    <p class="mb-3">View and manage upcoming appointments.</p>
 
           <!-- Calendar Container -->
           <div id="calendar"></div>
         </div>
 
         <div id="events" class="dashboard-section" style="display: none;">
-  <!-- Title and RSVP Button in the same row using Flexbox -->
+  <!-- Title  -->
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Upcoming Events</h1>
-      <div class="d-flex align-items-center">
-        <input type="text" class="form-control" id="events-search" placeholder="Search events..." style="width: 250px; margin-right: 15px;">
-    </div>
+    <h1 class="mb-2">Upcoming Events</h1>
     
-    <!-- RSVP Button linking to the RSVP form -->
-<a href="{{ route('rsvp.form') }}" class="btn btn-primary">RSVP to Event</a>
-
   </div>
 
-  <p>View upcoming activities and social events at the care home.</p>
-
+  <p class="mb-3">View upcoming activities and social events at the care home.</p>
   <!-- Calendar Container -->
   <div id="events-calendar"></div>
 </div>
@@ -719,53 +733,54 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
   
   <!-- Row for Latest News and Photo Gallery -->
   <div class="row">
-    <!-- Latest News Column -->
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <i class="fas fa-newspaper"></i> Latest News
-        </div>
-        <div class="card-body">
-          @if($newsUpdates->isEmpty())
-            <p>No recent updates available.</p>
+  <!-- Latest News Column -->
+  <div class="col-md-6 d-flex">
+    <div class="card w-100">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-newspaper"></i> Latest News
+      </div>
+      <div class="card-body">
+        @if($newsUpdates->isEmpty())
+          <p>No recent updates available.</p>
+        @else
+          <ul class="list-group">
+            @foreach($newsUpdates->sortByDesc('date')->take(3) as $news)
+              <li class="list-group-item">
+                <strong>{{ $news->title }}</strong>
+                <p class="text-muted">{{ \Carbon\Carbon::parse($news->date)->format('M d, Y') }}</p>
+                <p>{{ $news->description }}</p>
+              </li>
+            @endforeach
+          </ul>
+        @endif
+      </div>
+    </div>
+  </div>
+
+  <!-- Photo Gallery Column -->
+  <div class="col-md-6 d-flex">
+    <div class="card w-100">
+      <div class="card-header bg-success text-white">
+        <i class="fas fa-images"></i> Photo Gallery
+      </div>
+      <div class="card-body">
+        <div class="row">
+          @if($photoGallery->isEmpty())
+            <p>No photos available at this time.</p>
           @else
-            <ul class="list-group">
-              @foreach($newsUpdates as $news)
-                <li class="list-group-item">
-                  <strong>{{ $news->title }}</strong>
-                  <p class="text-muted">{{ \Carbon\Carbon::parse($news->date)->format('M d, Y') }}</p>
-                  <p>{{ $news->description }}</p>
-                </li>
-              @endforeach
-            </ul>
+            @foreach($photoGallery->take(2) as $photo)
+              <div class="col-6 mb-3">
+                <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
+              </div>
+            @endforeach
           @endif
         </div>
+        <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
       </div>
     </div>
-    
-    <!-- Photo Gallery Column -->
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header bg-success text-white">
-          <i class="fas fa-images"></i> Photo Gallery
-        </div>
-        <div class="card-body">
-          <div class="row">
-            @if($photoGallery->isEmpty())
-              <p>No photos available at this time.</p>
-            @else
-              @foreach($photoGallery->take(2) as $photo)
-                <div class="col-6 mb-3">
-                  <img src="{{ asset($photo->filename) }}" alt="Event Photo" class="img-fluid custom-img">
-                </div>
-              @endforeach
-            @endif
-          </div>
-          <a href="{{ route('photogallery') }}" class="btn btn-outline-primary btn-sm">View More</a>
-        </div>
-      </div>
-    </div>
-  </div> <!-- End of the first row -->
+  </div>
+</div>
+ <!-- End of the first row -->
 
   <!-- Separate Row for Bulletin Board -->
   <div class="row mt-4">
@@ -778,7 +793,7 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
           @if($bulletinBoard->isEmpty())
             <p>No announcements at this time.</p>
           @else
-            @foreach($bulletinBoard as $announcement)
+            @foreach($bulletinBoard->sortByDesc('date')->take(4) as $announcement)
               <p>
                 <strong>{{ \Carbon\Carbon::parse($announcement->date)->format('M d, Y') }}:</strong>
                 {{ $announcement->message }}
@@ -791,50 +806,6 @@ document.addEventListener('DOMContentLoaded', fetchWeather);
   </div>
 </div>
 
-<div id="message" class="dashboard-section" style="display: none;">
-  <h1>Send Message</h1>
-  <p>Communicate with care home staff.</p>
-  
-  <form method="POST" action="{{ route('nextofkin.sendMessage') }}">
-    @csrf
-    <div class="form-group">
-        <label for="message">Your Message</label>
-        <textarea class="form-control" name="message" rows="3" placeholder="Type your message here..." required></textarea>
-    </div>
-    
-    <div class="form-group">
-        <label for="recipient">Recipient</label>
-        <select class="form-control" name="recipient" required>
-            <option value="all">All Staff</option>
-            @if($resident && $resident->assignedCaregiver)
-                <option value="caregiver">{{ $resident->assignedCaregiver->firstname }} {{ $resident->assignedCaregiver->lastname }}</option>
-            @else
-                <option value="caregiver">No Caregiver Assigned</option>
-            @endif
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Send Message</button>
-  </form>
-</div>
-
-<div id="received-messages" class="dashboard-section" style="display: none;">
-  <h1>Received Messages</h1>
-  <p>Messages sent to you by care home staff:</p>
-  
-  @if($receivedMessages && $receivedMessages->count() > 0)
-    <ul class="list-group">
-      @foreach($receivedMessages as $message)
-        <li class="list-group-item">
-          <strong>{{ $message->sender }}</strong> ({{ $message->created_at->format('M d, Y H:i') }})
-          <p>{{ $message->message }}</p>
-        </li>
-      @endforeach
-    </ul>
-  @else
-    <div class="alert alert-info">No messages found.</div>
-  @endif
-</div>
 
 
 
@@ -982,12 +953,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     showCancelButton: true,
                     confirmButtonText: 'RSVP Yes',
                     cancelButtonText: 'RSVP No',
+                    showCloseButton: true,           // ✅ Adds the ❌ button
+                    allowOutsideClick: false,        // ✅ Disable clicking outside
+                    allowEscapeKey: false,           // ✅ Disable Esc key
                     customClass: {
                         popup: 'my-sweetalert-popup'
                     }
                 }).then((result) => {
-                    let rsvpStatus = result.isConfirmed ? 'yes' : 'no';
-                    handleRSVP(info.event.id, rsvpStatus);  // Call RSVP handler with status
+    if (result.isConfirmed) {
+        handleRSVP(info.event.id, 'yes');
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+        handleRSVP(info.event.id, 'no');
+    }
                 });
             }
         });
@@ -1016,19 +993,28 @@ document.addEventListener('DOMContentLoaded', function () {
       events: '/fetch-events',
       eventClick: function (info) {
         Swal.fire({
-          title: info.event.title,
-          text: info.event.extendedProps.description,
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonText: 'RSVP Yes',
-          cancelButtonText: 'RSVP No',
-          customClass: {
-            popup: 'my-sweetalert-popup'
-          }
-        }).then((result) => {
-          let rsvpStatus = result.isConfirmed ? 'yes' : 'no';
-          handleEventRSVP(info.event.id, rsvpStatus);
-        });
+  title: info.event.title,
+  text: info.event.extendedProps.description,
+  icon: 'info',
+  showCancelButton: true,
+  confirmButtonText: 'RSVP Yes',
+  cancelButtonText: 'RSVP No',
+    showCloseButton: true, 
+  allowOutsideClick: false,     // 👈 Add this line
+  allowEscapeKey: false,        // 👈 And this line
+  customClass: {
+    popup: 'my-sweetalert-popup'
+  }
+}).then((result) => {
+  if (result.isConfirmed) {
+    handleEventRSVP(info.event.id, 'yes');
+  } else if (result.isDismissed) {
+    // Do nothing — user clicked X or outside or pressed Esc
+  } else if (result.isDenied || result.dismiss === Swal.DismissReason.cancel) {
+    handleEventRSVP(info.event.id, 'no');
+  }
+});
+
       } // ✅ ← this closing brace was missing
     });
 

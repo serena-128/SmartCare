@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Models\Product;
 use App\Models\Pharmacyorder;
+use App\Models\Appointment;
 
 
 class StaffDashboardController extends Controller
@@ -25,6 +26,14 @@ class StaffDashboardController extends Controller
 
         // Fetch care plans related to assigned residents
         $carePlans = CarePlan::with('resident')->get();
+        
+        $upcomingAppointments = Appointment::with('resident')
+            ->where('staffmemberid', $staffId)
+            ->whereBetween('date', [now()->toDateString(), now()->addDays(7)->toDateString()])
+            ->orderBy('date')
+            ->get();
+
+
 
         // Return the dashboard view with necessary data
         return view('staffDashboard', [
@@ -35,7 +44,8 @@ class StaffDashboardController extends Controller
             'recentAlerts' => EmergencyAlert::latest()->take(5)->get(),
             'onDutyStaff' => Staffmember::where('staff_role', 'LIKE', '%Nurse%')->get(),
             'assignedResidents' => $assignedResidents, // Pass assigned residents to the view
-            'carePlans' => $carePlans // Pass care plans to the view
+            'carePlans' => $carePlans,// Pass care plans to the view
+             'upcomingAppointments' => $upcomingAppointments
         ]);
     }
     public function showDashboard()

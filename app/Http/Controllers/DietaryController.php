@@ -442,7 +442,10 @@ public function historyCalendar(Request $request)
             'allDay'   => true,
             'category' => $plan->category,
             'extendedProps' => [
-                'category' => $plan->category
+                'time'        => $plan->time,
+            'quantity'    => $plan->quantity,
+                'category' => $plan->category,
+                'resident_id' => $plan->resident_id,
             ]
         ];
     });
@@ -453,7 +456,8 @@ public function storeMealHistory(Request $request, $mealPlanId)
         'resident_id' => 'required|exists:resident,id',
         'consumed'    => 'required|in:none,some,all',
         'notes'       => 'nullable|string',
-        'time'        => 'nullable'
+        'time'        => 'nullable',
+        'actual_time'  => 'nullable|date_format:H:i'
     ]);
 
     \App\Models\MealPlanEntry::updateOrCreate(
@@ -464,7 +468,8 @@ public function storeMealHistory(Request $request, $mealPlanId)
         ],
         [
             'consumed' => $validated['consumed'],
-            'notes'    => $validated['notes']
+            'notes'    => $validated['notes'],
+            'actual_time'  => $validated['actual_time']
         ]
     );
 
@@ -500,5 +505,19 @@ public function updatePreferences(Request $request)
 
     return back()->with('success', 'Resident preferences updated successfully.');
 }
+    public function checkMealHistory(Request $request)
+{
+    $entry = MealPlanEntry::where([
+        'meal_plan_id' => $request->query('meal_plan_id'),
+        'resident_id'  => $request->query('resident_id'),
+        'time'         => $request->query('time'),
+    ])->first();
+
+    return response()->json([
+        'exists' => !!$entry,
+        'entry'  => $entry,
+    ]);
+}
+
 
 }  

@@ -26,11 +26,52 @@ class appointmentController extends AppBaseController
     }
 
     // ✅ Display all appointments with relationships
-    public function index()
-    {
-        $appointments = Appointment::with(['resident', 'staffmember'])->get();
-        return view('appointments.index', compact('appointments'));
-    }
+    public function index(Request $request)
+{
+    // Set default date filter to 'today' if not specified
+    $dateFilter = $request->date_filter ?? 'today';
+
+    $appointments = Appointment::with(['resident', 'staffmember'])
+        ->when($request->resident, function ($query) use ($request) {
+            $query->whereHas('resident', function ($q) use ($request) {
+                $q->where('firstname', 'like', "%{$request->resident}%")
+                  ->orWhere('lastname', 'like', "%{$request->resident}%");
+            });
+        })
+        ->when($request->staff, function ($query) use ($request) {
+            $query->whereHas('staffmember', function ($q) use ($request) {
+                $q->where('firstname', 'like', "%{$request->staff}%")
+                  ->orWhere('lastname', 'like', "%{$request->staff}%");
+            });
+        })
+        ->when($dateFilter == 'today', function ($query) {
+            $query->whereDate('date', now()->toDateString());
+        })
+        ->when($dateFilter == 'past', function ($query) {
+            $query->whereDate('date', '<', now()->toDateString());
+        })
+        ->when($dateFilter == 'today', fn($q) =>
+    $q->whereDate('date', now()->toDateString())
+)
+->when($dateFilter == 'past', fn($q) =>
+    $q->whereDate('date', '<', now()->toDateString())
+)
+->when($dateFilter == 'future', fn($q) =>
+    $q->whereDate('date', '>', now()->toDateString())
+)
+->when(str_starts_with($dateFilter, 'year_'), function ($q) use ($dateFilter) {
+    $year = str_replace('year_', '', $dateFilter);
+    $q->whereYear('date', $year);
+})
+
+        
+        ->orderBy('date')
+        ->paginate(10);
+
+    return view('appointments.index', compact('appointments'));
+}
+
+
 
     public function create()
     {
@@ -225,6 +266,51 @@ public function handleRSVP(Request $request)
     return response()->json(['success' => true]);
 }
    
+
+public function fetchStaffAppointments()
+{
+    try {
+        $staffId = session('staff_id');
+
+        if (!$staffId) {
+            return response()->json(['error' => 'No staff ID in session'], 403);
+        }
+
+        // 👇 Include the resident relationship
+        $appointments = Appointment::with('resident')
+            ->where('staffmemberid', $staffId)
+            ->get();
+
+        $formatted = $appointments->map(function ($appt) {
+            if (!$appt->date || !$appt->time) {
+                return null;
+            }
+
+            $start = \Carbon\Carbon::parse($appt->date)
+                ->setTimeFromTimeString($appt->time)
+                ->toIso8601String();
+
+            $resident = $appt->resident;
+            $residentName = $resident ? "{$resident->firstname} {$resident->lastname}" : 'Unknown';
+
+            return [
+                'id' => $appt->id,
+                'title' => "{$appt->reason} - $residentName", // 👈 shows in calendar
+                'start' => $start,
+                'reason' => $appt->reason,
+                'location' => $appt->location,
+                'resident_name' => $residentName,
+            ];
+        })->filter();
+
+        return response()->json($formatted);
+
+    } catch (\Throwable $e) {
+        logger()->error('Error fetching staff appointments:', ['message' => $e->getMessage()]);
+        return response()->json(['error' => 'Server error', 'details' => $e->getMessage()], 500);
+    }
+}
+
 
 
 }

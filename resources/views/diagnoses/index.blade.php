@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+
+<div class="container mt-0">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0">All Resident Diagnoses</h4>
@@ -153,7 +154,7 @@
               <label for="notes" class="form-label">Notes</label>
               <textarea name="notes" class="form-control" rows="2"></textarea>
             </div>
-            <input type="hidden" name="lastupdatedby" value="{{ Auth::user()->id }}">
+            <input type="hidden" name="lastupdatedby" value="{{ session('staff_id') }}">
           </div>
         </div>
         <div class="modal-footer">

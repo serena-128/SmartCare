@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact SmartCare</title>
-  
+  <link rel="icon" type="image/png" href="{{ asset('pictures/carehome_logo.png') }}">
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   
@@ -57,7 +58,8 @@
       padding: 1.5rem;
       border-radius: 0.75rem;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-      width: 400px;
+      max-width: 380px;
+        width: 100%;
       text-align: center;
       position: relative;
     }
@@ -79,6 +81,7 @@
       position: fixed;
       bottom: 0;
     }
+      
   </style>
 </head>
 <body>
